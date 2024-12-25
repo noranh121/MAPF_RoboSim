@@ -1,0 +1,21 @@
+[0.828s] Invoking command in '/home/ahmadaw/MAPF_RoboSim/ros2_ws/src/Implementation-of-A-star-algorithm-for-path-planning-of-Turtlebot-in-an-obstacle-environment/a_star_tb3': PYTHONPATH=/home/ahmadaw/MAPF_RoboSim/ros2_ws/build/a_star_tb3/prefix_override:/usr/lib/python3/dist-packages/colcon_core/task/python/colcon_distutils_commands:/home/ahmadaw/MAPF_RoboSim/ros2_ws/install/a_star_tb3/lib/python3.10/site-packages:${PYTHONPATH} /usr/bin/python3 -W ignore:setup.py install is deprecated -W ignore:easy_install command is deprecated setup.py egg_info --egg-base ../../../build/a_star_tb3 build --build-base /home/ahmadaw/MAPF_RoboSim/ros2_ws/build/a_star_tb3/build install --record /home/ahmadaw/MAPF_RoboSim/ros2_ws/build/a_star_tb3/install.log --single-version-externally-managed install_data
+[1.117s] running egg_info
+[1.119s] writing ../../../build/a_star_tb3/a_star_tb3.egg-info/PKG-INFO
+[1.119s] writing dependency_links to ../../../build/a_star_tb3/a_star_tb3.egg-info/dependency_links.txt
+[1.124s] writing entry points to ../../../build/a_star_tb3/a_star_tb3.egg-info/entry_points.txt
+[1.124s] writing requirements to ../../../build/a_star_tb3/a_star_tb3.egg-info/requires.txt
+[1.124s] writing top-level names to ../../../build/a_star_tb3/a_star_tb3.egg-info/top_level.txt
+[1.127s] reading manifest file '../../../build/a_star_tb3/a_star_tb3.egg-info/SOURCES.txt'
+[1.128s] writing manifest file '../../../build/a_star_tb3/a_star_tb3.egg-info/SOURCES.txt'
+[1.128s] running build
+[1.128s] running build_py
+[1.128s] running install
+[1.129s] running install_lib
+[1.131s] running install_data
+[1.131s] running install_egg_info
+[1.134s] removing '/home/ahmadaw/MAPF_RoboSim/ros2_ws/install/a_star_tb3/lib/python3.10/site-packages/a_star_tb3-0.0.0-py3.10.egg-info' (and everything under it)
+[1.134s] Copying ../../../build/a_star_tb3/a_star_tb3.egg-info to /home/ahmadaw/MAPF_RoboSim/ros2_ws/install/a_star_tb3/lib/python3.10/site-packages/a_star_tb3-0.0.0-py3.10.egg-info
+[1.135s] running install_scripts
+[1.156s] Installing a_star_tb3_script.py script to /home/ahmadaw/MAPF_RoboSim/ros2_ws/install/a_star_tb3/lib/a_star_tb3
+[1.156s] writing list of installed files to '/home/ahmadaw/MAPF_RoboSim/ros2_ws/build/a_star_tb3/install.log'
+[1.183s] Invoked command in '/home/ahmadaw/MAPF_RoboSim/ros2_ws/src/Implementation-of-A-star-algorithm-for-path-planning-of-Turtlebot-in-an-obstacle-environment/a_star_tb3' returned '0': PYTHONPATH=/home/ahmadaw/MAPF_RoboSim/ros2_ws/build/a_star_tb3/prefix_override:/usr/lib/python3/dist-packages/colcon_core/task/python/colcon_distutils_commands:/home/ahmadaw/MAPF_RoboSim/ros2_ws/install/a_star_tb3/lib/python3.10/site-packages:${PYTHONPATH} /usr/bin/python3 -W ignore:setup.py install is deprecated -W ignore:easy_install command is deprecated setup.py egg_info --egg-base ../../../build/a_star_tb3 build --build-base /home/ahmadaw/MAPF_RoboSim/ros2_ws/build/a_star_tb3/build install --record /home/ahmadaw/MAPF_RoboSim/ros2_ws/build/a_star_tb3/install.log --single-version-externally-managed install_data

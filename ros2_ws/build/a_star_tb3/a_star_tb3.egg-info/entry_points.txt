@@ -1,0 +1,3 @@
+[console_scripts]
+a_star_tb3_script.py = a_star_tb3.a_star_tb3_script:main
+
