@@ -1,6 +1,0 @@
-source;share/a_star_tb3/hook/pythonpath.ps1
-source;share/a_star_tb3/hook/pythonpath.dsv
-source;share/a_star_tb3/hook/pythonpath.sh
-source;share/a_star_tb3/hook/ament_prefix_path.ps1
-source;share/a_star_tb3/hook/ament_prefix_path.dsv
-source;share/a_star_tb3/hook/ament_prefix_path.sh
