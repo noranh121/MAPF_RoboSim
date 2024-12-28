@@ -36,7 +36,7 @@ def convert_map_to_world(map_file, world_file, cell_size=1.0):
     # Insert obstacles
     for y, row in enumerate(grid):
         for x, cell in enumerate(row):
-            if cell == 'T':  # Obstacle
+            if cell == '@':  # Obstacle
                 model = ET.SubElement(world, 'model', name=f"block_{x}_{y}")
                 ET.SubElement(model, 'pose').text = f"{x * cell_size} {y * cell_size} {cell_size / 2} 0 0 0"
                 link = ET.SubElement(model, 'link', name="link")
@@ -55,7 +55,7 @@ def convert_map_to_world(map_file, world_file, cell_size=1.0):
         tree.write(f)
 
 # File paths
-map_file_path = '/home/ahmadaw/MAPF_RoboSim/ros2_ws/src/Implementation-of-A-star-algorithm-for-path-planning-of-Turtlebot-in-an-obstacle-environment/a_star_tb3/benchmarks/benchmark1.txt'
+map_file_path = '/home/ahmadaw/MAPF_RoboSim/ros2_ws/src/Implementation-of-A-star-algorithm-for-path-planning-of-Turtlebot-in-an-obstacle-environment/a_star_tb3/benchmarks/benchmark2.txt'
 world_file_path = '/home/ahmadaw/MAPF_RoboSim/ros2_ws/src/Implementation-of-A-star-algorithm-for-path-planning-of-Turtlebot-in-an-obstacle-environment/a_star_tb3/worlds/benchmark.world'
 
 # Convert
