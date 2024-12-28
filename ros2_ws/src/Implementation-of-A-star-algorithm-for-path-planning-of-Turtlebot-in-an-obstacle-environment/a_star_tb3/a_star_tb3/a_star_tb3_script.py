@@ -92,7 +92,7 @@ class A_star:
         pygame.display.flip()
         pygame.time.wait(3000)
         pygame.quit()
-        video.export(verbose=True)
+        # video.export(verbose=True)
 
     def check_obstacles(self, d):
         obstacles = OrderedSet()
