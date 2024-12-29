@@ -1,6 +1,6 @@
 import xml.etree.ElementTree as ET
 
-def convert_map_to_world(map_file, world_file, cell_size=1.0):
+def convert_map_to_world(map_file, world_file, cell_size=0.05):
     with open(map_file, 'r') as f:
         lines = f.readlines()
 
@@ -30,7 +30,7 @@ def convert_map_to_world(map_file, world_file, cell_size=1.0):
 
 
     # Insert light
-    light = ET.SubElement(world, 'light', name="sun", type="directional")
+    # light = ET.SubElement(world, 'light', name="sun", type="directional")
 
 
     # Insert obstacles
@@ -48,6 +48,12 @@ def convert_map_to_world(map_file, world_file, cell_size=1.0):
                 geometry = ET.SubElement(visual, 'geometry')
                 box = ET.SubElement(geometry, 'box')
                 ET.SubElement(box, 'size').text = f"{cell_size} {cell_size} {cell_size}"
+
+                material = ET.SubElement(visual, 'material')
+                script = ET.SubElement(material, 'script')
+                ET.SubElement(script, 'uri').text = "file://media/materials/scripts/gazebo.material"
+                ET.SubElement(script, 'name').text = "Gazebo/Grey"
+                ET.SubElement(material, 'ambient').text = "0.5 0.5 0.5 1"
 
     # Write to .world file
     tree = ET.ElementTree(sdf)
