@@ -81,8 +81,8 @@ def generate_launch_description():
 
     robot_state_publisher_cmd = Node(
                 package="robot_state_publisher",
-                namespace="robot2",
-                name="robot2_burger",
+                namespace="robot1",
+                name="robot1_burger",
                 executable="robot_state_publisher",
                 output="screen",
                 parameters=[{"use_sim_time": False,
@@ -100,9 +100,9 @@ def generate_launch_description():
                     "-file",
                     sdf_path,
                     "-entity",
-                    "robot2_burger",
+                    "robot1_burger",
                     "-robot_namespace",
-                    "robot2",
+                    "robot1",
                     "-x",
                     "0.0",
                     "-y",
@@ -114,8 +114,8 @@ def generate_launch_description():
 
     robot_state_publisher_cmd2 = Node(
                 package="robot_state_publisher",
-                namespace="robot1",
-                name="robot1_burger",
+                namespace="robot2",
+                name="robot2_burger",
                 executable="robot_state_publisher",
                 output="screen",
                 parameters=[{"use_sim_time": False,
@@ -133,9 +133,9 @@ def generate_launch_description():
                     "-file",
                     sdf_path,
                     "-entity",
-                    "robot1_burger",
+                    "robot2_burger",
                     "-robot_namespace",
-                    "robot1",
+                    "robot2",
                     "-x",
                     "-0.25",
                     "-y",
@@ -215,8 +215,8 @@ def generate_launch_description():
     ld.add_action(gzclient_cmd)
     ld.add_action(robot_state_publisher_cmd)
     ld.add_action(spawn_turtlebot_cmd)
-    ld.add_action(robot_state_publisher_cmd2)
-    ld.add_action(spawn_turtlebot_cmd2)
+    # ld.add_action(robot_state_publisher_cmd2)
+    # ld.add_action(spawn_turtlebot_cmd2)
     # ld.add_action(start_rviz)
     ld.add_action(declared_goalx)
     ld.add_action(declared_goaly)
