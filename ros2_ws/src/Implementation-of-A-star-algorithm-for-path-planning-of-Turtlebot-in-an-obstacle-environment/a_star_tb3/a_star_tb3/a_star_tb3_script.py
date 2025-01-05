@@ -162,7 +162,7 @@ class A_star:
 
     def Actions(self, ul, ur, pos, c2c):
         t = 0
-        dt = 0.2
+        dt = 1
         Xn = pos[0]
         Yn = pos[1]
         Thetan = np.deg2rad(pos[2])
@@ -185,7 +185,7 @@ class A_star:
         Yn = np.round(Yn, 2)
         Thetan = np.round(Thetan, 2)
         Thetan = np.rad2deg(Thetan)
-        if 0 <= Xn <= 6 and 0 <= Yn <= 2:
+        if 0 <= Xn <= 4 and 0 <= Yn <= 4:
             self.check_conditions(Xn, Yn, pos[0], pos[1],
                                   pos[2], Thetan, cc, ls, velocity)
         return
@@ -228,10 +228,10 @@ class A_star:
         obstacle_space = self.check_obstacles((d/1000)+r)
         # initial_state = input_start('Start'), input_cdr('start point')
         # initial_state = (initial_state[0][0], initial_state[0][1], initial_state[1])
-        initial_state = (startx+0.5, starty+1, 0)
+        initial_state = (startx, starty, 0)
         # node_state_g = input_start('Goal'), input_cdr('goal point')
         # node_state_g = (node_state_g[0][0], node_state_g[0][1], node_state_g[1])
-        node_state_g = (goalx+0.5, goaly+1, 0)
+        node_state_g = (goalx, goaly, 0)
         cost = 0
         closed_list = OrderedSet()
         cg = np.sqrt(
@@ -248,7 +248,7 @@ class A_star:
             cc = queue_pop[1][2]
             if (x, y) not in closed_list:
                 closed_list.add((x, y))
-                if self.euclidean_distance(node_state_g[0], x, node_state_g[1], y) > 0.15:
+                if self.euclidean_distance(node_state_g[0], x, node_state_g[1], y) > 0:
                     for i in action_set:
                         self.Actions(i[0], i[1], position, cc)
                 else:
@@ -258,7 +258,7 @@ class A_star:
                     end_time = time.time()
                     path_time = end_time - start_time
                     print('Time to calculate path:', path_time, 'seconds')
-                    self.create_map(d/10, visited_nodes, back_track, path_dict,name)
+                    # self.create_map(d/10, visited_nodes, back_track, path_dict,name)
                     return velocity_path
         print("Path cannot be acheived")
         exit()
@@ -400,6 +400,8 @@ def main():
     #     ,(0.0682744055318004, 0.0780166952777774, 0.43196898986859655)
     #     ,(0.0912320812226159, 0.10384729883968583, 0.0)
     #     ,(0.02953133168998523, 0.09937756105581574, 0.43196898986859655)]
+    velo_scaled = [(x * 100, y * 100, z * 100) for x, y, z in velo]
+    pygame.time.wait(20000)
     rclpy.init()
     move_turtlebot = ROS_move(velo,"robot1")
     # move_turtlebot2 = ROS_move(velo2,"robot2")

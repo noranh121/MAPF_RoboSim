@@ -54,7 +54,7 @@ def generate_launch_description():
     world = os.path.join(
         get_package_share_directory('a_star_tb3'),
         'worlds',
-        'map.world'
+        'bb.world'
     )
 
     gzserver_cmd = IncludeLaunchDescription(
