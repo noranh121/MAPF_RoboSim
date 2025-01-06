@@ -13,7 +13,6 @@ from geometry_msgs.msg import Twist
 from rclpy.exceptions import ROSInterruptException
 import argparse
 
-
 '''
 Github repository - https://github.com/sandipsharan/A-star-algorithm-for-turtlebot.git
 '''
@@ -25,8 +24,20 @@ Gazebo Video Link - https://drive.google.com/file/d/1zMZkRd9BUZkixb4Scdb6FKqUckA
 
 start_time = time.time()
 
-
+map_path = map_file_path = '/home/maged/MAPF_RoboSim/ros2_ws/src/Implementation-of-A-star-algorithm-for-path-planning-of-Turtlebot-in-an-obstacle-environment/a_star_tb3/benchmarks/bb.txt'
 class A_star:
+
+    def convert_map_to_obstacles(self,map_file, cell_size=0.1):
+        obstacles = OrderedSet()
+        with open(map_file, 'r') as f:
+            lines = f.readlines()
+
+        grid = [line.strip() for line in lines if not line.startswith("type") and not line.startswith("height") and not line.startswith("width")]
+        for y, row in enumerate(grid):
+            for x, cell in enumerate(row):
+                if cell == '@':
+                    obstacles.add((np.round(x*cell_size, 2), np.round(y*cell_size, 2)))
+        return obstacles
 
     # Function to flip the co-ordinate points
     def coords_pygame(self, coords, height):
@@ -96,17 +107,45 @@ class A_star:
 
     def check_obstacles(self, d):
         obstacles = OrderedSet()
-        # for x in np.arange(0, 6.1, 0.01):
-        #     for y in np.arange(0, 2.1, 0.01):
-        #         if (x >= (1.5 - d) and y >= (0.75-d) and x <= (1.65 + d) and y <= 2):
-        #             obstacles.add((np.round(x, 2), np.round(y, 2)))
-        #         if (x >= (2.5 - d) and y >= 0 and x <= (2.65 + d) and y <= (1.25 + d)):
-        #             obstacles.add((np.round(x, 2), np.round(y, 2)))
-        #         if ((x-4)**2 + (y-1.1)**2 - (0.5+d)**2) <= 0:
-        #             obstacles.add((np.round(x, 2), np.round(y, 2)))
-        #         if (x >= (6-d) or y >= (2-d) or x <= d or y <= d):
+        obstacles_positions = self.convert_map_to_obstacles(map_path)
+        print("obstacles_positions ===> ", obstacles_positions)
+        for pos in obstacles_positions:
+            x, y = pos
+            for obs in self.block_occupancy(x,y,0.1,0.1,0.01):
+                _x,_y = obs
+                obstacles.add((np.round(_x, 2), np.round(_x, 2)))
+        # for x in np.arange(0, 4.1, 0.01):
+        #     for y in np.arange(0, 4.1, 0.01):
+        # #         if (x >= (1.5 - d) and y >= (0.75-d) and x <= (1.65 + d) and y <= 2):
+        # #             obstacles.add((np.round(x, 2), np.round(y, 2)))
+        # #         if (x >= (2.5 - d) and y >= 0 and x <= (2.65 + d) and y <= (1.25 + d)):
+        # #             obstacles.add((np.round(x, 2), np.round(y, 2)))
+        # #         if ((x-4)**2 + (y-1.1)**2 - (0.5+d)**2) <= 0:
+        # #             obstacles.add((np.round(x, 2), np.round(y, 2)))
+        #         if (x >= (4-d) or y >= (4-d) or x <= d or y <= d):
         #             obstacles.add((np.round(x, 2), np.round(y, 2)))
         return obstacles
+    
+    #ADDED===========================================================ADDED
+    def block_occupancy(self,center_x, center_y, width, height, threshold):
+        x_min = center_x - width / 2
+        x_max = center_x + width / 2
+        y_min = center_y - height / 2
+        y_max = center_y + height / 2
+
+        # Generate the (x, y) pairs
+        x_values = [round(x, 3) for x in self.frange(x_min, x_max, threshold)]
+        y_values = [round(y, 3) for y in self.frange(y_min, y_max, threshold)]
+
+        occupied_points = [(x, y) for x in x_values for y in y_values]
+        return occupied_points
+    
+    def frange(self,start, stop, step):
+        while start <= stop:
+            yield start
+            start += step
+    #ADDED===========================================================ADDED
+
 
     def input_start(self, str):
         while True:
@@ -225,7 +264,9 @@ class A_star:
         R = 0.033
         L = 0.16
         # d = self.input_cdr('clearance')
+        #obstacle_space = self.check_obstacles((d/1000)+r)
         obstacle_space = self.check_obstacles((d/1000)+r)
+        print("Obstacle_space ==> ", obstacle_space)
         # initial_state = input_start('Start'), input_cdr('start point')
         # initial_state = (initial_state[0][0], initial_state[0][1], initial_state[1])
         initial_state = (startx, starty, 0)
@@ -321,7 +362,9 @@ def main():
     print('Given Inputs', args)
     astar = A_star()
     velo = astar.a_star(args.goal_x, args.goal_y,
-                      args.start_x, args.start_y, args.RPM1, args.RPM2, args.clearance,"robot1")
+                       args.start_x, args.start_y, args.RPM1, args.RPM2, args.clearance,"robot1")
+
+
     # velo2 = astar.a_star(args.goal_x, args.goal_y-0.25,
     #                   -0.25, 0.6, args.RPM1, args.RPM2, args.clearance,"robot2")
     # velo=[(0.1382300767579509, 0.0, 0.0)
@@ -400,22 +443,24 @@ def main():
     #     ,(0.0682744055318004, 0.0780166952777774, 0.43196898986859655)
     #     ,(0.0912320812226159, 0.10384729883968583, 0.0)
     #     ,(0.02953133168998523, 0.09937756105581574, 0.43196898986859655)]
-    velo_scaled = [(x * 100, y * 100, z * 100) for x, y, z in velo]
-    pygame.time.wait(20000)
-    rclpy.init()
-    move_turtlebot = ROS_move(velo,"robot1")
-    # move_turtlebot2 = ROS_move(velo2,"robot2")
-    # rclpy.spin()
-    try:
-        while rclpy.ok():
-            rclpy.spin_once(move_turtlebot)#, timeout_sec=0.1)
-            # rclpy.spin_once(move_turtlebot2, timeout_sec=0.1)
-    except KeyboardInterrupt:
-        pass
-    finally:
-        move_turtlebot.destroy_node()
-        # move_turtlebot2.destroy_node()
-        rclpy.shutdown()
+
+
+    # velo_scaled = [(x * 100, y * 100, z * 100) for x, y, z in velo]
+    # pygame.time.wait(20000)
+    # rclpy.init()
+    # move_turtlebot = ROS_move(velo,"robot1")
+    # # move_turtlebot2 = ROS_move(velo2,"robot2")
+    # # rclpy.spin()
+    # try:
+    #     while rclpy.ok():
+    #         rclpy.spin_once(move_turtlebot)#, timeout_sec=0.1)
+    #         # rclpy.spin_once(move_turtlebot2, timeout_sec=0.1)
+    # except KeyboardInterrupt:
+    #     pass
+    # finally:
+    #     move_turtlebot.destroy_node()
+    #     # move_turtlebot2.destroy_node()
+    #     rclpy.shutdown()
 
 if __name__ == '__main__':
     try:

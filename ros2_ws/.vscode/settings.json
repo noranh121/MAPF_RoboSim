@@ -1,0 +1,5 @@
+{
+    "python.analysis.extraPaths": [
+        "./src/Implementation-of-A-star-algorithm-for-path-planning-of-Turtlebot-in-an-obstacle-environment/a_star_tb3/launch"
+    ]
+}
