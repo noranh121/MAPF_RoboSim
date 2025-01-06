@@ -96,16 +96,16 @@ class A_star:
 
     def check_obstacles(self, d):
         obstacles = OrderedSet()
-        for x in np.arange(0, 6.1, 0.01):
-            for y in np.arange(0, 2.1, 0.01):
-                if (x >= (1.5 - d) and y >= (0.75-d) and x <= (1.65 + d) and y <= 2):
-                    obstacles.add((np.round(x, 2), np.round(y, 2)))
-                if (x >= (2.5 - d) and y >= 0 and x <= (2.65 + d) and y <= (1.25 + d)):
-                    obstacles.add((np.round(x, 2), np.round(y, 2)))
-                if ((x-4)**2 + (y-1.1)**2 - (0.5+d)**2) <= 0:
-                    obstacles.add((np.round(x, 2), np.round(y, 2)))
-                if (x >= (6-d) or y >= (2-d) or x <= d or y <= d):
-                    obstacles.add((np.round(x, 2), np.round(y, 2)))
+        # for x in np.arange(0, 6.1, 0.01):
+        #     for y in np.arange(0, 2.1, 0.01):
+        #         if (x >= (1.5 - d) and y >= (0.75-d) and x <= (1.65 + d) and y <= 2):
+        #             obstacles.add((np.round(x, 2), np.round(y, 2)))
+        #         if (x >= (2.5 - d) and y >= 0 and x <= (2.65 + d) and y <= (1.25 + d)):
+        #             obstacles.add((np.round(x, 2), np.round(y, 2)))
+        #         if ((x-4)**2 + (y-1.1)**2 - (0.5+d)**2) <= 0:
+        #             obstacles.add((np.round(x, 2), np.round(y, 2)))
+        #         if (x >= (6-d) or y >= (2-d) or x <= d or y <= d):
+        #             obstacles.add((np.round(x, 2), np.round(y, 2)))
         return obstacles
 
     def input_start(self, str):
@@ -321,7 +321,7 @@ def main():
     print('Given Inputs', args)
     astar = A_star()
     velo = astar.a_star(args.goal_x, args.goal_y,
-                      args.start_x, args.start_y, args.RPM1*3, args.RPM2*3, args.clearance,"robot1")
+                      args.start_x, args.start_y, args.RPM1, args.RPM2, args.clearance,"robot1")
     # velo2 = astar.a_star(args.goal_x, args.goal_y-0.25,
     #                   -0.25, 0.6, args.RPM1, args.RPM2, args.clearance,"robot2")
     # velo=[(0.1382300767579509, 0.0, 0.0)
@@ -405,10 +405,10 @@ def main():
     rclpy.init()
     move_turtlebot = ROS_move(velo,"robot1")
     # move_turtlebot2 = ROS_move(velo2,"robot2")
-
+    # rclpy.spin()
     try:
         while rclpy.ok():
-            rclpy.spin_once(move_turtlebot, timeout_sec=0.1)
+            rclpy.spin_once(move_turtlebot)#, timeout_sec=0.1)
             # rclpy.spin_once(move_turtlebot2, timeout_sec=0.1)
     except KeyboardInterrupt:
         pass

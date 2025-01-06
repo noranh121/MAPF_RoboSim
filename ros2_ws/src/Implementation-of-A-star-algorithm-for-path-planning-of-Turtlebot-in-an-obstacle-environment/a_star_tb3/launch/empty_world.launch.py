@@ -42,7 +42,7 @@ def generate_launch_description():
         'urdf',
         urdf_file_name)
     
-    sdf_path = "/opt/ros/humble/share/turtlebot3_gazebo/models/turtlebot3_burger/model.sdf"
+    sdf_path = "/opt/ros/galactic/share/turtlebot3_gazebo/models/turtlebot3_burger/model.sdf"
 
     with open(urdf_path, 'r') as infp:
         robot_desc = infp.read()
@@ -85,8 +85,8 @@ def generate_launch_description():
                 name="robot1_burger",
                 executable="robot_state_publisher",
                 output="screen",
-                parameters=[{"use_sim_time": False,
-                             "publish_frequency": 10.0,
+                parameters=[{"use_sim_time": True,
+                             #"publish_frequency": 10.0,
                              'robot_description': robot_desc}],
                 remappings=remappings,
                 #arguments=[urdf],
@@ -104,9 +104,9 @@ def generate_launch_description():
                     "-robot_namespace",
                     "robot1",
                     "-x",
-                    "0.0",
+                    x_pose,
                     "-y",
-                    "0.25",
+                    y_pose,
                 ],
                 output="screen",
             )
@@ -118,7 +118,7 @@ def generate_launch_description():
                 name="robot2_burger",
                 executable="robot_state_publisher",
                 output="screen",
-                parameters=[{"use_sim_time": False,
+                parameters=[{"use_sim_time": True,
                              "publish_frequency": 10.0,
                              'robot_description': robot_desc}],
                 remappings=remappings,
