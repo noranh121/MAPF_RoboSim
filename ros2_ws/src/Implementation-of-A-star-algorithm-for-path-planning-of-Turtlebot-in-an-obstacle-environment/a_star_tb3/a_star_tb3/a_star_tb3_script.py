@@ -24,7 +24,7 @@ Gazebo Video Link - https://drive.google.com/file/d/1zMZkRd9BUZkixb4Scdb6FKqUckA
 
 start_time = time.time()
 
-map_path = map_file_path = '/home/maged/MAPF_RoboSim/ros2_ws/src/Implementation-of-A-star-algorithm-for-path-planning-of-Turtlebot-in-an-obstacle-environment/a_star_tb3/benchmarks/bb.txt'
+map_path = map_file_path = '/home/ahmadaw/MAPF_RoboSim/ros2_ws/src/Implementation-of-A-star-algorithm-for-path-planning-of-Turtlebot-in-an-obstacle-environment/a_star_tb3/benchmarks/bb.txt'
 class A_star:
 
     def convert_map_to_obstacles(self,map_file, cell_size=0.1):
@@ -108,12 +108,11 @@ class A_star:
     def check_obstacles(self, d):
         obstacles = OrderedSet()
         obstacles_positions = self.convert_map_to_obstacles(map_path)
-        print("obstacles_positions ===> ", obstacles_positions)
         for pos in obstacles_positions:
             x, y = pos
-            for obs in self.block_occupancy(x,y,0.1,0.1,0.01):
+            for obs in self.block_occupancy(x,y):
                 _x,_y = obs
-                obstacles.add((np.round(_x, 2), np.round(_x, 2)))
+                obstacles.add((_x,_y))
         # for x in np.arange(0, 4.1, 0.01):
         #     for y in np.arange(0, 4.1, 0.01):
         # #         if (x >= (1.5 - d) and y >= (0.75-d) and x <= (1.65 + d) and y <= 2):
@@ -127,12 +126,11 @@ class A_star:
         return obstacles
     
     #ADDED===========================================================ADDED
-    def block_occupancy(self,center_x, center_y, width, height, threshold):
+    def block_occupancy(self,center_x, center_y, width=0.2, height=0.2, threshold=0.01):
         x_min = center_x - width / 2
         x_max = center_x + width / 2
         y_min = center_y - height / 2
         y_max = center_y + height / 2
-
         # Generate the (x, y) pairs
         x_values = [round(x, 3) for x in self.frange(x_min, x_max, threshold)]
         y_values = [round(y, 3) for y in self.frange(y_min, y_max, threshold)]
@@ -266,13 +264,13 @@ class A_star:
         # d = self.input_cdr('clearance')
         #obstacle_space = self.check_obstacles((d/1000)+r)
         obstacle_space = self.check_obstacles((d/1000)+r)
-        print("Obstacle_space ==> ", obstacle_space)
+        # print("Obstacle_space ==> ", obstacle_space)
         # initial_state = input_start('Start'), input_cdr('start point')
         # initial_state = (initial_state[0][0], initial_state[0][1], initial_state[1])
         initial_state = (startx, starty, 0)
         # node_state_g = input_start('Goal'), input_cdr('goal point')
         # node_state_g = (node_state_g[0][0], node_state_g[0][1], node_state_g[1])
-        node_state_g = (goalx, goaly, 0)
+        node_state_g = (np.round(goalx+r), np.round(goaly+r), 0)
         cost = 0
         closed_list = OrderedSet()
         cg = np.sqrt(
@@ -445,22 +443,22 @@ def main():
     #     ,(0.02953133168998523, 0.09937756105581574, 0.43196898986859655)]
 
 
-    # velo_scaled = [(x * 100, y * 100, z * 100) for x, y, z in velo]
-    # pygame.time.wait(20000)
-    # rclpy.init()
-    # move_turtlebot = ROS_move(velo,"robot1")
-    # # move_turtlebot2 = ROS_move(velo2,"robot2")
-    # # rclpy.spin()
-    # try:
-    #     while rclpy.ok():
-    #         rclpy.spin_once(move_turtlebot)#, timeout_sec=0.1)
-    #         # rclpy.spin_once(move_turtlebot2, timeout_sec=0.1)
-    # except KeyboardInterrupt:
-    #     pass
-    # finally:
-    #     move_turtlebot.destroy_node()
-    #     # move_turtlebot2.destroy_node()
-    #     rclpy.shutdown()
+    velo_scaled = [(x * 2, y * 2, z * 2) for x, y, z in velo]
+    pygame.time.wait(10000)
+    rclpy.init()
+    move_turtlebot = ROS_move(velo,"robot1")
+    # move_turtlebot2 = ROS_move(velo2,"robot2")
+    # rclpy.spin()
+    try:
+        while rclpy.ok():
+            rclpy.spin_once(move_turtlebot)#, timeout_sec=0.1)
+            # rclpy.spin_once(move_turtlebot2, timeout_sec=0.1)
+    except KeyboardInterrupt:
+        pass
+    finally:
+        move_turtlebot.destroy_node()
+        # move_turtlebot2.destroy_node()
+        rclpy.shutdown()
 
 if __name__ == '__main__':
     try:
