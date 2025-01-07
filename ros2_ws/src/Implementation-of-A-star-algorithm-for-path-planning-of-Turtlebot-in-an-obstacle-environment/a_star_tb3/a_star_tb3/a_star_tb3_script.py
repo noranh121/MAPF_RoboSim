@@ -24,7 +24,7 @@ Gazebo Video Link - https://drive.google.com/file/d/1zMZkRd9BUZkixb4Scdb6FKqUckA
 
 start_time = time.time()
 
-map_path = map_file_path = '/home/ahmadaw/MAPF_RoboSim/ros2_ws/src/Implementation-of-A-star-algorithm-for-path-planning-of-Turtlebot-in-an-obstacle-environment/a_star_tb3/benchmarks/bb.txt'
+map_path = map_file_path = '/home/maged/MAPF_RoboSim/ros2_ws/src/Implementation-of-A-star-algorithm-for-path-planning-of-Turtlebot-in-an-obstacle-environment/a_star_tb3/benchmarks/bb.txt'
 class A_star:
 
     def convert_map_to_obstacles(self,map_file, cell_size=0.1):
@@ -37,6 +37,7 @@ class A_star:
             for x, cell in enumerate(row):
                 if cell == '@':
                     obstacles.add((np.round(x*cell_size, 2), np.round(y*cell_size, 2)))
+                    #print(f"Block Postion ==> x:{np.round(x*cell_size, 2)}, y:{np.round(y*cell_size, 2)}")
         return obstacles
 
     # Function to flip the co-ordinate points
@@ -126,6 +127,26 @@ class A_star:
         return obstacles
     
     #ADDED===========================================================ADDED
+    def is_point_in_any_block(self, x_tocheck, y_tocheck):
+        for x_center, y_center in obstacle_space:
+            if self.is_point_within_block(x_center, y_center, x_tocheck, y_tocheck,0.2):
+                return True
+        return False
+    
+    def is_point_within_block(self,x_center, y_center, x_tocheck, y_tocheck, half_length=0.05):
+        #half_length = 0.05  # Half the side length (10 cm / 2)
+        x_min = x_center - half_length
+        x_max = x_center + half_length
+        y_min = y_center - half_length
+        y_max = y_center + half_length
+
+        # Check if the point lies within the block's boundaries
+        if x_min <= x_tocheck <= x_max and y_min <= y_tocheck <= y_max:
+            return True
+        return False
+    
+
+
     def block_occupancy(self,center_x, center_y, width=0.2, height=0.2, threshold=0.01):
         x_min = center_x - width / 2
         x_max = center_x + width / 2
@@ -183,7 +204,9 @@ class A_star:
         elif Thetan <= -360:
             Thetan = Thetan % 360 + 360
         current_pos = (X_n, Y_n, np.round(Thetan, 2))
-        if (current_pos[0], current_pos[1]) not in obstacle_space:
+        #print(f"current_pis ======> x:{current_pos[0]} , y:{current_pos[1]}")
+        if not self.is_point_in_any_block(current_pos[0],current_pos[1]):
+        #(current_pos[0], current_pos[1]) not in obstacle_space:
             if current_pos in queue_nodes:
                 if queue_nodes[current_pos][0] > final_cost:
                     queue_nodes[current_pos] = final_cost, cost2_go, cc
@@ -199,7 +222,7 @@ class A_star:
 
     def Actions(self, ul, ur, pos, c2c):
         t = 0
-        dt = 1
+        dt = 0.2
         Xn = pos[0]
         Yn = pos[1]
         Thetan = np.deg2rad(pos[2])
@@ -262,8 +285,8 @@ class A_star:
         R = 0.033
         L = 0.16
         # d = self.input_cdr('clearance')
+        obstacle_space = self.convert_map_to_obstacles(map_path)
         #obstacle_space = self.check_obstacles((d/1000)+r)
-        obstacle_space = self.check_obstacles((d/1000)+r)
         # print("Obstacle_space ==> ", obstacle_space)
         # initial_state = input_start('Start'), input_cdr('start point')
         # initial_state = (initial_state[0][0], initial_state[0][1], initial_state[1])
@@ -292,6 +315,8 @@ class A_star:
                         self.Actions(i[0], i[1], position, cc)
                 else:
                     print("Goal reached")
+                    print("path_dict ==> ", path_dict)
+                    print("queue_pop ==> ", queue_pop)
                     back_track, velocity_path = self.back_tracking(
                         path_dict, queue_pop)
                     end_time = time.time()
@@ -444,7 +469,7 @@ def main():
 
 
     velo_scaled = [(x * 2, y * 2, z * 2) for x, y, z in velo]
-    pygame.time.wait(10000)
+    #pygame.time.wait(5000)
     rclpy.init()
     move_turtlebot = ROS_move(velo,"robot1")
     # move_turtlebot2 = ROS_move(velo2,"robot2")
