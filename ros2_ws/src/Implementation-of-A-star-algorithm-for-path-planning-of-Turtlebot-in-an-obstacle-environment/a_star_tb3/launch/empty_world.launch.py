@@ -54,7 +54,7 @@ def generate_launch_description():
     world = os.path.join(
         get_package_share_directory('a_star_tb3'),
         'worlds',
-        'benchmark.world'
+        'bb.world'
     )
 
     gzserver_cmd = IncludeLaunchDescription(
@@ -93,23 +93,46 @@ def generate_launch_description():
             )
     
 
-    spawn_turtlebot_cmd = Node(
-                package="gazebo_ros",
-                executable="spawn_entity.py",
-                arguments=[
-                    "-file",
-                    sdf_path,
-                    "-entity",
-                    "robot1_burger",
-                    "-robot_namespace",
-                    "robot1",
-                    "-x",
-                    x_pose,
-                    "-y",
-                    y_pose,
-                ],
-                output="screen",
-            )
+    # spawn_turtlebot_cmd = Node(
+    #             package="gazebo_ros",
+    #             executable="spawn_entity.py",
+    #             arguments=[
+    #                 "-file",
+    #                 sdf_path,
+    #                 "-entity",
+    #                 "robot1_burger",
+    #                 "-robot_namespace",
+    #                 "robot1",
+    #                 "-x",
+    #                 x_pose,
+    #                 "-y",
+    #                 y_pose,
+    #             ],
+    #             output="screen",
+    #         )
+
+    spawn_turtlebot_cmd = TimerAction(
+    period=100.0,  # Adjust this value for the delay (in seconds)
+    actions=[
+        Node(
+            package="gazebo_ros",
+            executable="spawn_entity.py",
+            arguments=[
+                "-file",
+                sdf_path,
+                "-entity",
+                "robot1_burger",
+                "-robot_namespace",
+                "robot1",
+                "-x",
+                x_pose,
+                "-y",
+                y_pose,
+            ],
+            output="screen",
+        ),
+    ],
+)
     
 
     robot_state_publisher_cmd2 = Node(
@@ -200,8 +223,6 @@ def generate_launch_description():
         arguments = [LaunchConfiguration('--goal_x'), LaunchConfiguration('--goal_y'), LaunchConfiguration('--start_x'), LaunchConfiguration('--start_y'),
                     LaunchConfiguration('--RPM1'), LaunchConfiguration('--RPM2'), LaunchConfiguration('--clearance')  ],
     ), ])
-
-   
 
     ld = LaunchDescription()
 
