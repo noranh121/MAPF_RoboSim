@@ -19,6 +19,7 @@
             </spot>
         </light>
         <model name="ground_plane">
+            <static>1</static>
             <pose>0 0 0 0 0 0</pose>
             <link name="link">
                 <collision name="collision">
@@ -28,17 +29,55 @@
                             <size>100 100</size>
                         </plane>
                     </geometry>
+                    <surface>
+                        <friction>
+                            <ode>
+                                <mu>100</mu>
+                                <mu2>50</mu2>
+                            </ode>
+                        </friction>
+                    </surface>
+                    <max_contacts>10</max_contacts>
                 </collision>
                 <visual name="visual">
+                    <cast_shadows>0</cast_shadows>
                     <geometry>
                         <plane>
                             <normal>0 0 1</normal>
                             <size>100 100</size>
                         </plane>
                     </geometry>
+                    <material>
+                        <script>
+                            <uri>file://media/materials/scripts/gazebo.material</uri>
+                            <name>Gazebo/Grey</name>
+                        </script>
+                    </material>
                 </visual>
+                <self_collide>0</self_collide>
+                <enable_wind>0</enable_wind>
+                <kinematic>0</kinematic>
             </link>
         </model>
+        <gravity>0 0 -9.8</gravity>
+        <magnetic_field>6e-06 2.3e-05 -4.2e-05</magnetic_field>
+        <atmosphere type="adiabatic" />
+        <physics type="ode">
+            <max_step_size>0.001</max_step_size>
+            <real_time_factor>1</real_time_factor>
+            <real_time_update_rate>1000</real_time_update_rate>
+        </physics>
+        <scene>
+            <ambient>0.4 0.4 0.4 1</ambient>
+            <background>0.7 0.7 0.7 1</background>
+            <shadows>1</shadows>
+        </scene>
+        <spherical_coordinates>
+            <surface_model>EARTH_WGS84</surface_model>
+            <latitude_deg>0</latitude_deg>
+            <elevation>0</elevation>
+            <heading_deg>0</heading_deg>
+        </spherical_coordinates>
         <model name="block_0_1">
             <pose>0.0 0.1 0.15000000000000002 0 0 0</pose>
             <link name="link">
@@ -55,13 +94,6 @@
                             <size>0.1 0.1 0.30000000000000004</size>
                         </box>
                     </geometry>
-                    <material>
-                        <script>
-                            <uri>file://media/materials/scripts/gazebo.material</uri>
-                            <name>Gazebo/Grey</name>
-                        </script>
-                        <ambient>0.5 0.5 0.5 1</ambient>
-                    </material>
                 </visual>
             </link>
         </model>
@@ -81,13 +113,6 @@
                             <size>0.1 0.1 0.30000000000000004</size>
                         </box>
                     </geometry>
-                    <material>
-                        <script>
-                            <uri>file://media/materials/scripts/gazebo.material</uri>
-                            <name>Gazebo/Grey</name>
-                        </script>
-                        <ambient>0.5 0.5 0.5 1</ambient>
-                    </material>
                 </visual>
             </link>
         </model>
@@ -107,13 +132,6 @@
                             <size>0.1 0.1 0.30000000000000004</size>
                         </box>
                     </geometry>
-                    <material>
-                        <script>
-                            <uri>file://media/materials/scripts/gazebo.material</uri>
-                            <name>Gazebo/Grey</name>
-                        </script>
-                        <ambient>0.5 0.5 0.5 1</ambient>
-                    </material>
                 </visual>
             </link>
         </model>
@@ -133,13 +151,6 @@
                             <size>0.1 0.1 0.30000000000000004</size>
                         </box>
                     </geometry>
-                    <material>
-                        <script>
-                            <uri>file://media/materials/scripts/gazebo.material</uri>
-                            <name>Gazebo/Grey</name>
-                        </script>
-                        <ambient>0.5 0.5 0.5 1</ambient>
-                    </material>
                 </visual>
             </link>
         </model>
@@ -159,13 +170,6 @@
                             <size>0.1 0.1 0.30000000000000004</size>
                         </box>
                     </geometry>
-                    <material>
-                        <script>
-                            <uri>file://media/materials/scripts/gazebo.material</uri>
-                            <name>Gazebo/Grey</name>
-                        </script>
-                        <ambient>0.5 0.5 0.5 1</ambient>
-                    </material>
                 </visual>
             </link>
         </model>
@@ -185,13 +189,6 @@
                             <size>0.1 0.1 0.30000000000000004</size>
                         </box>
                     </geometry>
-                    <material>
-                        <script>
-                            <uri>file://media/materials/scripts/gazebo.material</uri>
-                            <name>Gazebo/Grey</name>
-                        </script>
-                        <ambient>0.5 0.5 0.5 1</ambient>
-                    </material>
                 </visual>
             </link>
         </model>
@@ -211,13 +208,6 @@
                             <size>0.1 0.1 0.30000000000000004</size>
                         </box>
                     </geometry>
-                    <material>
-                        <script>
-                            <uri>file://media/materials/scripts/gazebo.material</uri>
-                            <name>Gazebo/Grey</name>
-                        </script>
-                        <ambient>0.5 0.5 0.5 1</ambient>
-                    </material>
                 </visual>
             </link>
         </model>
@@ -237,13 +227,6 @@
                             <size>0.1 0.1 0.30000000000000004</size>
                         </box>
                     </geometry>
-                    <material>
-                        <script>
-                            <uri>file://media/materials/scripts/gazebo.material</uri>
-                            <name>Gazebo/Grey</name>
-                        </script>
-                        <ambient>0.5 0.5 0.5 1</ambient>
-                    </material>
                 </visual>
             </link>
         </model>
@@ -263,13 +246,6 @@
                             <size>0.1 0.1 0.30000000000000004</size>
                         </box>
                     </geometry>
-                    <material>
-                        <script>
-                            <uri>file://media/materials/scripts/gazebo.material</uri>
-                            <name>Gazebo/Grey</name>
-                        </script>
-                        <ambient>0.5 0.5 0.5 1</ambient>
-                    </material>
                 </visual>
             </link>
         </model>
@@ -289,13 +265,6 @@
                             <size>0.1 0.1 0.30000000000000004</size>
                         </box>
                     </geometry>
-                    <material>
-                        <script>
-                            <uri>file://media/materials/scripts/gazebo.material</uri>
-                            <name>Gazebo/Grey</name>
-                        </script>
-                        <ambient>0.5 0.5 0.5 1</ambient>
-                    </material>
                 </visual>
             </link>
         </model>
@@ -315,13 +284,6 @@
                             <size>0.1 0.1 0.30000000000000004</size>
                         </box>
                     </geometry>
-                    <material>
-                        <script>
-                            <uri>file://media/materials/scripts/gazebo.material</uri>
-                            <name>Gazebo/Grey</name>
-                        </script>
-                        <ambient>0.5 0.5 0.5 1</ambient>
-                    </material>
                 </visual>
             </link>
         </model>
@@ -341,13 +303,6 @@
                             <size>0.1 0.1 0.30000000000000004</size>
                         </box>
                     </geometry>
-                    <material>
-                        <script>
-                            <uri>file://media/materials/scripts/gazebo.material</uri>
-                            <name>Gazebo/Grey</name>
-                        </script>
-                        <ambient>0.5 0.5 0.5 1</ambient>
-                    </material>
                 </visual>
             </link>
         </model>
@@ -367,13 +322,6 @@
                             <size>0.1 0.1 0.30000000000000004</size>
                         </box>
                     </geometry>
-                    <material>
-                        <script>
-                            <uri>file://media/materials/scripts/gazebo.material</uri>
-                            <name>Gazebo/Grey</name>
-                        </script>
-                        <ambient>0.5 0.5 0.5 1</ambient>
-                    </material>
                 </visual>
             </link>
         </model>
@@ -393,13 +341,6 @@
                             <size>0.1 0.1 0.30000000000000004</size>
                         </box>
                     </geometry>
-                    <material>
-                        <script>
-                            <uri>file://media/materials/scripts/gazebo.material</uri>
-                            <name>Gazebo/Grey</name>
-                        </script>
-                        <ambient>0.5 0.5 0.5 1</ambient>
-                    </material>
                 </visual>
             </link>
         </model>
@@ -419,13 +360,6 @@
                             <size>0.1 0.1 0.30000000000000004</size>
                         </box>
                     </geometry>
-                    <material>
-                        <script>
-                            <uri>file://media/materials/scripts/gazebo.material</uri>
-                            <name>Gazebo/Grey</name>
-                        </script>
-                        <ambient>0.5 0.5 0.5 1</ambient>
-                    </material>
                 </visual>
             </link>
         </model>
@@ -445,13 +379,6 @@
                             <size>0.1 0.1 0.30000000000000004</size>
                         </box>
                     </geometry>
-                    <material>
-                        <script>
-                            <uri>file://media/materials/scripts/gazebo.material</uri>
-                            <name>Gazebo/Grey</name>
-                        </script>
-                        <ambient>0.5 0.5 0.5 1</ambient>
-                    </material>
                 </visual>
             </link>
         </model>
@@ -471,13 +398,6 @@
                             <size>0.1 0.1 0.30000000000000004</size>
                         </box>
                     </geometry>
-                    <material>
-                        <script>
-                            <uri>file://media/materials/scripts/gazebo.material</uri>
-                            <name>Gazebo/Grey</name>
-                        </script>
-                        <ambient>0.5 0.5 0.5 1</ambient>
-                    </material>
                 </visual>
             </link>
         </model>
@@ -497,13 +417,6 @@
                             <size>0.1 0.1 0.30000000000000004</size>
                         </box>
                     </geometry>
-                    <material>
-                        <script>
-                            <uri>file://media/materials/scripts/gazebo.material</uri>
-                            <name>Gazebo/Grey</name>
-                        </script>
-                        <ambient>0.5 0.5 0.5 1</ambient>
-                    </material>
                 </visual>
             </link>
         </model>
@@ -523,13 +436,6 @@
                             <size>0.1 0.1 0.30000000000000004</size>
                         </box>
                     </geometry>
-                    <material>
-                        <script>
-                            <uri>file://media/materials/scripts/gazebo.material</uri>
-                            <name>Gazebo/Grey</name>
-                        </script>
-                        <ambient>0.5 0.5 0.5 1</ambient>
-                    </material>
                 </visual>
             </link>
         </model>
@@ -549,13 +455,6 @@
                             <size>0.1 0.1 0.30000000000000004</size>
                         </box>
                     </geometry>
-                    <material>
-                        <script>
-                            <uri>file://media/materials/scripts/gazebo.material</uri>
-                            <name>Gazebo/Grey</name>
-                        </script>
-                        <ambient>0.5 0.5 0.5 1</ambient>
-                    </material>
                 </visual>
             </link>
         </model>
@@ -575,13 +474,6 @@
                             <size>0.1 0.1 0.30000000000000004</size>
                         </box>
                     </geometry>
-                    <material>
-                        <script>
-                            <uri>file://media/materials/scripts/gazebo.material</uri>
-                            <name>Gazebo/Grey</name>
-                        </script>
-                        <ambient>0.5 0.5 0.5 1</ambient>
-                    </material>
                 </visual>
             </link>
         </model>
@@ -601,13 +493,6 @@
                             <size>0.1 0.1 0.30000000000000004</size>
                         </box>
                     </geometry>
-                    <material>
-                        <script>
-                            <uri>file://media/materials/scripts/gazebo.material</uri>
-                            <name>Gazebo/Grey</name>
-                        </script>
-                        <ambient>0.5 0.5 0.5 1</ambient>
-                    </material>
                 </visual>
             </link>
         </model>
@@ -627,13 +512,6 @@
                             <size>0.1 0.1 0.30000000000000004</size>
                         </box>
                     </geometry>
-                    <material>
-                        <script>
-                            <uri>file://media/materials/scripts/gazebo.material</uri>
-                            <name>Gazebo/Grey</name>
-                        </script>
-                        <ambient>0.5 0.5 0.5 1</ambient>
-                    </material>
                 </visual>
             </link>
         </model>
@@ -653,13 +531,6 @@
                             <size>0.1 0.1 0.30000000000000004</size>
                         </box>
                     </geometry>
-                    <material>
-                        <script>
-                            <uri>file://media/materials/scripts/gazebo.material</uri>
-                            <name>Gazebo/Grey</name>
-                        </script>
-                        <ambient>0.5 0.5 0.5 1</ambient>
-                    </material>
                 </visual>
             </link>
         </model>
@@ -679,13 +550,6 @@
                             <size>0.1 0.1 0.30000000000000004</size>
                         </box>
                     </geometry>
-                    <material>
-                        <script>
-                            <uri>file://media/materials/scripts/gazebo.material</uri>
-                            <name>Gazebo/Grey</name>
-                        </script>
-                        <ambient>0.5 0.5 0.5 1</ambient>
-                    </material>
                 </visual>
             </link>
         </model>
@@ -705,13 +569,6 @@
                             <size>0.1 0.1 0.30000000000000004</size>
                         </box>
                     </geometry>
-                    <material>
-                        <script>
-                            <uri>file://media/materials/scripts/gazebo.material</uri>
-                            <name>Gazebo/Grey</name>
-                        </script>
-                        <ambient>0.5 0.5 0.5 1</ambient>
-                    </material>
                 </visual>
             </link>
         </model>
@@ -731,13 +588,6 @@
                             <size>0.1 0.1 0.30000000000000004</size>
                         </box>
                     </geometry>
-                    <material>
-                        <script>
-                            <uri>file://media/materials/scripts/gazebo.material</uri>
-                            <name>Gazebo/Grey</name>
-                        </script>
-                        <ambient>0.5 0.5 0.5 1</ambient>
-                    </material>
                 </visual>
             </link>
         </model>
@@ -757,13 +607,6 @@
                             <size>0.1 0.1 0.30000000000000004</size>
                         </box>
                     </geometry>
-                    <material>
-                        <script>
-                            <uri>file://media/materials/scripts/gazebo.material</uri>
-                            <name>Gazebo/Grey</name>
-                        </script>
-                        <ambient>0.5 0.5 0.5 1</ambient>
-                    </material>
                 </visual>
             </link>
         </model>
@@ -783,13 +626,6 @@
                             <size>0.1 0.1 0.30000000000000004</size>
                         </box>
                     </geometry>
-                    <material>
-                        <script>
-                            <uri>file://media/materials/scripts/gazebo.material</uri>
-                            <name>Gazebo/Grey</name>
-                        </script>
-                        <ambient>0.5 0.5 0.5 1</ambient>
-                    </material>
                 </visual>
             </link>
         </model>
@@ -809,13 +645,6 @@
                             <size>0.1 0.1 0.30000000000000004</size>
                         </box>
                     </geometry>
-                    <material>
-                        <script>
-                            <uri>file://media/materials/scripts/gazebo.material</uri>
-                            <name>Gazebo/Grey</name>
-                        </script>
-                        <ambient>0.5 0.5 0.5 1</ambient>
-                    </material>
                 </visual>
             </link>
         </model>
@@ -835,13 +664,6 @@
                             <size>0.1 0.1 0.30000000000000004</size>
                         </box>
                     </geometry>
-                    <material>
-                        <script>
-                            <uri>file://media/materials/scripts/gazebo.material</uri>
-                            <name>Gazebo/Grey</name>
-                        </script>
-                        <ambient>0.5 0.5 0.5 1</ambient>
-                    </material>
                 </visual>
             </link>
         </model>
@@ -861,13 +683,6 @@
                             <size>0.1 0.1 0.30000000000000004</size>
                         </box>
                     </geometry>
-                    <material>
-                        <script>
-                            <uri>file://media/materials/scripts/gazebo.material</uri>
-                            <name>Gazebo/Grey</name>
-                        </script>
-                        <ambient>0.5 0.5 0.5 1</ambient>
-                    </material>
                 </visual>
             </link>
         </model>
@@ -887,13 +702,6 @@
                             <size>0.1 0.1 0.30000000000000004</size>
                         </box>
                     </geometry>
-                    <material>
-                        <script>
-                            <uri>file://media/materials/scripts/gazebo.material</uri>
-                            <name>Gazebo/Grey</name>
-                        </script>
-                        <ambient>0.5 0.5 0.5 1</ambient>
-                    </material>
                 </visual>
             </link>
         </model>
@@ -913,13 +721,6 @@
                             <size>0.1 0.1 0.30000000000000004</size>
                         </box>
                     </geometry>
-                    <material>
-                        <script>
-                            <uri>file://media/materials/scripts/gazebo.material</uri>
-                            <name>Gazebo/Grey</name>
-                        </script>
-                        <ambient>0.5 0.5 0.5 1</ambient>
-                    </material>
                 </visual>
             </link>
         </model>
@@ -939,13 +740,6 @@
                             <size>0.1 0.1 0.30000000000000004</size>
                         </box>
                     </geometry>
-                    <material>
-                        <script>
-                            <uri>file://media/materials/scripts/gazebo.material</uri>
-                            <name>Gazebo/Grey</name>
-                        </script>
-                        <ambient>0.5 0.5 0.5 1</ambient>
-                    </material>
                 </visual>
             </link>
         </model>
@@ -965,13 +759,6 @@
                             <size>0.1 0.1 0.30000000000000004</size>
                         </box>
                     </geometry>
-                    <material>
-                        <script>
-                            <uri>file://media/materials/scripts/gazebo.material</uri>
-                            <name>Gazebo/Grey</name>
-                        </script>
-                        <ambient>0.5 0.5 0.5 1</ambient>
-                    </material>
                 </visual>
             </link>
         </model>
@@ -991,13 +778,6 @@
                             <size>0.1 0.1 0.30000000000000004</size>
                         </box>
                     </geometry>
-                    <material>
-                        <script>
-                            <uri>file://media/materials/scripts/gazebo.material</uri>
-                            <name>Gazebo/Grey</name>
-                        </script>
-                        <ambient>0.5 0.5 0.5 1</ambient>
-                    </material>
                 </visual>
             </link>
         </model>
@@ -1017,13 +797,6 @@
                             <size>0.1 0.1 0.30000000000000004</size>
                         </box>
                     </geometry>
-                    <material>
-                        <script>
-                            <uri>file://media/materials/scripts/gazebo.material</uri>
-                            <name>Gazebo/Grey</name>
-                        </script>
-                        <ambient>0.5 0.5 0.5 1</ambient>
-                    </material>
                 </visual>
             </link>
         </model>
@@ -1043,13 +816,6 @@
                             <size>0.1 0.1 0.30000000000000004</size>
                         </box>
                     </geometry>
-                    <material>
-                        <script>
-                            <uri>file://media/materials/scripts/gazebo.material</uri>
-                            <name>Gazebo/Grey</name>
-                        </script>
-                        <ambient>0.5 0.5 0.5 1</ambient>
-                    </material>
                 </visual>
             </link>
         </model>
@@ -1069,13 +835,6 @@
                             <size>0.1 0.1 0.30000000000000004</size>
                         </box>
                     </geometry>
-                    <material>
-                        <script>
-                            <uri>file://media/materials/scripts/gazebo.material</uri>
-                            <name>Gazebo/Grey</name>
-                        </script>
-                        <ambient>0.5 0.5 0.5 1</ambient>
-                    </material>
                 </visual>
             </link>
         </model>
@@ -1095,13 +854,6 @@
                             <size>0.1 0.1 0.30000000000000004</size>
                         </box>
                     </geometry>
-                    <material>
-                        <script>
-                            <uri>file://media/materials/scripts/gazebo.material</uri>
-                            <name>Gazebo/Grey</name>
-                        </script>
-                        <ambient>0.5 0.5 0.5 1</ambient>
-                    </material>
                 </visual>
             </link>
         </model>
@@ -1121,13 +873,6 @@
                             <size>0.1 0.1 0.30000000000000004</size>
                         </box>
                     </geometry>
-                    <material>
-                        <script>
-                            <uri>file://media/materials/scripts/gazebo.material</uri>
-                            <name>Gazebo/Grey</name>
-                        </script>
-                        <ambient>0.5 0.5 0.5 1</ambient>
-                    </material>
                 </visual>
             </link>
         </model>
@@ -1147,13 +892,6 @@
                             <size>0.1 0.1 0.30000000000000004</size>
                         </box>
                     </geometry>
-                    <material>
-                        <script>
-                            <uri>file://media/materials/scripts/gazebo.material</uri>
-                            <name>Gazebo/Grey</name>
-                        </script>
-                        <ambient>0.5 0.5 0.5 1</ambient>
-                    </material>
                 </visual>
             </link>
         </model>
@@ -1173,13 +911,6 @@
                             <size>0.1 0.1 0.30000000000000004</size>
                         </box>
                     </geometry>
-                    <material>
-                        <script>
-                            <uri>file://media/materials/scripts/gazebo.material</uri>
-                            <name>Gazebo/Grey</name>
-                        </script>
-                        <ambient>0.5 0.5 0.5 1</ambient>
-                    </material>
                 </visual>
             </link>
         </model>
@@ -1199,13 +930,6 @@
                             <size>0.1 0.1 0.30000000000000004</size>
                         </box>
                     </geometry>
-                    <material>
-                        <script>
-                            <uri>file://media/materials/scripts/gazebo.material</uri>
-                            <name>Gazebo/Grey</name>
-                        </script>
-                        <ambient>0.5 0.5 0.5 1</ambient>
-                    </material>
                 </visual>
             </link>
         </model>
@@ -1225,13 +949,6 @@
                             <size>0.1 0.1 0.30000000000000004</size>
                         </box>
                     </geometry>
-                    <material>
-                        <script>
-                            <uri>file://media/materials/scripts/gazebo.material</uri>
-                            <name>Gazebo/Grey</name>
-                        </script>
-                        <ambient>0.5 0.5 0.5 1</ambient>
-                    </material>
                 </visual>
             </link>
         </model>
@@ -1251,13 +968,6 @@
                             <size>0.1 0.1 0.30000000000000004</size>
                         </box>
                     </geometry>
-                    <material>
-                        <script>
-                            <uri>file://media/materials/scripts/gazebo.material</uri>
-                            <name>Gazebo/Grey</name>
-                        </script>
-                        <ambient>0.5 0.5 0.5 1</ambient>
-                    </material>
                 </visual>
             </link>
         </model>
@@ -1277,13 +987,6 @@
                             <size>0.1 0.1 0.30000000000000004</size>
                         </box>
                     </geometry>
-                    <material>
-                        <script>
-                            <uri>file://media/materials/scripts/gazebo.material</uri>
-                            <name>Gazebo/Grey</name>
-                        </script>
-                        <ambient>0.5 0.5 0.5 1</ambient>
-                    </material>
                 </visual>
             </link>
         </model>
@@ -1303,13 +1006,6 @@
                             <size>0.1 0.1 0.30000000000000004</size>
                         </box>
                     </geometry>
-                    <material>
-                        <script>
-                            <uri>file://media/materials/scripts/gazebo.material</uri>
-                            <name>Gazebo/Grey</name>
-                        </script>
-                        <ambient>0.5 0.5 0.5 1</ambient>
-                    </material>
                 </visual>
             </link>
         </model>
@@ -1329,13 +1025,6 @@
                             <size>0.1 0.1 0.30000000000000004</size>
                         </box>
                     </geometry>
-                    <material>
-                        <script>
-                            <uri>file://media/materials/scripts/gazebo.material</uri>
-                            <name>Gazebo/Grey</name>
-                        </script>
-                        <ambient>0.5 0.5 0.5 1</ambient>
-                    </material>
                 </visual>
             </link>
         </model>
@@ -1355,13 +1044,6 @@
                             <size>0.1 0.1 0.30000000000000004</size>
                         </box>
                     </geometry>
-                    <material>
-                        <script>
-                            <uri>file://media/materials/scripts/gazebo.material</uri>
-                            <name>Gazebo/Grey</name>
-                        </script>
-                        <ambient>0.5 0.5 0.5 1</ambient>
-                    </material>
                 </visual>
             </link>
         </model>
@@ -1381,13 +1063,6 @@
                             <size>0.1 0.1 0.30000000000000004</size>
                         </box>
                     </geometry>
-                    <material>
-                        <script>
-                            <uri>file://media/materials/scripts/gazebo.material</uri>
-                            <name>Gazebo/Grey</name>
-                        </script>
-                        <ambient>0.5 0.5 0.5 1</ambient>
-                    </material>
                 </visual>
             </link>
         </model>
@@ -1407,13 +1082,6 @@
                             <size>0.1 0.1 0.30000000000000004</size>
                         </box>
                     </geometry>
-                    <material>
-                        <script>
-                            <uri>file://media/materials/scripts/gazebo.material</uri>
-                            <name>Gazebo/Grey</name>
-                        </script>
-                        <ambient>0.5 0.5 0.5 1</ambient>
-                    </material>
                 </visual>
             </link>
         </model>
@@ -1433,13 +1101,6 @@
                             <size>0.1 0.1 0.30000000000000004</size>
                         </box>
                     </geometry>
-                    <material>
-                        <script>
-                            <uri>file://media/materials/scripts/gazebo.material</uri>
-                            <name>Gazebo/Grey</name>
-                        </script>
-                        <ambient>0.5 0.5 0.5 1</ambient>
-                    </material>
                 </visual>
             </link>
         </model>
@@ -1459,13 +1120,6 @@
                             <size>0.1 0.1 0.30000000000000004</size>
                         </box>
                     </geometry>
-                    <material>
-                        <script>
-                            <uri>file://media/materials/scripts/gazebo.material</uri>
-                            <name>Gazebo/Grey</name>
-                        </script>
-                        <ambient>0.5 0.5 0.5 1</ambient>
-                    </material>
                 </visual>
             </link>
         </model>
@@ -1485,13 +1139,6 @@
                             <size>0.1 0.1 0.30000000000000004</size>
                         </box>
                     </geometry>
-                    <material>
-                        <script>
-                            <uri>file://media/materials/scripts/gazebo.material</uri>
-                            <name>Gazebo/Grey</name>
-                        </script>
-                        <ambient>0.5 0.5 0.5 1</ambient>
-                    </material>
                 </visual>
             </link>
         </model>
@@ -1511,13 +1158,6 @@
                             <size>0.1 0.1 0.30000000000000004</size>
                         </box>
                     </geometry>
-                    <material>
-                        <script>
-                            <uri>file://media/materials/scripts/gazebo.material</uri>
-                            <name>Gazebo/Grey</name>
-                        </script>
-                        <ambient>0.5 0.5 0.5 1</ambient>
-                    </material>
                 </visual>
             </link>
         </model>
@@ -1537,13 +1177,6 @@
                             <size>0.1 0.1 0.30000000000000004</size>
                         </box>
                     </geometry>
-                    <material>
-                        <script>
-                            <uri>file://media/materials/scripts/gazebo.material</uri>
-                            <name>Gazebo/Grey</name>
-                        </script>
-                        <ambient>0.5 0.5 0.5 1</ambient>
-                    </material>
                 </visual>
             </link>
         </model>
@@ -1563,13 +1196,6 @@
                             <size>0.1 0.1 0.30000000000000004</size>
                         </box>
                     </geometry>
-                    <material>
-                        <script>
-                            <uri>file://media/materials/scripts/gazebo.material</uri>
-                            <name>Gazebo/Grey</name>
-                        </script>
-                        <ambient>0.5 0.5 0.5 1</ambient>
-                    </material>
                 </visual>
             </link>
         </model>
@@ -1589,13 +1215,6 @@
                             <size>0.1 0.1 0.30000000000000004</size>
                         </box>
                     </geometry>
-                    <material>
-                        <script>
-                            <uri>file://media/materials/scripts/gazebo.material</uri>
-                            <name>Gazebo/Grey</name>
-                        </script>
-                        <ambient>0.5 0.5 0.5 1</ambient>
-                    </material>
                 </visual>
             </link>
         </model>
@@ -1615,13 +1234,6 @@
                             <size>0.1 0.1 0.30000000000000004</size>
                         </box>
                     </geometry>
-                    <material>
-                        <script>
-                            <uri>file://media/materials/scripts/gazebo.material</uri>
-                            <name>Gazebo/Grey</name>
-                        </script>
-                        <ambient>0.5 0.5 0.5 1</ambient>
-                    </material>
                 </visual>
             </link>
         </model>
@@ -1641,13 +1253,6 @@
                             <size>0.1 0.1 0.30000000000000004</size>
                         </box>
                     </geometry>
-                    <material>
-                        <script>
-                            <uri>file://media/materials/scripts/gazebo.material</uri>
-                            <name>Gazebo/Grey</name>
-                        </script>
-                        <ambient>0.5 0.5 0.5 1</ambient>
-                    </material>
                 </visual>
             </link>
         </model>
@@ -1667,13 +1272,6 @@
                             <size>0.1 0.1 0.30000000000000004</size>
                         </box>
                     </geometry>
-                    <material>
-                        <script>
-                            <uri>file://media/materials/scripts/gazebo.material</uri>
-                            <name>Gazebo/Grey</name>
-                        </script>
-                        <ambient>0.5 0.5 0.5 1</ambient>
-                    </material>
                 </visual>
             </link>
         </model>
@@ -1693,13 +1291,6 @@
                             <size>0.1 0.1 0.30000000000000004</size>
                         </box>
                     </geometry>
-                    <material>
-                        <script>
-                            <uri>file://media/materials/scripts/gazebo.material</uri>
-                            <name>Gazebo/Grey</name>
-                        </script>
-                        <ambient>0.5 0.5 0.5 1</ambient>
-                    </material>
                 </visual>
             </link>
         </model>
@@ -1719,13 +1310,6 @@
                             <size>0.1 0.1 0.30000000000000004</size>
                         </box>
                     </geometry>
-                    <material>
-                        <script>
-                            <uri>file://media/materials/scripts/gazebo.material</uri>
-                            <name>Gazebo/Grey</name>
-                        </script>
-                        <ambient>0.5 0.5 0.5 1</ambient>
-                    </material>
                 </visual>
             </link>
         </model>
@@ -1745,13 +1329,6 @@
                             <size>0.1 0.1 0.30000000000000004</size>
                         </box>
                     </geometry>
-                    <material>
-                        <script>
-                            <uri>file://media/materials/scripts/gazebo.material</uri>
-                            <name>Gazebo/Grey</name>
-                        </script>
-                        <ambient>0.5 0.5 0.5 1</ambient>
-                    </material>
                 </visual>
             </link>
         </model>
@@ -1771,13 +1348,6 @@
                             <size>0.1 0.1 0.30000000000000004</size>
                         </box>
                     </geometry>
-                    <material>
-                        <script>
-                            <uri>file://media/materials/scripts/gazebo.material</uri>
-                            <name>Gazebo/Grey</name>
-                        </script>
-                        <ambient>0.5 0.5 0.5 1</ambient>
-                    </material>
                 </visual>
             </link>
         </model>
@@ -1797,13 +1367,6 @@
                             <size>0.1 0.1 0.30000000000000004</size>
                         </box>
                     </geometry>
-                    <material>
-                        <script>
-                            <uri>file://media/materials/scripts/gazebo.material</uri>
-                            <name>Gazebo/Grey</name>
-                        </script>
-                        <ambient>0.5 0.5 0.5 1</ambient>
-                    </material>
                 </visual>
             </link>
         </model>
@@ -1823,13 +1386,6 @@
                             <size>0.1 0.1 0.30000000000000004</size>
                         </box>
                     </geometry>
-                    <material>
-                        <script>
-                            <uri>file://media/materials/scripts/gazebo.material</uri>
-                            <name>Gazebo/Grey</name>
-                        </script>
-                        <ambient>0.5 0.5 0.5 1</ambient>
-                    </material>
                 </visual>
             </link>
         </model>
@@ -1849,13 +1405,6 @@
                             <size>0.1 0.1 0.30000000000000004</size>
                         </box>
                     </geometry>
-                    <material>
-                        <script>
-                            <uri>file://media/materials/scripts/gazebo.material</uri>
-                            <name>Gazebo/Grey</name>
-                        </script>
-                        <ambient>0.5 0.5 0.5 1</ambient>
-                    </material>
                 </visual>
             </link>
         </model>
@@ -1875,13 +1424,6 @@
                             <size>0.1 0.1 0.30000000000000004</size>
                         </box>
                     </geometry>
-                    <material>
-                        <script>
-                            <uri>file://media/materials/scripts/gazebo.material</uri>
-                            <name>Gazebo/Grey</name>
-                        </script>
-                        <ambient>0.5 0.5 0.5 1</ambient>
-                    </material>
                 </visual>
             </link>
         </model>
@@ -1901,13 +1443,6 @@
                             <size>0.1 0.1 0.30000000000000004</size>
                         </box>
                     </geometry>
-                    <material>
-                        <script>
-                            <uri>file://media/materials/scripts/gazebo.material</uri>
-                            <name>Gazebo/Grey</name>
-                        </script>
-                        <ambient>0.5 0.5 0.5 1</ambient>
-                    </material>
                 </visual>
             </link>
         </model>
@@ -1927,13 +1462,6 @@
                             <size>0.1 0.1 0.30000000000000004</size>
                         </box>
                     </geometry>
-                    <material>
-                        <script>
-                            <uri>file://media/materials/scripts/gazebo.material</uri>
-                            <name>Gazebo/Grey</name>
-                        </script>
-                        <ambient>0.5 0.5 0.5 1</ambient>
-                    </material>
                 </visual>
             </link>
         </model>
@@ -1953,13 +1481,6 @@
                             <size>0.1 0.1 0.30000000000000004</size>
                         </box>
                     </geometry>
-                    <material>
-                        <script>
-                            <uri>file://media/materials/scripts/gazebo.material</uri>
-                            <name>Gazebo/Grey</name>
-                        </script>
-                        <ambient>0.5 0.5 0.5 1</ambient>
-                    </material>
                 </visual>
             </link>
         </model>
@@ -1979,13 +1500,6 @@
                             <size>0.1 0.1 0.30000000000000004</size>
                         </box>
                     </geometry>
-                    <material>
-                        <script>
-                            <uri>file://media/materials/scripts/gazebo.material</uri>
-                            <name>Gazebo/Grey</name>
-                        </script>
-                        <ambient>0.5 0.5 0.5 1</ambient>
-                    </material>
                 </visual>
             </link>
         </model>
@@ -2005,13 +1519,6 @@
                             <size>0.1 0.1 0.30000000000000004</size>
                         </box>
                     </geometry>
-                    <material>
-                        <script>
-                            <uri>file://media/materials/scripts/gazebo.material</uri>
-                            <name>Gazebo/Grey</name>
-                        </script>
-                        <ambient>0.5 0.5 0.5 1</ambient>
-                    </material>
                 </visual>
             </link>
         </model>
@@ -2031,13 +1538,6 @@
                             <size>0.1 0.1 0.30000000000000004</size>
                         </box>
                     </geometry>
-                    <material>
-                        <script>
-                            <uri>file://media/materials/scripts/gazebo.material</uri>
-                            <name>Gazebo/Grey</name>
-                        </script>
-                        <ambient>0.5 0.5 0.5 1</ambient>
-                    </material>
                 </visual>
             </link>
         </model>
@@ -2057,13 +1557,6 @@
                             <size>0.1 0.1 0.30000000000000004</size>
                         </box>
                     </geometry>
-                    <material>
-                        <script>
-                            <uri>file://media/materials/scripts/gazebo.material</uri>
-                            <name>Gazebo/Grey</name>
-                        </script>
-                        <ambient>0.5 0.5 0.5 1</ambient>
-                    </material>
                 </visual>
             </link>
         </model>
@@ -2083,13 +1576,6 @@
                             <size>0.1 0.1 0.30000000000000004</size>
                         </box>
                     </geometry>
-                    <material>
-                        <script>
-                            <uri>file://media/materials/scripts/gazebo.material</uri>
-                            <name>Gazebo/Grey</name>
-                        </script>
-                        <ambient>0.5 0.5 0.5 1</ambient>
-                    </material>
                 </visual>
             </link>
         </model>
@@ -2109,13 +1595,6 @@
                             <size>0.1 0.1 0.30000000000000004</size>
                         </box>
                     </geometry>
-                    <material>
-                        <script>
-                            <uri>file://media/materials/scripts/gazebo.material</uri>
-                            <name>Gazebo/Grey</name>
-                        </script>
-                        <ambient>0.5 0.5 0.5 1</ambient>
-                    </material>
                 </visual>
             </link>
         </model>
@@ -2135,13 +1614,6 @@
                             <size>0.1 0.1 0.30000000000000004</size>
                         </box>
                     </geometry>
-                    <material>
-                        <script>
-                            <uri>file://media/materials/scripts/gazebo.material</uri>
-                            <name>Gazebo/Grey</name>
-                        </script>
-                        <ambient>0.5 0.5 0.5 1</ambient>
-                    </material>
                 </visual>
             </link>
         </model>
@@ -2161,13 +1633,6 @@
                             <size>0.1 0.1 0.30000000000000004</size>
                         </box>
                     </geometry>
-                    <material>
-                        <script>
-                            <uri>file://media/materials/scripts/gazebo.material</uri>
-                            <name>Gazebo/Grey</name>
-                        </script>
-                        <ambient>0.5 0.5 0.5 1</ambient>
-                    </material>
                 </visual>
             </link>
         </model>
@@ -2187,13 +1652,6 @@
                             <size>0.1 0.1 0.30000000000000004</size>
                         </box>
                     </geometry>
-                    <material>
-                        <script>
-                            <uri>file://media/materials/scripts/gazebo.material</uri>
-                            <name>Gazebo/Grey</name>
-                        </script>
-                        <ambient>0.5 0.5 0.5 1</ambient>
-                    </material>
                 </visual>
             </link>
         </model>
@@ -2213,13 +1671,6 @@
                             <size>0.1 0.1 0.30000000000000004</size>
                         </box>
                     </geometry>
-                    <material>
-                        <script>
-                            <uri>file://media/materials/scripts/gazebo.material</uri>
-                            <name>Gazebo/Grey</name>
-                        </script>
-                        <ambient>0.5 0.5 0.5 1</ambient>
-                    </material>
                 </visual>
             </link>
         </model>
@@ -2239,13 +1690,6 @@
                             <size>0.1 0.1 0.30000000000000004</size>
                         </box>
                     </geometry>
-                    <material>
-                        <script>
-                            <uri>file://media/materials/scripts/gazebo.material</uri>
-                            <name>Gazebo/Grey</name>
-                        </script>
-                        <ambient>0.5 0.5 0.5 1</ambient>
-                    </material>
                 </visual>
             </link>
         </model>
@@ -2265,13 +1709,6 @@
                             <size>0.1 0.1 0.30000000000000004</size>
                         </box>
                     </geometry>
-                    <material>
-                        <script>
-                            <uri>file://media/materials/scripts/gazebo.material</uri>
-                            <name>Gazebo/Grey</name>
-                        </script>
-                        <ambient>0.5 0.5 0.5 1</ambient>
-                    </material>
                 </visual>
             </link>
         </model>
@@ -2291,13 +1728,6 @@
                             <size>0.1 0.1 0.30000000000000004</size>
                         </box>
                     </geometry>
-                    <material>
-                        <script>
-                            <uri>file://media/materials/scripts/gazebo.material</uri>
-                            <name>Gazebo/Grey</name>
-                        </script>
-                        <ambient>0.5 0.5 0.5 1</ambient>
-                    </material>
                 </visual>
             </link>
         </model>
@@ -2317,13 +1747,6 @@
                             <size>0.1 0.1 0.30000000000000004</size>
                         </box>
                     </geometry>
-                    <material>
-                        <script>
-                            <uri>file://media/materials/scripts/gazebo.material</uri>
-                            <name>Gazebo/Grey</name>
-                        </script>
-                        <ambient>0.5 0.5 0.5 1</ambient>
-                    </material>
                 </visual>
             </link>
         </model>
@@ -2343,13 +1766,6 @@
                             <size>0.1 0.1 0.30000000000000004</size>
                         </box>
                     </geometry>
-                    <material>
-                        <script>
-                            <uri>file://media/materials/scripts/gazebo.material</uri>
-                            <name>Gazebo/Grey</name>
-                        </script>
-                        <ambient>0.5 0.5 0.5 1</ambient>
-                    </material>
                 </visual>
             </link>
         </model>
@@ -2369,13 +1785,6 @@
                             <size>0.1 0.1 0.30000000000000004</size>
                         </box>
                     </geometry>
-                    <material>
-                        <script>
-                            <uri>file://media/materials/scripts/gazebo.material</uri>
-                            <name>Gazebo/Grey</name>
-                        </script>
-                        <ambient>0.5 0.5 0.5 1</ambient>
-                    </material>
                 </visual>
             </link>
         </model>
@@ -2395,13 +1804,6 @@
                             <size>0.1 0.1 0.30000000000000004</size>
                         </box>
                     </geometry>
-                    <material>
-                        <script>
-                            <uri>file://media/materials/scripts/gazebo.material</uri>
-                            <name>Gazebo/Grey</name>
-                        </script>
-                        <ambient>0.5 0.5 0.5 1</ambient>
-                    </material>
                 </visual>
             </link>
         </model>
@@ -2421,13 +1823,6 @@
                             <size>0.1 0.1 0.30000000000000004</size>
                         </box>
                     </geometry>
-                    <material>
-                        <script>
-                            <uri>file://media/materials/scripts/gazebo.material</uri>
-                            <name>Gazebo/Grey</name>
-                        </script>
-                        <ambient>0.5 0.5 0.5 1</ambient>
-                    </material>
                 </visual>
             </link>
         </model>
@@ -2447,13 +1842,6 @@
                             <size>0.1 0.1 0.30000000000000004</size>
                         </box>
                     </geometry>
-                    <material>
-                        <script>
-                            <uri>file://media/materials/scripts/gazebo.material</uri>
-                            <name>Gazebo/Grey</name>
-                        </script>
-                        <ambient>0.5 0.5 0.5 1</ambient>
-                    </material>
                 </visual>
             </link>
         </model>
@@ -2473,13 +1861,6 @@
                             <size>0.1 0.1 0.30000000000000004</size>
                         </box>
                     </geometry>
-                    <material>
-                        <script>
-                            <uri>file://media/materials/scripts/gazebo.material</uri>
-                            <name>Gazebo/Grey</name>
-                        </script>
-                        <ambient>0.5 0.5 0.5 1</ambient>
-                    </material>
                 </visual>
             </link>
         </model>
@@ -2499,13 +1880,6 @@
                             <size>0.1 0.1 0.30000000000000004</size>
                         </box>
                     </geometry>
-                    <material>
-                        <script>
-                            <uri>file://media/materials/scripts/gazebo.material</uri>
-                            <name>Gazebo/Grey</name>
-                        </script>
-                        <ambient>0.5 0.5 0.5 1</ambient>
-                    </material>
                 </visual>
             </link>
         </model>
@@ -2525,13 +1899,6 @@
                             <size>0.1 0.1 0.30000000000000004</size>
                         </box>
                     </geometry>
-                    <material>
-                        <script>
-                            <uri>file://media/materials/scripts/gazebo.material</uri>
-                            <name>Gazebo/Grey</name>
-                        </script>
-                        <ambient>0.5 0.5 0.5 1</ambient>
-                    </material>
                 </visual>
             </link>
         </model>
@@ -2551,13 +1918,6 @@
                             <size>0.1 0.1 0.30000000000000004</size>
                         </box>
                     </geometry>
-                    <material>
-                        <script>
-                            <uri>file://media/materials/scripts/gazebo.material</uri>
-                            <name>Gazebo/Grey</name>
-                        </script>
-                        <ambient>0.5 0.5 0.5 1</ambient>
-                    </material>
                 </visual>
             </link>
         </model>
@@ -2577,13 +1937,6 @@
                             <size>0.1 0.1 0.30000000000000004</size>
                         </box>
                     </geometry>
-                    <material>
-                        <script>
-                            <uri>file://media/materials/scripts/gazebo.material</uri>
-                            <name>Gazebo/Grey</name>
-                        </script>
-                        <ambient>0.5 0.5 0.5 1</ambient>
-                    </material>
                 </visual>
             </link>
         </model>
@@ -2603,13 +1956,6 @@
                             <size>0.1 0.1 0.30000000000000004</size>
                         </box>
                     </geometry>
-                    <material>
-                        <script>
-                            <uri>file://media/materials/scripts/gazebo.material</uri>
-                            <name>Gazebo/Grey</name>
-                        </script>
-                        <ambient>0.5 0.5 0.5 1</ambient>
-                    </material>
                 </visual>
             </link>
         </model>
@@ -2629,13 +1975,6 @@
                             <size>0.1 0.1 0.30000000000000004</size>
                         </box>
                     </geometry>
-                    <material>
-                        <script>
-                            <uri>file://media/materials/scripts/gazebo.material</uri>
-                            <name>Gazebo/Grey</name>
-                        </script>
-                        <ambient>0.5 0.5 0.5 1</ambient>
-                    </material>
                 </visual>
             </link>
         </model>
@@ -2655,13 +1994,6 @@
                             <size>0.1 0.1 0.30000000000000004</size>
                         </box>
                     </geometry>
-                    <material>
-                        <script>
-                            <uri>file://media/materials/scripts/gazebo.material</uri>
-                            <name>Gazebo/Grey</name>
-                        </script>
-                        <ambient>0.5 0.5 0.5 1</ambient>
-                    </material>
                 </visual>
             </link>
         </model>
@@ -2681,13 +2013,6 @@
                             <size>0.1 0.1 0.30000000000000004</size>
                         </box>
                     </geometry>
-                    <material>
-                        <script>
-                            <uri>file://media/materials/scripts/gazebo.material</uri>
-                            <name>Gazebo/Grey</name>
-                        </script>
-                        <ambient>0.5 0.5 0.5 1</ambient>
-                    </material>
                 </visual>
             </link>
         </model>
@@ -2707,13 +2032,6 @@
                             <size>0.1 0.1 0.30000000000000004</size>
                         </box>
                     </geometry>
-                    <material>
-                        <script>
-                            <uri>file://media/materials/scripts/gazebo.material</uri>
-                            <name>Gazebo/Grey</name>
-                        </script>
-                        <ambient>0.5 0.5 0.5 1</ambient>
-                    </material>
                 </visual>
             </link>
         </model>
@@ -2733,13 +2051,6 @@
                             <size>0.1 0.1 0.30000000000000004</size>
                         </box>
                     </geometry>
-                    <material>
-                        <script>
-                            <uri>file://media/materials/scripts/gazebo.material</uri>
-                            <name>Gazebo/Grey</name>
-                        </script>
-                        <ambient>0.5 0.5 0.5 1</ambient>
-                    </material>
                 </visual>
             </link>
         </model>
@@ -2759,13 +2070,6 @@
                             <size>0.1 0.1 0.30000000000000004</size>
                         </box>
                     </geometry>
-                    <material>
-                        <script>
-                            <uri>file://media/materials/scripts/gazebo.material</uri>
-                            <name>Gazebo/Grey</name>
-                        </script>
-                        <ambient>0.5 0.5 0.5 1</ambient>
-                    </material>
                 </visual>
             </link>
         </model>
@@ -2785,13 +2089,6 @@
                             <size>0.1 0.1 0.30000000000000004</size>
                         </box>
                     </geometry>
-                    <material>
-                        <script>
-                            <uri>file://media/materials/scripts/gazebo.material</uri>
-                            <name>Gazebo/Grey</name>
-                        </script>
-                        <ambient>0.5 0.5 0.5 1</ambient>
-                    </material>
                 </visual>
             </link>
         </model>
@@ -2811,13 +2108,6 @@
                             <size>0.1 0.1 0.30000000000000004</size>
                         </box>
                     </geometry>
-                    <material>
-                        <script>
-                            <uri>file://media/materials/scripts/gazebo.material</uri>
-                            <name>Gazebo/Grey</name>
-                        </script>
-                        <ambient>0.5 0.5 0.5 1</ambient>
-                    </material>
                 </visual>
             </link>
         </model>
@@ -2837,13 +2127,6 @@
                             <size>0.1 0.1 0.30000000000000004</size>
                         </box>
                     </geometry>
-                    <material>
-                        <script>
-                            <uri>file://media/materials/scripts/gazebo.material</uri>
-                            <name>Gazebo/Grey</name>
-                        </script>
-                        <ambient>0.5 0.5 0.5 1</ambient>
-                    </material>
                 </visual>
             </link>
         </model>
@@ -2863,13 +2146,6 @@
                             <size>0.1 0.1 0.30000000000000004</size>
                         </box>
                     </geometry>
-                    <material>
-                        <script>
-                            <uri>file://media/materials/scripts/gazebo.material</uri>
-                            <name>Gazebo/Grey</name>
-                        </script>
-                        <ambient>0.5 0.5 0.5 1</ambient>
-                    </material>
                 </visual>
             </link>
         </model>
@@ -2889,13 +2165,6 @@
                             <size>0.1 0.1 0.30000000000000004</size>
                         </box>
                     </geometry>
-                    <material>
-                        <script>
-                            <uri>file://media/materials/scripts/gazebo.material</uri>
-                            <name>Gazebo/Grey</name>
-                        </script>
-                        <ambient>0.5 0.5 0.5 1</ambient>
-                    </material>
                 </visual>
             </link>
         </model>
@@ -2915,13 +2184,6 @@
                             <size>0.1 0.1 0.30000000000000004</size>
                         </box>
                     </geometry>
-                    <material>
-                        <script>
-                            <uri>file://media/materials/scripts/gazebo.material</uri>
-                            <name>Gazebo/Grey</name>
-                        </script>
-                        <ambient>0.5 0.5 0.5 1</ambient>
-                    </material>
                 </visual>
             </link>
         </model>
@@ -2941,13 +2203,6 @@
                             <size>0.1 0.1 0.30000000000000004</size>
                         </box>
                     </geometry>
-                    <material>
-                        <script>
-                            <uri>file://media/materials/scripts/gazebo.material</uri>
-                            <name>Gazebo/Grey</name>
-                        </script>
-                        <ambient>0.5 0.5 0.5 1</ambient>
-                    </material>
                 </visual>
             </link>
         </model>
@@ -2967,13 +2222,6 @@
                             <size>0.1 0.1 0.30000000000000004</size>
                         </box>
                     </geometry>
-                    <material>
-                        <script>
-                            <uri>file://media/materials/scripts/gazebo.material</uri>
-                            <name>Gazebo/Grey</name>
-                        </script>
-                        <ambient>0.5 0.5 0.5 1</ambient>
-                    </material>
                 </visual>
             </link>
         </model>
@@ -2993,13 +2241,6 @@
                             <size>0.1 0.1 0.30000000000000004</size>
                         </box>
                     </geometry>
-                    <material>
-                        <script>
-                            <uri>file://media/materials/scripts/gazebo.material</uri>
-                            <name>Gazebo/Grey</name>
-                        </script>
-                        <ambient>0.5 0.5 0.5 1</ambient>
-                    </material>
                 </visual>
             </link>
         </model>
@@ -3019,13 +2260,6 @@
                             <size>0.1 0.1 0.30000000000000004</size>
                         </box>
                     </geometry>
-                    <material>
-                        <script>
-                            <uri>file://media/materials/scripts/gazebo.material</uri>
-                            <name>Gazebo/Grey</name>
-                        </script>
-                        <ambient>0.5 0.5 0.5 1</ambient>
-                    </material>
                 </visual>
             </link>
         </model>
@@ -3045,13 +2279,6 @@
                             <size>0.1 0.1 0.30000000000000004</size>
                         </box>
                     </geometry>
-                    <material>
-                        <script>
-                            <uri>file://media/materials/scripts/gazebo.material</uri>
-                            <name>Gazebo/Grey</name>
-                        </script>
-                        <ambient>0.5 0.5 0.5 1</ambient>
-                    </material>
                 </visual>
             </link>
         </model>
@@ -3071,13 +2298,6 @@
                             <size>0.1 0.1 0.30000000000000004</size>
                         </box>
                     </geometry>
-                    <material>
-                        <script>
-                            <uri>file://media/materials/scripts/gazebo.material</uri>
-                            <name>Gazebo/Grey</name>
-                        </script>
-                        <ambient>0.5 0.5 0.5 1</ambient>
-                    </material>
                 </visual>
             </link>
         </model>
@@ -3097,13 +2317,6 @@
                             <size>0.1 0.1 0.30000000000000004</size>
                         </box>
                     </geometry>
-                    <material>
-                        <script>
-                            <uri>file://media/materials/scripts/gazebo.material</uri>
-                            <name>Gazebo/Grey</name>
-                        </script>
-                        <ambient>0.5 0.5 0.5 1</ambient>
-                    </material>
                 </visual>
             </link>
         </model>
@@ -3123,13 +2336,6 @@
                             <size>0.1 0.1 0.30000000000000004</size>
                         </box>
                     </geometry>
-                    <material>
-                        <script>
-                            <uri>file://media/materials/scripts/gazebo.material</uri>
-                            <name>Gazebo/Grey</name>
-                        </script>
-                        <ambient>0.5 0.5 0.5 1</ambient>
-                    </material>
                 </visual>
             </link>
         </model>
@@ -3149,13 +2355,6 @@
                             <size>0.1 0.1 0.30000000000000004</size>
                         </box>
                     </geometry>
-                    <material>
-                        <script>
-                            <uri>file://media/materials/scripts/gazebo.material</uri>
-                            <name>Gazebo/Grey</name>
-                        </script>
-                        <ambient>0.5 0.5 0.5 1</ambient>
-                    </material>
                 </visual>
             </link>
         </model>
@@ -3175,13 +2374,6 @@
                             <size>0.1 0.1 0.30000000000000004</size>
                         </box>
                     </geometry>
-                    <material>
-                        <script>
-                            <uri>file://media/materials/scripts/gazebo.material</uri>
-                            <name>Gazebo/Grey</name>
-                        </script>
-                        <ambient>0.5 0.5 0.5 1</ambient>
-                    </material>
                 </visual>
             </link>
         </model>
@@ -3201,13 +2393,6 @@
                             <size>0.1 0.1 0.30000000000000004</size>
                         </box>
                     </geometry>
-                    <material>
-                        <script>
-                            <uri>file://media/materials/scripts/gazebo.material</uri>
-                            <name>Gazebo/Grey</name>
-                        </script>
-                        <ambient>0.5 0.5 0.5 1</ambient>
-                    </material>
                 </visual>
             </link>
         </model>
@@ -3227,13 +2412,6 @@
                             <size>0.1 0.1 0.30000000000000004</size>
                         </box>
                     </geometry>
-                    <material>
-                        <script>
-                            <uri>file://media/materials/scripts/gazebo.material</uri>
-                            <name>Gazebo/Grey</name>
-                        </script>
-                        <ambient>0.5 0.5 0.5 1</ambient>
-                    </material>
                 </visual>
             </link>
         </model>
@@ -3253,13 +2431,6 @@
                             <size>0.1 0.1 0.30000000000000004</size>
                         </box>
                     </geometry>
-                    <material>
-                        <script>
-                            <uri>file://media/materials/scripts/gazebo.material</uri>
-                            <name>Gazebo/Grey</name>
-                        </script>
-                        <ambient>0.5 0.5 0.5 1</ambient>
-                    </material>
                 </visual>
             </link>
         </model>
@@ -3279,13 +2450,6 @@
                             <size>0.1 0.1 0.30000000000000004</size>
                         </box>
                     </geometry>
-                    <material>
-                        <script>
-                            <uri>file://media/materials/scripts/gazebo.material</uri>
-                            <name>Gazebo/Grey</name>
-                        </script>
-                        <ambient>0.5 0.5 0.5 1</ambient>
-                    </material>
                 </visual>
             </link>
         </model>
@@ -3305,13 +2469,6 @@
                             <size>0.1 0.1 0.30000000000000004</size>
                         </box>
                     </geometry>
-                    <material>
-                        <script>
-                            <uri>file://media/materials/scripts/gazebo.material</uri>
-                            <name>Gazebo/Grey</name>
-                        </script>
-                        <ambient>0.5 0.5 0.5 1</ambient>
-                    </material>
                 </visual>
             </link>
         </model>
@@ -3331,13 +2488,6 @@
                             <size>0.1 0.1 0.30000000000000004</size>
                         </box>
                     </geometry>
-                    <material>
-                        <script>
-                            <uri>file://media/materials/scripts/gazebo.material</uri>
-                            <name>Gazebo/Grey</name>
-                        </script>
-                        <ambient>0.5 0.5 0.5 1</ambient>
-                    </material>
                 </visual>
             </link>
         </model>
@@ -3357,13 +2507,6 @@
                             <size>0.1 0.1 0.30000000000000004</size>
                         </box>
                     </geometry>
-                    <material>
-                        <script>
-                            <uri>file://media/materials/scripts/gazebo.material</uri>
-                            <name>Gazebo/Grey</name>
-                        </script>
-                        <ambient>0.5 0.5 0.5 1</ambient>
-                    </material>
                 </visual>
             </link>
         </model>
@@ -3383,13 +2526,6 @@
                             <size>0.1 0.1 0.30000000000000004</size>
                         </box>
                     </geometry>
-                    <material>
-                        <script>
-                            <uri>file://media/materials/scripts/gazebo.material</uri>
-                            <name>Gazebo/Grey</name>
-                        </script>
-                        <ambient>0.5 0.5 0.5 1</ambient>
-                    </material>
                 </visual>
             </link>
         </model>
@@ -3409,13 +2545,6 @@
                             <size>0.1 0.1 0.30000000000000004</size>
                         </box>
                     </geometry>
-                    <material>
-                        <script>
-                            <uri>file://media/materials/scripts/gazebo.material</uri>
-                            <name>Gazebo/Grey</name>
-                        </script>
-                        <ambient>0.5 0.5 0.5 1</ambient>
-                    </material>
                 </visual>
             </link>
         </model>
@@ -3435,13 +2564,6 @@
                             <size>0.1 0.1 0.30000000000000004</size>
                         </box>
                     </geometry>
-                    <material>
-                        <script>
-                            <uri>file://media/materials/scripts/gazebo.material</uri>
-                            <name>Gazebo/Grey</name>
-                        </script>
-                        <ambient>0.5 0.5 0.5 1</ambient>
-                    </material>
                 </visual>
             </link>
         </model>
@@ -3461,13 +2583,6 @@
                             <size>0.1 0.1 0.30000000000000004</size>
                         </box>
                     </geometry>
-                    <material>
-                        <script>
-                            <uri>file://media/materials/scripts/gazebo.material</uri>
-                            <name>Gazebo/Grey</name>
-                        </script>
-                        <ambient>0.5 0.5 0.5 1</ambient>
-                    </material>
                 </visual>
             </link>
         </model>
@@ -3487,13 +2602,6 @@
                             <size>0.1 0.1 0.30000000000000004</size>
                         </box>
                     </geometry>
-                    <material>
-                        <script>
-                            <uri>file://media/materials/scripts/gazebo.material</uri>
-                            <name>Gazebo/Grey</name>
-                        </script>
-                        <ambient>0.5 0.5 0.5 1</ambient>
-                    </material>
                 </visual>
             </link>
         </model>
@@ -3513,13 +2621,6 @@
                             <size>0.1 0.1 0.30000000000000004</size>
                         </box>
                     </geometry>
-                    <material>
-                        <script>
-                            <uri>file://media/materials/scripts/gazebo.material</uri>
-                            <name>Gazebo/Grey</name>
-                        </script>
-                        <ambient>0.5 0.5 0.5 1</ambient>
-                    </material>
                 </visual>
             </link>
         </model>
@@ -3539,13 +2640,6 @@
                             <size>0.1 0.1 0.30000000000000004</size>
                         </box>
                     </geometry>
-                    <material>
-                        <script>
-                            <uri>file://media/materials/scripts/gazebo.material</uri>
-                            <name>Gazebo/Grey</name>
-                        </script>
-                        <ambient>0.5 0.5 0.5 1</ambient>
-                    </material>
                 </visual>
             </link>
         </model>
@@ -3565,13 +2659,6 @@
                             <size>0.1 0.1 0.30000000000000004</size>
                         </box>
                     </geometry>
-                    <material>
-                        <script>
-                            <uri>file://media/materials/scripts/gazebo.material</uri>
-                            <name>Gazebo/Grey</name>
-                        </script>
-                        <ambient>0.5 0.5 0.5 1</ambient>
-                    </material>
                 </visual>
             </link>
         </model>
@@ -3591,13 +2678,6 @@
                             <size>0.1 0.1 0.30000000000000004</size>
                         </box>
                     </geometry>
-                    <material>
-                        <script>
-                            <uri>file://media/materials/scripts/gazebo.material</uri>
-                            <name>Gazebo/Grey</name>
-                        </script>
-                        <ambient>0.5 0.5 0.5 1</ambient>
-                    </material>
                 </visual>
             </link>
         </model>
@@ -3617,13 +2697,6 @@
                             <size>0.1 0.1 0.30000000000000004</size>
                         </box>
                     </geometry>
-                    <material>
-                        <script>
-                            <uri>file://media/materials/scripts/gazebo.material</uri>
-                            <name>Gazebo/Grey</name>
-                        </script>
-                        <ambient>0.5 0.5 0.5 1</ambient>
-                    </material>
                 </visual>
             </link>
         </model>
@@ -3643,13 +2716,6 @@
                             <size>0.1 0.1 0.30000000000000004</size>
                         </box>
                     </geometry>
-                    <material>
-                        <script>
-                            <uri>file://media/materials/scripts/gazebo.material</uri>
-                            <name>Gazebo/Grey</name>
-                        </script>
-                        <ambient>0.5 0.5 0.5 1</ambient>
-                    </material>
                 </visual>
             </link>
         </model>
@@ -3669,13 +2735,6 @@
                             <size>0.1 0.1 0.30000000000000004</size>
                         </box>
                     </geometry>
-                    <material>
-                        <script>
-                            <uri>file://media/materials/scripts/gazebo.material</uri>
-                            <name>Gazebo/Grey</name>
-                        </script>
-                        <ambient>0.5 0.5 0.5 1</ambient>
-                    </material>
                 </visual>
             </link>
         </model>
@@ -3695,13 +2754,6 @@
                             <size>0.1 0.1 0.30000000000000004</size>
                         </box>
                     </geometry>
-                    <material>
-                        <script>
-                            <uri>file://media/materials/scripts/gazebo.material</uri>
-                            <name>Gazebo/Grey</name>
-                        </script>
-                        <ambient>0.5 0.5 0.5 1</ambient>
-                    </material>
                 </visual>
             </link>
         </model>
@@ -3721,13 +2773,6 @@
                             <size>0.1 0.1 0.30000000000000004</size>
                         </box>
                     </geometry>
-                    <material>
-                        <script>
-                            <uri>file://media/materials/scripts/gazebo.material</uri>
-                            <name>Gazebo/Grey</name>
-                        </script>
-                        <ambient>0.5 0.5 0.5 1</ambient>
-                    </material>
                 </visual>
             </link>
         </model>
@@ -3747,13 +2792,6 @@
                             <size>0.1 0.1 0.30000000000000004</size>
                         </box>
                     </geometry>
-                    <material>
-                        <script>
-                            <uri>file://media/materials/scripts/gazebo.material</uri>
-                            <name>Gazebo/Grey</name>
-                        </script>
-                        <ambient>0.5 0.5 0.5 1</ambient>
-                    </material>
                 </visual>
             </link>
         </model>
@@ -3773,13 +2811,6 @@
                             <size>0.1 0.1 0.30000000000000004</size>
                         </box>
                     </geometry>
-                    <material>
-                        <script>
-                            <uri>file://media/materials/scripts/gazebo.material</uri>
-                            <name>Gazebo/Grey</name>
-                        </script>
-                        <ambient>0.5 0.5 0.5 1</ambient>
-                    </material>
                 </visual>
             </link>
         </model>
@@ -3799,13 +2830,6 @@
                             <size>0.1 0.1 0.30000000000000004</size>
                         </box>
                     </geometry>
-                    <material>
-                        <script>
-                            <uri>file://media/materials/scripts/gazebo.material</uri>
-                            <name>Gazebo/Grey</name>
-                        </script>
-                        <ambient>0.5 0.5 0.5 1</ambient>
-                    </material>
                 </visual>
             </link>
         </model>
@@ -3825,13 +2849,6 @@
                             <size>0.1 0.1 0.30000000000000004</size>
                         </box>
                     </geometry>
-                    <material>
-                        <script>
-                            <uri>file://media/materials/scripts/gazebo.material</uri>
-                            <name>Gazebo/Grey</name>
-                        </script>
-                        <ambient>0.5 0.5 0.5 1</ambient>
-                    </material>
                 </visual>
             </link>
         </model>
@@ -3851,13 +2868,6 @@
                             <size>0.1 0.1 0.30000000000000004</size>
                         </box>
                     </geometry>
-                    <material>
-                        <script>
-                            <uri>file://media/materials/scripts/gazebo.material</uri>
-                            <name>Gazebo/Grey</name>
-                        </script>
-                        <ambient>0.5 0.5 0.5 1</ambient>
-                    </material>
                 </visual>
             </link>
         </model>
@@ -3877,13 +2887,6 @@
                             <size>0.1 0.1 0.30000000000000004</size>
                         </box>
                     </geometry>
-                    <material>
-                        <script>
-                            <uri>file://media/materials/scripts/gazebo.material</uri>
-                            <name>Gazebo/Grey</name>
-                        </script>
-                        <ambient>0.5 0.5 0.5 1</ambient>
-                    </material>
                 </visual>
             </link>
         </model>
@@ -3903,13 +2906,6 @@
                             <size>0.1 0.1 0.30000000000000004</size>
                         </box>
                     </geometry>
-                    <material>
-                        <script>
-                            <uri>file://media/materials/scripts/gazebo.material</uri>
-                            <name>Gazebo/Grey</name>
-                        </script>
-                        <ambient>0.5 0.5 0.5 1</ambient>
-                    </material>
                 </visual>
             </link>
         </model>
@@ -3929,13 +2925,6 @@
                             <size>0.1 0.1 0.30000000000000004</size>
                         </box>
                     </geometry>
-                    <material>
-                        <script>
-                            <uri>file://media/materials/scripts/gazebo.material</uri>
-                            <name>Gazebo/Grey</name>
-                        </script>
-                        <ambient>0.5 0.5 0.5 1</ambient>
-                    </material>
                 </visual>
             </link>
         </model>
@@ -3955,13 +2944,6 @@
                             <size>0.1 0.1 0.30000000000000004</size>
                         </box>
                     </geometry>
-                    <material>
-                        <script>
-                            <uri>file://media/materials/scripts/gazebo.material</uri>
-                            <name>Gazebo/Grey</name>
-                        </script>
-                        <ambient>0.5 0.5 0.5 1</ambient>
-                    </material>
                 </visual>
             </link>
         </model>
@@ -3981,13 +2963,6 @@
                             <size>0.1 0.1 0.30000000000000004</size>
                         </box>
                     </geometry>
-                    <material>
-                        <script>
-                            <uri>file://media/materials/scripts/gazebo.material</uri>
-                            <name>Gazebo/Grey</name>
-                        </script>
-                        <ambient>0.5 0.5 0.5 1</ambient>
-                    </material>
                 </visual>
             </link>
         </model>
@@ -4007,13 +2982,6 @@
                             <size>0.1 0.1 0.30000000000000004</size>
                         </box>
                     </geometry>
-                    <material>
-                        <script>
-                            <uri>file://media/materials/scripts/gazebo.material</uri>
-                            <name>Gazebo/Grey</name>
-                        </script>
-                        <ambient>0.5 0.5 0.5 1</ambient>
-                    </material>
                 </visual>
             </link>
         </model>
@@ -4033,13 +3001,6 @@
                             <size>0.1 0.1 0.30000000000000004</size>
                         </box>
                     </geometry>
-                    <material>
-                        <script>
-                            <uri>file://media/materials/scripts/gazebo.material</uri>
-                            <name>Gazebo/Grey</name>
-                        </script>
-                        <ambient>0.5 0.5 0.5 1</ambient>
-                    </material>
                 </visual>
             </link>
         </model>
@@ -4059,13 +3020,6 @@
                             <size>0.1 0.1 0.30000000000000004</size>
                         </box>
                     </geometry>
-                    <material>
-                        <script>
-                            <uri>file://media/materials/scripts/gazebo.material</uri>
-                            <name>Gazebo/Grey</name>
-                        </script>
-                        <ambient>0.5 0.5 0.5 1</ambient>
-                    </material>
                 </visual>
             </link>
         </model>
@@ -4085,13 +3039,6 @@
                             <size>0.1 0.1 0.30000000000000004</size>
                         </box>
                     </geometry>
-                    <material>
-                        <script>
-                            <uri>file://media/materials/scripts/gazebo.material</uri>
-                            <name>Gazebo/Grey</name>
-                        </script>
-                        <ambient>0.5 0.5 0.5 1</ambient>
-                    </material>
                 </visual>
             </link>
         </model>
@@ -4111,13 +3058,6 @@
                             <size>0.1 0.1 0.30000000000000004</size>
                         </box>
                     </geometry>
-                    <material>
-                        <script>
-                            <uri>file://media/materials/scripts/gazebo.material</uri>
-                            <name>Gazebo/Grey</name>
-                        </script>
-                        <ambient>0.5 0.5 0.5 1</ambient>
-                    </material>
                 </visual>
             </link>
         </model>
@@ -4137,13 +3077,6 @@
                             <size>0.1 0.1 0.30000000000000004</size>
                         </box>
                     </geometry>
-                    <material>
-                        <script>
-                            <uri>file://media/materials/scripts/gazebo.material</uri>
-                            <name>Gazebo/Grey</name>
-                        </script>
-                        <ambient>0.5 0.5 0.5 1</ambient>
-                    </material>
                 </visual>
             </link>
         </model>
@@ -4163,13 +3096,6 @@
                             <size>0.1 0.1 0.30000000000000004</size>
                         </box>
                     </geometry>
-                    <material>
-                        <script>
-                            <uri>file://media/materials/scripts/gazebo.material</uri>
-                            <name>Gazebo/Grey</name>
-                        </script>
-                        <ambient>0.5 0.5 0.5 1</ambient>
-                    </material>
                 </visual>
             </link>
         </model>
@@ -4189,13 +3115,6 @@
                             <size>0.1 0.1 0.30000000000000004</size>
                         </box>
                     </geometry>
-                    <material>
-                        <script>
-                            <uri>file://media/materials/scripts/gazebo.material</uri>
-                            <name>Gazebo/Grey</name>
-                        </script>
-                        <ambient>0.5 0.5 0.5 1</ambient>
-                    </material>
                 </visual>
             </link>
         </model>
@@ -4215,13 +3134,6 @@
                             <size>0.1 0.1 0.30000000000000004</size>
                         </box>
                     </geometry>
-                    <material>
-                        <script>
-                            <uri>file://media/materials/scripts/gazebo.material</uri>
-                            <name>Gazebo/Grey</name>
-                        </script>
-                        <ambient>0.5 0.5 0.5 1</ambient>
-                    </material>
                 </visual>
             </link>
         </model>
@@ -4241,13 +3153,6 @@
                             <size>0.1 0.1 0.30000000000000004</size>
                         </box>
                     </geometry>
-                    <material>
-                        <script>
-                            <uri>file://media/materials/scripts/gazebo.material</uri>
-                            <name>Gazebo/Grey</name>
-                        </script>
-                        <ambient>0.5 0.5 0.5 1</ambient>
-                    </material>
                 </visual>
             </link>
         </model>
@@ -4267,13 +3172,6 @@
                             <size>0.1 0.1 0.30000000000000004</size>
                         </box>
                     </geometry>
-                    <material>
-                        <script>
-                            <uri>file://media/materials/scripts/gazebo.material</uri>
-                            <name>Gazebo/Grey</name>
-                        </script>
-                        <ambient>0.5 0.5 0.5 1</ambient>
-                    </material>
                 </visual>
             </link>
         </model>
@@ -4293,13 +3191,6 @@
                             <size>0.1 0.1 0.30000000000000004</size>
                         </box>
                     </geometry>
-                    <material>
-                        <script>
-                            <uri>file://media/materials/scripts/gazebo.material</uri>
-                            <name>Gazebo/Grey</name>
-                        </script>
-                        <ambient>0.5 0.5 0.5 1</ambient>
-                    </material>
                 </visual>
             </link>
         </model>
@@ -4319,13 +3210,6 @@
                             <size>0.1 0.1 0.30000000000000004</size>
                         </box>
                     </geometry>
-                    <material>
-                        <script>
-                            <uri>file://media/materials/scripts/gazebo.material</uri>
-                            <name>Gazebo/Grey</name>
-                        </script>
-                        <ambient>0.5 0.5 0.5 1</ambient>
-                    </material>
                 </visual>
             </link>
         </model>
@@ -4345,13 +3229,6 @@
                             <size>0.1 0.1 0.30000000000000004</size>
                         </box>
                     </geometry>
-                    <material>
-                        <script>
-                            <uri>file://media/materials/scripts/gazebo.material</uri>
-                            <name>Gazebo/Grey</name>
-                        </script>
-                        <ambient>0.5 0.5 0.5 1</ambient>
-                    </material>
                 </visual>
             </link>
         </model>
@@ -4371,13 +3248,6 @@
                             <size>0.1 0.1 0.30000000000000004</size>
                         </box>
                     </geometry>
-                    <material>
-                        <script>
-                            <uri>file://media/materials/scripts/gazebo.material</uri>
-                            <name>Gazebo/Grey</name>
-                        </script>
-                        <ambient>0.5 0.5 0.5 1</ambient>
-                    </material>
                 </visual>
             </link>
         </model>
@@ -4397,13 +3267,6 @@
                             <size>0.1 0.1 0.30000000000000004</size>
                         </box>
                     </geometry>
-                    <material>
-                        <script>
-                            <uri>file://media/materials/scripts/gazebo.material</uri>
-                            <name>Gazebo/Grey</name>
-                        </script>
-                        <ambient>0.5 0.5 0.5 1</ambient>
-                    </material>
                 </visual>
             </link>
         </model>
@@ -4423,13 +3286,6 @@
                             <size>0.1 0.1 0.30000000000000004</size>
                         </box>
                     </geometry>
-                    <material>
-                        <script>
-                            <uri>file://media/materials/scripts/gazebo.material</uri>
-                            <name>Gazebo/Grey</name>
-                        </script>
-                        <ambient>0.5 0.5 0.5 1</ambient>
-                    </material>
                 </visual>
             </link>
         </model>
@@ -4449,13 +3305,6 @@
                             <size>0.1 0.1 0.30000000000000004</size>
                         </box>
                     </geometry>
-                    <material>
-                        <script>
-                            <uri>file://media/materials/scripts/gazebo.material</uri>
-                            <name>Gazebo/Grey</name>
-                        </script>
-                        <ambient>0.5 0.5 0.5 1</ambient>
-                    </material>
                 </visual>
             </link>
         </model>
@@ -4475,13 +3324,6 @@
                             <size>0.1 0.1 0.30000000000000004</size>
                         </box>
                     </geometry>
-                    <material>
-                        <script>
-                            <uri>file://media/materials/scripts/gazebo.material</uri>
-                            <name>Gazebo/Grey</name>
-                        </script>
-                        <ambient>0.5 0.5 0.5 1</ambient>
-                    </material>
                 </visual>
             </link>
         </model>
@@ -4501,13 +3343,6 @@
                             <size>0.1 0.1 0.30000000000000004</size>
                         </box>
                     </geometry>
-                    <material>
-                        <script>
-                            <uri>file://media/materials/scripts/gazebo.material</uri>
-                            <name>Gazebo/Grey</name>
-                        </script>
-                        <ambient>0.5 0.5 0.5 1</ambient>
-                    </material>
                 </visual>
             </link>
         </model>
@@ -4527,13 +3362,6 @@
                             <size>0.1 0.1 0.30000000000000004</size>
                         </box>
                     </geometry>
-                    <material>
-                        <script>
-                            <uri>file://media/materials/scripts/gazebo.material</uri>
-                            <name>Gazebo/Grey</name>
-                        </script>
-                        <ambient>0.5 0.5 0.5 1</ambient>
-                    </material>
                 </visual>
             </link>
         </model>
@@ -4553,13 +3381,6 @@
                             <size>0.1 0.1 0.30000000000000004</size>
                         </box>
                     </geometry>
-                    <material>
-                        <script>
-                            <uri>file://media/materials/scripts/gazebo.material</uri>
-                            <name>Gazebo/Grey</name>
-                        </script>
-                        <ambient>0.5 0.5 0.5 1</ambient>
-                    </material>
                 </visual>
             </link>
         </model>
@@ -4579,13 +3400,6 @@
                             <size>0.1 0.1 0.30000000000000004</size>
                         </box>
                     </geometry>
-                    <material>
-                        <script>
-                            <uri>file://media/materials/scripts/gazebo.material</uri>
-                            <name>Gazebo/Grey</name>
-                        </script>
-                        <ambient>0.5 0.5 0.5 1</ambient>
-                    </material>
                 </visual>
             </link>
         </model>
@@ -4605,13 +3419,6 @@
                             <size>0.1 0.1 0.30000000000000004</size>
                         </box>
                     </geometry>
-                    <material>
-                        <script>
-                            <uri>file://media/materials/scripts/gazebo.material</uri>
-                            <name>Gazebo/Grey</name>
-                        </script>
-                        <ambient>0.5 0.5 0.5 1</ambient>
-                    </material>
                 </visual>
             </link>
         </model>
@@ -4631,13 +3438,6 @@
                             <size>0.1 0.1 0.30000000000000004</size>
                         </box>
                     </geometry>
-                    <material>
-                        <script>
-                            <uri>file://media/materials/scripts/gazebo.material</uri>
-                            <name>Gazebo/Grey</name>
-                        </script>
-                        <ambient>0.5 0.5 0.5 1</ambient>
-                    </material>
                 </visual>
             </link>
         </model>
@@ -4657,13 +3457,6 @@
                             <size>0.1 0.1 0.30000000000000004</size>
                         </box>
                     </geometry>
-                    <material>
-                        <script>
-                            <uri>file://media/materials/scripts/gazebo.material</uri>
-                            <name>Gazebo/Grey</name>
-                        </script>
-                        <ambient>0.5 0.5 0.5 1</ambient>
-                    </material>
                 </visual>
             </link>
         </model>
@@ -4683,13 +3476,6 @@
                             <size>0.1 0.1 0.30000000000000004</size>
                         </box>
                     </geometry>
-                    <material>
-                        <script>
-                            <uri>file://media/materials/scripts/gazebo.material</uri>
-                            <name>Gazebo/Grey</name>
-                        </script>
-                        <ambient>0.5 0.5 0.5 1</ambient>
-                    </material>
                 </visual>
             </link>
         </model>
@@ -4709,13 +3495,6 @@
                             <size>0.1 0.1 0.30000000000000004</size>
                         </box>
                     </geometry>
-                    <material>
-                        <script>
-                            <uri>file://media/materials/scripts/gazebo.material</uri>
-                            <name>Gazebo/Grey</name>
-                        </script>
-                        <ambient>0.5 0.5 0.5 1</ambient>
-                    </material>
                 </visual>
             </link>
         </model>
@@ -4735,13 +3514,6 @@
                             <size>0.1 0.1 0.30000000000000004</size>
                         </box>
                     </geometry>
-                    <material>
-                        <script>
-                            <uri>file://media/materials/scripts/gazebo.material</uri>
-                            <name>Gazebo/Grey</name>
-                        </script>
-                        <ambient>0.5 0.5 0.5 1</ambient>
-                    </material>
                 </visual>
             </link>
         </model>
@@ -4761,13 +3533,6 @@
                             <size>0.1 0.1 0.30000000000000004</size>
                         </box>
                     </geometry>
-                    <material>
-                        <script>
-                            <uri>file://media/materials/scripts/gazebo.material</uri>
-                            <name>Gazebo/Grey</name>
-                        </script>
-                        <ambient>0.5 0.5 0.5 1</ambient>
-                    </material>
                 </visual>
             </link>
         </model>
@@ -4787,13 +3552,6 @@
                             <size>0.1 0.1 0.30000000000000004</size>
                         </box>
                     </geometry>
-                    <material>
-                        <script>
-                            <uri>file://media/materials/scripts/gazebo.material</uri>
-                            <name>Gazebo/Grey</name>
-                        </script>
-                        <ambient>0.5 0.5 0.5 1</ambient>
-                    </material>
                 </visual>
             </link>
         </model>
@@ -4813,13 +3571,6 @@
                             <size>0.1 0.1 0.30000000000000004</size>
                         </box>
                     </geometry>
-                    <material>
-                        <script>
-                            <uri>file://media/materials/scripts/gazebo.material</uri>
-                            <name>Gazebo/Grey</name>
-                        </script>
-                        <ambient>0.5 0.5 0.5 1</ambient>
-                    </material>
                 </visual>
             </link>
         </model>
@@ -4839,13 +3590,6 @@
                             <size>0.1 0.1 0.30000000000000004</size>
                         </box>
                     </geometry>
-                    <material>
-                        <script>
-                            <uri>file://media/materials/scripts/gazebo.material</uri>
-                            <name>Gazebo/Grey</name>
-                        </script>
-                        <ambient>0.5 0.5 0.5 1</ambient>
-                    </material>
                 </visual>
             </link>
         </model>
@@ -4865,13 +3609,6 @@
                             <size>0.1 0.1 0.30000000000000004</size>
                         </box>
                     </geometry>
-                    <material>
-                        <script>
-                            <uri>file://media/materials/scripts/gazebo.material</uri>
-                            <name>Gazebo/Grey</name>
-                        </script>
-                        <ambient>0.5 0.5 0.5 1</ambient>
-                    </material>
                 </visual>
             </link>
         </model>
@@ -4891,13 +3628,6 @@
                             <size>0.1 0.1 0.30000000000000004</size>
                         </box>
                     </geometry>
-                    <material>
-                        <script>
-                            <uri>file://media/materials/scripts/gazebo.material</uri>
-                            <name>Gazebo/Grey</name>
-                        </script>
-                        <ambient>0.5 0.5 0.5 1</ambient>
-                    </material>
                 </visual>
             </link>
         </model>
@@ -4917,13 +3647,6 @@
                             <size>0.1 0.1 0.30000000000000004</size>
                         </box>
                     </geometry>
-                    <material>
-                        <script>
-                            <uri>file://media/materials/scripts/gazebo.material</uri>
-                            <name>Gazebo/Grey</name>
-                        </script>
-                        <ambient>0.5 0.5 0.5 1</ambient>
-                    </material>
                 </visual>
             </link>
         </model>
@@ -4943,13 +3666,6 @@
                             <size>0.1 0.1 0.30000000000000004</size>
                         </box>
                     </geometry>
-                    <material>
-                        <script>
-                            <uri>file://media/materials/scripts/gazebo.material</uri>
-                            <name>Gazebo/Grey</name>
-                        </script>
-                        <ambient>0.5 0.5 0.5 1</ambient>
-                    </material>
                 </visual>
             </link>
         </model>
@@ -4969,13 +3685,6 @@
                             <size>0.1 0.1 0.30000000000000004</size>
                         </box>
                     </geometry>
-                    <material>
-                        <script>
-                            <uri>file://media/materials/scripts/gazebo.material</uri>
-                            <name>Gazebo/Grey</name>
-                        </script>
-                        <ambient>0.5 0.5 0.5 1</ambient>
-                    </material>
                 </visual>
             </link>
         </model>
@@ -4995,13 +3704,6 @@
                             <size>0.1 0.1 0.30000000000000004</size>
                         </box>
                     </geometry>
-                    <material>
-                        <script>
-                            <uri>file://media/materials/scripts/gazebo.material</uri>
-                            <name>Gazebo/Grey</name>
-                        </script>
-                        <ambient>0.5 0.5 0.5 1</ambient>
-                    </material>
                 </visual>
             </link>
         </model>
@@ -5021,13 +3723,6 @@
                             <size>0.1 0.1 0.30000000000000004</size>
                         </box>
                     </geometry>
-                    <material>
-                        <script>
-                            <uri>file://media/materials/scripts/gazebo.material</uri>
-                            <name>Gazebo/Grey</name>
-                        </script>
-                        <ambient>0.5 0.5 0.5 1</ambient>
-                    </material>
                 </visual>
             </link>
         </model>
@@ -5047,13 +3742,6 @@
                             <size>0.1 0.1 0.30000000000000004</size>
                         </box>
                     </geometry>
-                    <material>
-                        <script>
-                            <uri>file://media/materials/scripts/gazebo.material</uri>
-                            <name>Gazebo/Grey</name>
-                        </script>
-                        <ambient>0.5 0.5 0.5 1</ambient>
-                    </material>
                 </visual>
             </link>
         </model>
@@ -5073,13 +3761,6 @@
                             <size>0.1 0.1 0.30000000000000004</size>
                         </box>
                     </geometry>
-                    <material>
-                        <script>
-                            <uri>file://media/materials/scripts/gazebo.material</uri>
-                            <name>Gazebo/Grey</name>
-                        </script>
-                        <ambient>0.5 0.5 0.5 1</ambient>
-                    </material>
                 </visual>
             </link>
         </model>
@@ -5099,13 +3780,6 @@
                             <size>0.1 0.1 0.30000000000000004</size>
                         </box>
                     </geometry>
-                    <material>
-                        <script>
-                            <uri>file://media/materials/scripts/gazebo.material</uri>
-                            <name>Gazebo/Grey</name>
-                        </script>
-                        <ambient>0.5 0.5 0.5 1</ambient>
-                    </material>
                 </visual>
             </link>
         </model>
@@ -5125,13 +3799,6 @@
                             <size>0.1 0.1 0.30000000000000004</size>
                         </box>
                     </geometry>
-                    <material>
-                        <script>
-                            <uri>file://media/materials/scripts/gazebo.material</uri>
-                            <name>Gazebo/Grey</name>
-                        </script>
-                        <ambient>0.5 0.5 0.5 1</ambient>
-                    </material>
                 </visual>
             </link>
         </model>

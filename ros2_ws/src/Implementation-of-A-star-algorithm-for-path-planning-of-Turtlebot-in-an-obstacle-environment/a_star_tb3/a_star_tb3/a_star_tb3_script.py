@@ -107,22 +107,22 @@ class A_star:
 
     def check_obstacles(self, d):
         obstacles = OrderedSet()
-        obstacles_positions = self.convert_map_to_obstacles(map_path)
-        for pos in obstacles_positions:
-            x, y = pos
-            for obs in self.block_occupancy(x,y):
-                _x,_y = obs
-                obstacles.add((_x,_y))
-        # for x in np.arange(0, 4.1, 0.01):
-        #     for y in np.arange(0, 4.1, 0.01):
-        # #         if (x >= (1.5 - d) and y >= (0.75-d) and x <= (1.65 + d) and y <= 2):
-        # #             obstacles.add((np.round(x, 2), np.round(y, 2)))
-        # #         if (x >= (2.5 - d) and y >= 0 and x <= (2.65 + d) and y <= (1.25 + d)):
-        # #             obstacles.add((np.round(x, 2), np.round(y, 2)))
-        # #         if ((x-4)**2 + (y-1.1)**2 - (0.5+d)**2) <= 0:
-        # #             obstacles.add((np.round(x, 2), np.round(y, 2)))
-        #         if (x >= (4-d) or y >= (4-d) or x <= d or y <= d):
-        #             obstacles.add((np.round(x, 2), np.round(y, 2)))
+        # obstacles_positions = self.convert_map_to_obstacles(map_path)
+        # for pos in obstacles_positions:
+        #     x, y = pos
+        #     for obs in self.block_occupancy(x,y):
+        #         _x,_y = obs
+        #         obstacles.add((_x,_y))
+        for x in np.arange(0, 4.1, 0.01):
+            for y in np.arange(0, 4.1, 0.01):
+                if (x >= (1.5 - d) and y >= (0.75-d) and x <= (1.65 + d) and y <= 2):
+                    obstacles.add((np.round(x, 2), np.round(y, 2)))
+                if (x >= (2.5 - d) and y >= 0 and x <= (2.65 + d) and y <= (1.25 + d)):
+                    obstacles.add((np.round(x, 2), np.round(y, 2)))
+                if ((x-4)**2 + (y-1.1)**2 - (0.5+d)**2) <= 0:
+                    obstacles.add((np.round(x, 2), np.round(y, 2)))
+                if (x >= (4-d) or y >= (4-d) or x <= d or y <= d):
+                    obstacles.add((np.round(x, 2), np.round(y, 2)))
         return obstacles
     
     #ADDED===========================================================ADDED
