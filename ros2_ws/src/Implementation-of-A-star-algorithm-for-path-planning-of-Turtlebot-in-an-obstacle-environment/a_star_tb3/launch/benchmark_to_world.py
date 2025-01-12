@@ -13,7 +13,7 @@ from geometry_msgs.msg import Twist
 from rclpy.exceptions import ROSInterruptException
 import argparse
 
-def convert_map_to_world(map_file, world_file, cell_size=0.1):
+def convert_map_to_world(map_file, world_file, cell_size=0.2):
     with open(map_file, 'r') as f:
         lines = f.readlines()
 
@@ -125,7 +125,7 @@ def convert_map_to_world(map_file, world_file, cell_size=0.1):
     
     def create_block(start_x, start_y, end_x, end_y):
         """Create a block for a sequence of @ symbols."""
-        center_x = (start_x + end_x + 1) / 2 * cell_size
+        center_x = (start_x + end_x + 1) / 2 * cell_size 
         center_y = (start_y + end_y + 1) / 2 * cell_size
         size_x = (end_x - start_x + 1) * cell_size
         size_y = (end_y - start_y + 1) * cell_size
@@ -175,8 +175,8 @@ def convert_map_to_world(map_file, world_file, cell_size=0.1):
         tree.write(f)
 
 # File paths
-map_file_path = '/home/ahmadaw/MAPF_RoboSim/ros2_ws/src/Implementation-of-A-star-algorithm-for-path-planning-of-Turtlebot-in-an-obstacle-environment/a_star_tb3/benchmarks/benchmark.txt'
-world_file_path = '/home/ahmadaw/MAPF_RoboSim/ros2_ws/src/Implementation-of-A-star-algorithm-for-path-planning-of-Turtlebot-in-an-obstacle-environment/a_star_tb3/worlds/benchmark.world'
+map_file_path = '/home/ali/MAPF_RoboSim/ros2_ws/src/Implementation-of-A-star-algorithm-for-path-planning-of-Turtlebot-in-an-obstacle-environment/a_star_tb3/benchmarks/benchmark.txt'
+world_file_path = '/home/ali/MAPF_RoboSim/ros2_ws/src/Implementation-of-A-star-algorithm-for-path-planning-of-Turtlebot-in-an-obstacle-environment/a_star_tb3/worlds/benchmark.world'
 
 # Convert
 convert_map_to_world(map_file_path, world_file_path)

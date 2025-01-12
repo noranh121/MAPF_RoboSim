@@ -24,19 +24,61 @@ Gazebo Video Link - https://drive.google.com/file/d/1zMZkRd9BUZkixb4Scdb6FKqUckA
 
 start_time = time.time()
 
-map_path = map_file_path = '/home/ahmadaw/MAPF_RoboSim/ros2_ws/src/Implementation-of-A-star-algorithm-for-path-planning-of-Turtlebot-in-an-obstacle-environment/a_star_tb3/benchmarks/benchmark.txt'
+map_path = map_file_path = '/home/ali/MAPF_RoboSim/ros2_ws/src/Implementation-of-A-star-algorithm-for-path-planning-of-Turtlebot-in-an-obstacle-environment/a_star_tb3/benchmarks/benchmark.txt'
 class A_star:
 
-    def convert_map_to_obstacles(self,map_file, cell_size=0.1):
-        obstacles = OrderedSet()
+    
+    def convert_map_to_obstacles(self,map_file, cell_size=0.2):
         with open(map_file, 'r') as f:
             lines = f.readlines()
 
-        grid = [line.strip() for line in lines if not line.startswith("type") and not line.startswith("height") and not line.startswith("width")]
-        for y, row in enumerate(grid):
-            for x, cell in enumerate(row):
-                if cell == '@':
-                    obstacles.add((np.round(x*cell_size, 2), np.round(y*cell_size, 2)))
+        height = int([line.split()[1] for line in lines if line.startswith("height")][0])
+        width = int([line.split()[1] for line in lines if line.startswith("width")][0])
+        grid_lines = [line.strip() for line in lines if not line.startswith("type") and not line.startswith("height") and not line.startswith("width") and not line.startswith("map")]
+        grid = [line.ljust(width, '.') for line in grid_lines]
+
+        obstacles = OrderedSet()
+        visited = [[False for _ in range(width)] for _ in range(height)]
+
+        for y in range(height):
+            for x in range(width):
+                if grid[y][x] == '@' and not visited[y][x]:
+                    # Check horizontal sequence
+                    end_x = x
+                    while end_x + 1 < width and grid[y][end_x + 1] == '@' and not visited[y][end_x + 1]:
+                        end_x += 1
+
+                    # Check vertical sequence
+                    end_y = y
+                    while end_y + 1 < height and grid[end_y + 1][x] == '@' and not visited[end_y + 1][x]:
+                        end_y += 1
+
+                    # Determine whether to create horizontal or vertical block
+                    if end_x > x:  # Horizontal block
+                        for i in range(x, end_x + 1):
+                            visited[y][i] = True
+                        center_x = (x + end_x + 1) / 2 * cell_size 
+                        center_y = (y + y + 1) / 2 * cell_size
+                        size_x = (end_x - x + 1) * cell_size
+                        size_y = (y - y + 1) * cell_size
+                        obstacles.add((np.round(center_x, 2), np.round(center_y, 2),np.round(size_x, 2),np.round(size_y, 2)))
+                    elif end_y > y and end_x == x:  # Vertical block
+                        for i in range(y, end_y + 1):
+                            visited[i][x] = True
+                        center_x = (x + x + 1) / 2 * cell_size 
+                        center_y = (y + end_y + 1) / 2 * cell_size
+                        size_x = (x - x + 1) * cell_size
+                        size_y = (end_y - y + 1) * cell_size
+                        obstacles.add((np.round(center_x, 2), np.round(center_y, 2),np.round(size_x, 2),np.round(size_y, 2)))
+                    else:  # Single isolated block
+                        visited[y][x] = True
+                        center_x = (x + x + 1) / 2 * cell_size 
+                        center_y = (y + y + 1) / 2 * cell_size
+                        size_x = (x - x + 1) * cell_size
+                        size_y = (y - y + 1) * cell_size
+                        obstacles.add((np.round(center_x, 2), np.round(center_y, 2),np.round(size_x, 2),np.round(size_y, 2)))
+
+        #SET ===> EACH OBSTACLE = TUPLE ==> (CENTER_X, CENTER_Y, SIZE_X, SIZE_Y)
         return obstacles
 
     # Function to flip the co-ordinate points
@@ -105,43 +147,64 @@ class A_star:
         pygame.quit()
         # video.export(verbose=True)
 
-    def check_obstacles(self, d):
-        obstacles = OrderedSet()
-        obstacles_positions = self.convert_map_to_obstacles(map_path)
-        for pos in obstacles_positions:
-            x, y = pos
-            for obs in self.block_occupancy(x,y):
-                _x,_y = obs
-                obstacles.add((_x,_y))
-        # for x in np.arange(0, 4.1, 0.01):
-        #     for y in np.arange(0, 4.1, 0.01):
-        #         if (x >= (1.5 - d) and y >= (0.75-d) and x <= (1.65 + d) and y <= 2):
-        #             obstacles.add((np.round(x, 2), np.round(y, 2)))
-        #         if (x >= (2.5 - d) and y >= 0 and x <= (2.65 + d) and y <= (1.25 + d)):
-        #             obstacles.add((np.round(x, 2), np.round(y, 2)))
-        #         if ((x-4)**2 + (y-1.1)**2 - (0.5+d)**2) <= 0:
-        #             obstacles.add((np.round(x, 2), np.round(y, 2)))
-        #         if (x >= (4-d) or y >= (4-d) or x <= d or y <= d):
-        #             obstacles.add((np.round(x, 2), np.round(y, 2)))
-        return obstacles
+    # def check_obstacles(self, d):
+    #     obstacles = OrderedSet()
+    #     obstacles_positions = self.convert_map_to_obstacles(map_path)
+    #     #SET ===> EACH OBSTACLE = TUPLE ==> (CENTER_X, CENTER_Y, SIZE_X, SIZE_Y)
+    #     for pos in obstacles_positions:
+    #         x, y = pos
+    #         for obs in self.block_occupancy(x,y):
+    #             _x,_y = obs
+    #             obstacles.add((_x,_y))
+    #     # for x in np.arange(0, 4.1, 0.01):
+    #     #     for y in np.arange(0, 4.1, 0.01):
+    #     #         if (x >= (1.5 - d) and y >= (0.75-d) and x <= (1.65 + d) and y <= 2):
+    #     #             obstacles.add((np.round(x, 2), np.round(y, 2)))
+    #     #         if (x >= (2.5 - d) and y >= 0 and x <= (2.65 + d) and y <= (1.25 + d)):
+    #     #             obstacles.add((np.round(x, 2), np.round(y, 2)))
+    #     #         if ((x-4)**2 + (y-1.1)**2 - (0.5+d)**2) <= 0:
+    #     #             obstacles.add((np.round(x, 2), np.round(y, 2)))
+    #     #         if (x >= (4-d) or y >= (4-d) or x <= d or y <= d):
+    #     #             obstacles.add((np.round(x, 2), np.round(y, 2)))
+    #     return obstacles
     
     #ADDED===========================================================ADDED
-    def block_occupancy(self,center_x, center_y, width=0.2, height=0.2, threshold=0.01):
-        x_min = center_x - width / 2
-        x_max = center_x + width / 2
-        y_min = center_y - height / 2
-        y_max = center_y + height / 2
-        # Generate the (x, y) pairs
-        x_values = [round(x, 3) for x in self.frange(x_min, x_max, threshold)]
-        y_values = [round(y, 3) for y in self.frange(y_min, y_max, threshold)]
-
-        occupied_points = [(x, y) for x in x_values for y in y_values]
-        return occupied_points
+    def is_point_in_any_block(self, x_tocheck, y_tocheck):
+        for x_center, y_center, half_length_x , half_length_y in obstacle_space:
+            if self.is_point_within_block(x_center, y_center, x_tocheck, y_tocheck, half_length_x, half_length_y):
+                return True
+        return False
     
-    def frange(self,start, stop, step):
-        while start <= stop:
-            yield start
-            start += step
+    def is_point_within_block(self,x_center, y_center, x_tocheck, y_tocheck, half_length_x, half_length_y , threshold_x = 0.1 , threshold_y = 0.1):
+        #half_length = 0.05  # Half the side length (10 cm / 2)
+        x_min = x_center - half_length_x
+        x_max = x_center + half_length_x
+        y_min = y_center - half_length_y
+        y_max = y_center + half_length_y
+
+        # Check if the point lies within the block's boundaries
+        if x_min <= x_tocheck <= x_max and y_min <= y_tocheck <= y_max:
+            return True
+        return False
+    
+
+
+    # def block_occupancy(self,center_x, center_y, width=0.2, height=0.2, threshold=0.01):
+    #     x_min = center_x - width / 2
+    #     x_max = center_x + width / 2
+    #     y_min = center_y - height / 2
+    #     y_max = center_y + height / 2
+    #     # Generate the (x, y) pairs
+    #     x_values = [round(x, 3) for x in self.frange(x_min, x_max, threshold)]
+    #     y_values = [round(y, 3) for y in self.frange(y_min, y_max, threshold)]
+
+    #     occupied_points = [(x, y) for x in x_values for y in y_values]
+    #     return occupied_points
+    
+    # def frange(self,start, stop, step):
+    #     while start <= stop:
+    #         yield start
+    #         start += step
     #ADDED===========================================================ADDED
 
 
@@ -183,7 +246,8 @@ class A_star:
         elif Thetan <= -360:
             Thetan = Thetan % 360 + 360
         current_pos = (X_n, Y_n, np.round(Thetan, 2))
-        if (current_pos[0], current_pos[1]) not in obstacle_space:
+        #if (current_pos[0], current_pos[1]) not in obstacle_space:
+        if not self.is_point_in_any_block(current_pos[0], current_pos[1]):
             if current_pos in queue_nodes:
                 if queue_nodes[current_pos][0] > final_cost:
                     queue_nodes[current_pos] = final_cost, cost2_go, cc
@@ -199,7 +263,7 @@ class A_star:
 
     def Actions(self, ul, ur, pos, c2c):
         t = 0
-        dt = 1
+        dt = 0.2
         Xn = pos[0]
         Yn = pos[1]
         Thetan = np.deg2rad(pos[2])
@@ -263,14 +327,14 @@ class A_star:
         L = 0.16
         # d = self.input_cdr('clearance')
         #obstacle_space = self.check_obstacles((d/1000)+r)
-        obstacle_space = self.check_obstacles((d/1000)+r)
+        obstacle_space = self.convert_map_to_obstacles(map_file_path)
         # print("Obstacle_space ==> ", obstacle_space)
         # initial_state = input_start('Start'), input_cdr('start point')
         # initial_state = (initial_state[0][0], initial_state[0][1], initial_state[1])
         initial_state = (startx, starty, 0)
         # node_state_g = input_start('Goal'), input_cdr('goal point')
         # node_state_g = (node_state_g[0][0], node_state_g[0][1], node_state_g[1])
-        node_state_g = (np.round(goalx+r), np.round(goaly+r), 0)
+        node_state_g = (goalx, goaly, 0)
         cost = 0
         closed_list = OrderedSet()
         cg = np.sqrt(

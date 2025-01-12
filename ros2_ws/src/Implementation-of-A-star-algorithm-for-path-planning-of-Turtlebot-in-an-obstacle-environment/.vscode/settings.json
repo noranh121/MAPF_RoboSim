@@ -1,0 +1,26 @@
+{
+    "python.autoComplete.extraPaths": [
+        "/home/ali/new_ws/build/autonomous_tb",
+        "/home/ali/new_ws/install/autonomous_tb/lib/python3.10/site-packages",
+        "/home/ali/ros2_ws/install/turtlesim/local/lib/python3.10/dist-packages",
+        "/home/ali/ros2_ws/install/turtlebot3_teleop/lib/python3.10/site-packages",
+        "/home/ali/ros2_ws/install/turtlebot3_example/lib/python3.10/site-packages",
+        "/home/ali/ros2_ws/install/a_star_tb3/lib/python3.10/site-packages",
+        "/home/ali/ros2_ws/src/install/turtlesim/local/lib/python3.10/dist-packages",
+        "/home/ali/ros2_ws/src/install/a_star_tb3/lib/python3.10/site-packages",
+        "/opt/ros/humble/lib/python3.10/site-packages",
+        "/opt/ros/humble/local/lib/python3.10/dist-packages"
+    ],
+    "python.analysis.extraPaths": [
+        "/home/ali/new_ws/build/autonomous_tb",
+        "/home/ali/new_ws/install/autonomous_tb/lib/python3.10/site-packages",
+        "/home/ali/ros2_ws/install/turtlesim/local/lib/python3.10/dist-packages",
+        "/home/ali/ros2_ws/install/turtlebot3_teleop/lib/python3.10/site-packages",
+        "/home/ali/ros2_ws/install/turtlebot3_example/lib/python3.10/site-packages",
+        "/home/ali/ros2_ws/install/a_star_tb3/lib/python3.10/site-packages",
+        "/home/ali/ros2_ws/src/install/turtlesim/local/lib/python3.10/dist-packages",
+        "/home/ali/ros2_ws/src/install/a_star_tb3/lib/python3.10/site-packages",
+        "/opt/ros/humble/lib/python3.10/site-packages",
+        "/opt/ros/humble/local/lib/python3.10/dist-packages"
+    ]
+}
