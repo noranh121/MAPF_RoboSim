@@ -17,10 +17,14 @@ def convert_map_to_world(map_file, world_file, cell_size=0.1):
     with open(map_file, 'r') as f:
         lines = f.readlines()
 
-    # Extract map dimensions and grid
     height = int([line.split()[1] for line in lines if line.startswith("height")][0])
     width = int([line.split()[1] for line in lines if line.startswith("width")][0])
-    grid = [line.strip() for line in lines if not line.startswith("type") and not line.startswith("height") and not line.startswith("width")]
+    grid_lines = [line.strip() for line in lines if not line.startswith("type") and not line.startswith("height") and not line.startswith("width") and not line.startswith("map")]
+    grid = [line.ljust(width, '.') for line in grid_lines]
+    # for g in grid:
+    #     print(g)
+
+    # grid = [line.strip() for line in lines if not line.startswith("type") and not line.startswith("height") and not line.startswith("width")]
 
     # Start creating the .world file
     sdf = ET.Element('sdf', version="1.7")
@@ -117,25 +121,53 @@ def convert_map_to_world(map_file, world_file, cell_size=0.1):
     elevation=ET.SubElement(spherical_coordinates,'elevation').text='0'
     heading_deg=ET.SubElement(spherical_coordinates,'heading_deg').text='0'
 
-
+    visited = [[False for _ in range(width)] for _ in range(height)]
     
+    def create_block(start_x, start_y, end_x, end_y):
+        """Create a block for a sequence of @ symbols."""
+        center_x = (start_x + end_x + 1) / 2 * cell_size
+        center_y = (start_y + end_y + 1) / 2 * cell_size
+        size_x = (end_x - start_x + 1) * cell_size
+        size_y = (end_y - start_y + 1) * cell_size
 
+        model = ET.SubElement(world, 'model', name=f"block_{start_x}_{start_y}")
+        ET.SubElement(model, 'pose').text = f"{center_x} {center_y} {cell_size * 1.5} 0 0 0"
+        link = ET.SubElement(model, 'link', name="link")
+        collision = ET.SubElement(link, 'collision', name="collision")
+        geometry = ET.SubElement(collision, 'geometry')
+        box = ET.SubElement(geometry, 'box')
+        ET.SubElement(box, 'size').text = f"{size_x } {size_y} {cell_size * 3}"
+        visual = ET.SubElement(link, 'visual', name="visual")
+        geometry = ET.SubElement(visual, 'geometry')
+        box = ET.SubElement(geometry, 'box')
+        ET.SubElement(box, 'size').text = f"{size_x} {size_y} {cell_size * 3}"
 
-    # Insert obstacles
-    for y, row in enumerate(grid):
-        for x, cell in enumerate(row):
-            if cell == '@':  # Obstacle
-                model = ET.SubElement(world, 'model', name=f"block_{x}_{y}")
-                ET.SubElement(model, 'pose').text = f"{x * cell_size} {y * cell_size} {cell_size * 1.5} 0 0 0"
-                link = ET.SubElement(model, 'link', name="link")
-                collision = ET.SubElement(link, 'collision', name="collision")
-                geometry = ET.SubElement(collision, 'geometry')
-                box = ET.SubElement(geometry, 'box')
-                ET.SubElement(box, 'size').text = f"{cell_size} {cell_size} {cell_size * 3}"
-                visual = ET.SubElement(link, 'visual', name="visual")
-                geometry = ET.SubElement(visual, 'geometry')
-                box = ET.SubElement(geometry, 'box')
-                ET.SubElement(box, 'size').text = f"{cell_size} {cell_size} {cell_size * 3}"
+    for y in range(height):
+        for x in range(width):
+            if grid[y][x] == '@' and not visited[y][x]:
+                # Check horizontal sequence
+                end_x = x
+                while end_x + 1 < width and grid[y][end_x + 1] == '@' and not visited[y][end_x + 1]:
+                    end_x += 1
+
+                # Check vertical sequence
+                end_y = y
+                while end_y + 1 < height and grid[end_y + 1][x] == '@' and not visited[end_y + 1][x]:
+                    end_y += 1
+
+                # Determine whether to create horizontal or vertical block
+                if end_x > x:  # Horizontal block
+                    for i in range(x, end_x + 1):
+                        visited[y][i] = True
+                    create_block(x, y, end_x, y)
+                elif end_y > y and end_x == x:  # Vertical block
+                    for i in range(y, end_y + 1):
+                        visited[i][x] = True
+                    create_block(x, y, x, end_y)
+                else:  # Single isolated block
+                    visited[y][x] = True
+                    create_block(x, y, x, y)
+    
 
     # Write to .world file
     tree = ET.ElementTree(sdf)

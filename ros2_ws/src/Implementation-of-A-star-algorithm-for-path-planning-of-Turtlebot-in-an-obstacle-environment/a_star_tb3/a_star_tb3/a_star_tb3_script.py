@@ -24,7 +24,7 @@ Gazebo Video Link - https://drive.google.com/file/d/1zMZkRd9BUZkixb4Scdb6FKqUckA
 
 start_time = time.time()
 
-map_path = map_file_path = '/home/ahmadaw/MAPF_RoboSim/ros2_ws/src/Implementation-of-A-star-algorithm-for-path-planning-of-Turtlebot-in-an-obstacle-environment/a_star_tb3/benchmarks/bb.txt'
+map_path = map_file_path = '/home/ahmadaw/MAPF_RoboSim/ros2_ws/src/Implementation-of-A-star-algorithm-for-path-planning-of-Turtlebot-in-an-obstacle-environment/a_star_tb3/benchmarks/benchmark.txt'
 class A_star:
 
     def convert_map_to_obstacles(self,map_file, cell_size=0.1):
@@ -222,7 +222,7 @@ class A_star:
         Yn = np.round(Yn, 2)
         Thetan = np.round(Thetan, 2)
         Thetan = np.rad2deg(Thetan)
-        if 0 <= Xn <= 4 and 0 <= Yn <= 4:
+        if 0 <= Xn <= 128 and 0 <= Yn <= 128:
             self.check_conditions(Xn, Yn, pos[0], pos[1],
                                   pos[2], Thetan, cc, ls, velocity)
         return
@@ -326,7 +326,7 @@ class ROS_move(Node):
                 self.vel_publisher_.publish(vel_msg)
                 print('Moving turtlebot: ',self.namespace,'-> ', self.i, 'Linear:',
                       vel_msg.linear.x, 'm/s', 'Angular:', vel_msg.angular.z, 'm/s')
-                time.sleep(0.2)
+                time.sleep(1)
             self.i += 1
         else:
             stop_msg = Twist()
@@ -367,7 +367,7 @@ def main():
 
 
     velo_scaled = [(x * 2, y * 2, z * 2) for x, y, z in velo]
-    pygame.time.wait(60000)
+    pygame.time.wait(10000)
     rclpy.init()
     move_turtlebot = ROS_move(velo,"robot1")
     # move_turtlebot2 = ROS_move(velo2,"robot2")
