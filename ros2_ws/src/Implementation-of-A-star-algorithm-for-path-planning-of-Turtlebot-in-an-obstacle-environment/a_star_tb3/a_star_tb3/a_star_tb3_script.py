@@ -98,55 +98,128 @@ class A_star:
     def euclidean_distance(self, x1, x2, y1, y2):
         return (np.sqrt((x1-x2)**2 + (y1-y2)**2))
 
-    def create_map(self, d, explored, optimal_path, path,name):
+    # def create_map(self, d, explored, optimal_path, path,name):
+    #     pygame.init()
+    #     size = [600, 200]
+    #     screen = pygame.display.set_mode(size)
+    #     pygame.display.set_caption("Weighted A-star")
+    #     video = vidmaker.Video(f"{name}_anime.mp4", late_export=True)
+    #     clock = pygame.time.Clock()
+    #     running = True
+    #     x1, y1 = self.rect_pygame([150-d, 75-d], 200, 125+d)
+    #     x3, y3 = self.rect_pygame([250-d, 0], 200, 125+d)
+    #     x2, y2 = self.rect_pygame([150, 75], 200, 125)
+    #     x4, y4 = self.rect_pygame([250, 0], 200, 125)
+
+    #     while running:
+    #         for event in pygame.event.get():
+    #             if event.type == pygame.QUIT:
+    #                 running = False
+    #         pygame.draw.rect(screen, "teal", [x1, y1, 15+(2*d), 125+d], 0)
+    #         pygame.draw.rect(screen, "skyblue", [x2, y2, 15, 125], 0)
+    #         pygame.draw.rect(screen, "teal", [x3, y3, 15+(2*d), 125+d], 0)
+    #         pygame.draw.rect(screen, "skyblue", [x4, y4, 15, 125], 0)
+    #         pygame.draw.rect(screen, "teal", [0, 0, d, 200], 0)
+    #         pygame.draw.rect(screen, "teal", [0, 0, 600, d], 0)
+    #         pygame.draw.rect(screen, "teal", [0, 200-d, 600, d], 0)
+    #         pygame.draw.rect(screen, "teal", [600-d, 0, d, 200], 0)
+    #         pygame.draw.circle(
+    #             screen, "teal", self.coords_pygame((400, 110), 200), 50+d)
+    #         pygame.draw.circle(screen, "skyblue",
+    #                            self.coords_pygame((400, 110), 200), 50)
+    #         for l in range(len(explored)):
+    #             pygame.draw.lines(screen, "white", False,
+    #                               path[explored[l]][1], width=1)
+    #             video.update(pygame.surfarray.pixels3d(
+    #                 screen).swapaxes(0, 1), inverted=False)
+    #             pygame.display.flip()
+    #             clock.tick(500)
+    #         for i in range(len(optimal_path)):
+    #             if optimal_path[i] != initial_state:
+    #                 pygame.draw.lines(screen, "red", False,
+    #                                   path[optimal_path[i]][1], width=3)
+    #                 video.update(pygame.surfarray.pixels3d(
+    #                     screen).swapaxes(0, 1), inverted=False)
+    #                 pygame.display.flip()
+    #                 clock.tick(20)
+    #         running = False
+    #     pygame.display.flip()
+    #     pygame.time.wait(3000)
+    #     pygame.quit()
+        # video.export(verbose=True)
+
+
+########################ADDED_NEW_CREATE_MAP######################################################
+    def create_map(self,d,map_width, map_height, obstacles, explored, optimal_path, path):
         pygame.init()
-        size = [600, 200]
+        multiplier = 100
+        map_height_mod = map_height*multiplier
+        map_width_mod = map_width*multiplier
+        size = [map_width_mod, map_height_mod]
         screen = pygame.display.set_mode(size)
         pygame.display.set_caption("Weighted A-star")
-        video = vidmaker.Video(f"{name}_anime.mp4", late_export=True)
+        video = vidmaker.Video("path.mp4", late_export=True)
         clock = pygame.time.Clock()
         running = True
-        x1, y1 = self.rect_pygame([150-d, 75-d], 200, 125+d)
-        x3, y3 = self.rect_pygame([250-d, 0], 200, 125+d)
-        x2, y2 = self.rect_pygame([150, 75], 200, 125)
-        x4, y4 = self.rect_pygame([250, 0], 200, 125)
-
+        #CHANGE THE rect_pygame IN ACTIONS !!!!!!! 200 ==> 12800
         while running:
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     running = False
-            pygame.draw.rect(screen, "teal", [x1, y1, 15+(2*d), 125+d], 0)
-            pygame.draw.rect(screen, "skyblue", [x2, y2, 15, 125], 0)
-            pygame.draw.rect(screen, "teal", [x3, y3, 15+(2*d), 125+d], 0)
-            pygame.draw.rect(screen, "skyblue", [x4, y4, 15, 125], 0)
-            pygame.draw.rect(screen, "teal", [0, 0, d, 200], 0)
-            pygame.draw.rect(screen, "teal", [0, 0, 600, d], 0)
-            pygame.draw.rect(screen, "teal", [0, 200-d, 600, d], 0)
-            pygame.draw.rect(screen, "teal", [600-d, 0, d, 200], 0)
-            pygame.draw.circle(
-                screen, "teal", self.coords_pygame((400, 110), 200), 50+d)
-            pygame.draw.circle(screen, "skyblue",
-                               self.coords_pygame((400, 110), 200), 50)
-            for l in range(len(explored)):
-                pygame.draw.lines(screen, "white", False,
-                                  path[explored[l]][1], width=1)
-                video.update(pygame.surfarray.pixels3d(
-                    screen).swapaxes(0, 1), inverted=False)
-                pygame.display.flip()
-                clock.tick(500)
+            # Draw each obstacle with padding (teal) and actual size (skyblue)
+            for (center_x, center_y, size_x, size_y) in obstacles:
+                # Calculate positions for padded obstacle
+                padded_x = center_x - (size_x / 2) - d
+                padded_y = center_y - (size_y / 2) - d
+                padded_width = size_x + (2 * d)
+                padded_height = size_y + (2 * d)
+                # Calculate positions for actual obstacle
+                actual_x = center_x - (size_x / 2)
+                actual_y = center_y - (size_y / 2)
+                # Flip Y-axis for Pygame drawing
+                padded_rect = self.rect_pygame((padded_x*multiplier, padded_y*multiplier), map_height_mod, padded_height*multiplier)
+                actual_rect = self.rect_pygame((actual_x*multiplier, actual_y*multiplier), map_height_mod, size_y*multiplier)
+                # Draw padded obstacle (teal)
+                pygame.draw.rect(screen, "teal", [padded_rect[0], padded_rect[1], padded_width*multiplier, padded_height*multiplier], 0)
+                # Draw actual obstacle (skyblue)
+                pygame.draw.rect(screen, "skyblue", [actual_rect[0], actual_rect[1], size_x*multiplier, size_y*multiplier], 0)
+
+            
+            
+            # Draw explored paths
+            scale_factor = 1.0  # Scaling factor
+
+            # for l in range(len(explored)):
+            #     curr_list = []
+
+            #     for x, y in path[explored[l]][1]:
+            #         curr_list.append((x*scale_factor,y*scale_factor))
+            #         #print(f"Curr_List ==> x: {x}, y: {y}")
+
+            #     #pygame.draw.lines(screen, "white", False, path[explored[l]][1], width=1)
+            #     pygame.draw.lines(screen, "white", False, curr_list, width=3)
+            #     #video.update(pygame.surfarray.pixels3d(screen).swapaxes(0,1),inverted=False)
+            #     pygame.display.flip()
+            #     clock.tick(500)
+            # Draw optimal path
             for i in range(len(optimal_path)):
                 if optimal_path[i] != initial_state:
-                    pygame.draw.lines(screen, "red", False,
-                                      path[optimal_path[i]][1], width=3)
-                    video.update(pygame.surfarray.pixels3d(
-                        screen).swapaxes(0, 1), inverted=False)
+                    pygame.draw.lines(screen, "red", False, path[optimal_path[i]][1], width=5)
+                    #video.update(pygame.surfarray.pixels3d(
+                    #     screen).swapaxes(0, 1), inverted=False)
                     pygame.display.flip()
                     clock.tick(20)
             running = False
         pygame.display.flip()
         pygame.time.wait(3000)
         pygame.quit()
-        # video.export(verbose=True)
+    #   video.export(verbose=True)
+
+
+
+
+    
+########################ADDED_NEW_CREATE_MAP######################################################
 
     # def check_obstacles(self, d):
     #     obstacles = OrderedSet()
@@ -170,13 +243,18 @@ class A_star:
     #     return obstacles
     
     #ADDED===========================================================ADDED
+    # def is_point_in_any_block(self, x_tocheck, y_tocheck):
+    #     for x_center, y_center, half_length_x , half_length_y in obstacle_space:
+    #         if self.is_point_within_block(x_center, y_center, x_tocheck, y_tocheck, half_length_x, half_length_y):
+    #             return True
+    #     return False
     def is_point_in_any_block(self, x_tocheck, y_tocheck):
-        for x_center, y_center, half_length_x , half_length_y in obstacle_space:
-            if self.is_point_within_block(x_center, y_center, x_tocheck, y_tocheck, half_length_x, half_length_y):
+        for x_center, y_center, size_x , size_y in obstacle_space:
+            if self.is_point_within_block(x_center, y_center, x_tocheck, y_tocheck, size_x/2, size_y/2):
                 return True
         return False
     
-    def is_point_within_block(self,x_center, y_center, x_tocheck, y_tocheck, half_length_x, half_length_y , threshold_x = 0.1 , threshold_y = 0.1):
+    def is_point_within_block(self,x_center, y_center, x_tocheck, y_tocheck, half_length_x, half_length_y , threshold_x = 0.2 , threshold_y = 0.2):
         #half_length = 0.05  # Half the side length (10 cm / 2)
         x_min = x_center - (half_length_x + threshold_x)
         x_max = x_center + (half_length_x + threshold_x)
@@ -269,7 +347,8 @@ class A_star:
         Yn = pos[1]
         Thetan = np.deg2rad(pos[2])
         ls = OrderedSet()
-        ls.add(self.coords_cm_pygame((Xn, Yn), 200))
+        ls.add(self.coords_cm_pygame((Xn, Yn),  1280))
+        #ls.add(self.coords_cm_pygame((Xn, Yn), 200))
         cc = 0
         while t < 1:
             xi = Xn
@@ -279,7 +358,8 @@ class A_star:
             Thetan += (R/L)*(ur-ul)*dt
             t = t + dt
             cc += self.euclidean_distance(xi, Xn, yi, Yn)
-            ls.add(self.coords_cm_pygame((Xn, Yn), 200))
+            #ls.add(self.coords_cm_pygame((Xn, Yn), 200))
+            ls.add(self.coords_cm_pygame((Xn, Yn), 1280))
         cc += c2c
         velocity = ((0.5*R*(ul + ur)*np.cos(Thetan)),
                     (0.5*R*(ul + ur)*np.sin(Thetan)), ((R/L)*(ur-ul)))
@@ -287,7 +367,7 @@ class A_star:
         Yn = np.round(Yn, 2)
         Thetan = np.round(Thetan, 2)
         Thetan = np.rad2deg(Thetan)
-        if 0 <= Xn <= 128 and 0 <= Yn <= 128:
+        if 0 <= Xn <= 12.8 and 0 <= Yn <= 12.8:
             self.check_conditions(Xn, Yn, pos[0], pos[1],
                                   pos[2], Thetan, cc, ls, velocity)
         return
@@ -362,7 +442,7 @@ class A_star:
                     end_time = time.time()
                     path_time = end_time - start_time
                     print('Time to calculate path:', path_time, 'seconds')
-                    # self.create_map(d/10, visited_nodes, back_track, path_dict,name)
+                    self.create_map(0.2,12.8,12.8, obstacle_space,visited_nodes, back_track, path_dict)
                     return velocity_path
         print("Path cannot be acheived")
         exit()
@@ -391,7 +471,7 @@ class ROS_move(Node):
                 self.vel_publisher_.publish(vel_msg)
                 print('Moving turtlebot: ',self.namespace,'-> ', self.i, 'Linear:',
                       vel_msg.linear.x, 'm/s', 'Angular:', vel_msg.angular.z, 'm/s')
-                time.sleep(1)
+                time.sleep(0.2)
             self.i += 1
         else:
             stop_msg = Twist()
