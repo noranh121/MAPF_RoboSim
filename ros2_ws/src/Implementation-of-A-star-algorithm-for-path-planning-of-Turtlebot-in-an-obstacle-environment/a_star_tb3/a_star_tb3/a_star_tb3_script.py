@@ -12,6 +12,7 @@ from rclpy.node import Node
 from geometry_msgs.msg import Twist
 from rclpy.exceptions import ROSInterruptException
 import argparse
+import itertools
 
 '''
 Github repository - https://github.com/sandipsharan/A-star-algorithm-for-turtlebot.git
@@ -24,11 +25,11 @@ Gazebo Video Link - https://drive.google.com/file/d/1zMZkRd9BUZkixb4Scdb6FKqUckA
 
 start_time = time.time()
 
-map_path = map_file_path = '/home/ali/MAPF_RoboSim/ros2_ws/src/Implementation-of-A-star-algorithm-for-path-planning-of-Turtlebot-in-an-obstacle-environment/a_star_tb3/benchmarks/benchmark.txt'
+map_path = map_file_path = '/home/maged/MAPF_RoboSim/ros2_ws/src/Implementation-of-A-star-algorithm-for-path-planning-of-Turtlebot-in-an-obstacle-environment/a_star_tb3/benchmarks/benchmark.txt'
 class A_star:
 
     
-    def convert_map_to_obstacles(self,map_file, cell_size=0.2):
+    def convert_map_to_obstacles(self,map_file, cell_size=0.1):
         with open(map_file, 'r') as f:
             lines = f.readlines()
 
@@ -177,10 +178,10 @@ class A_star:
     
     def is_point_within_block(self,x_center, y_center, x_tocheck, y_tocheck, half_length_x, half_length_y , threshold_x = 0.1 , threshold_y = 0.1):
         #half_length = 0.05  # Half the side length (10 cm / 2)
-        x_min = x_center - half_length_x
-        x_max = x_center + half_length_x
-        y_min = y_center - half_length_y
-        y_max = y_center + half_length_y
+        x_min = x_center - (half_length_x + threshold_x)
+        x_max = x_center + (half_length_x + threshold_x)
+        y_min = y_center - (half_length_y + threshold_y)
+        y_max = y_center + (half_length_y + threshold_y)
 
         # Check if the point lies within the block's boundaries
         if x_min <= x_tocheck <= x_max and y_min <= y_tocheck <= y_max:
