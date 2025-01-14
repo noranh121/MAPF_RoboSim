@@ -25,7 +25,7 @@ Gazebo Video Link - https://drive.google.com/file/d/1zMZkRd9BUZkixb4Scdb6FKqUckA
 
 start_time = time.time()
 
-map_path = map_file_path = '/home/ahmadaw/MAPF_RoboSim/ros2_ws/src/Implementation-of-A-star-algorithm-for-path-planning-of-Turtlebot-in-an-obstacle-environment/a_star_tb3/benchmarks/benchmark.txt'
+map_path = map_file_path = '/home/ali/MAPF_RoboSim/ros2_ws/src/Implementation-of-A-star-algorithm-for-path-planning-of-Turtlebot-in-an-obstacle-environment/a_star_tb3/benchmarks/benchmark.txt'
 class A_star:
 
     
@@ -152,7 +152,7 @@ class A_star:
 ########################ADDED_NEW_CREATE_MAP######################################################
     def create_map(self,d,map_width, map_height, obstacles, explored, optimal_path, path):
         pygame.init()
-        multiplier = 25
+        multiplier = 100
         map_height_mod = map_height*multiplier
         map_width_mod = map_width*multiplier
         size = [map_width_mod, map_height_mod]
@@ -161,7 +161,7 @@ class A_star:
         video = vidmaker.Video("path.mp4", late_export=True)
         clock = pygame.time.Clock()
         running = True
-        #CHANGE THE rect_pygame IN ACTIONS !!!!!!! 200 ==> 12800
+        #CHANGE THE rect_pygame IN ACTIONS !!!!!!! 200 ==> 1280
         while running:
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
@@ -208,7 +208,7 @@ class A_star:
                     for x, y in path[optimal_path[i]][1]:
                         curr_list.append((x*scale_factor,y*scale_factor))
                         # print(f"Curr_List ==> x: {x}, y: {y}")
-                    pygame.draw.lines(screen, "red", False, curr_list, width=1)
+                    pygame.draw.lines(screen, "red", False, curr_list, width=4)
                     #video.update(pygame.surfarray.pixels3d(
                     #     screen).swapaxes(0, 1), inverted=False)
                     pygame.display.flip()
@@ -216,7 +216,7 @@ class A_star:
             running = False
         pygame.display.flip()
         pygame.time.wait(3000)
-        pygame.quit()
+    #   pygame.quit()
     #   video.export(verbose=True)
 
 
@@ -345,8 +345,9 @@ class A_star:
         return
 
     def Actions(self, ul, ur, pos, c2c):
+        multiplier = 0.5
         t = 0
-        dt = 0.2
+        dt = 0.01
         Xn = pos[0]
         Yn = pos[1]
         Thetan = np.deg2rad(pos[2])
@@ -357,16 +358,20 @@ class A_star:
         while t < 1:
             xi = Xn
             yi = Yn
-            Xn += 0.5*R*(ul + ur)*np.cos(Thetan)*dt
-            Yn += 0.5*R*(ul + ur)*np.sin(Thetan)*dt
+            #Xn += 0.5*R*(ul + ur)*np.cos(Thetan)*dt
+            Xn += multiplier*R*(ul + ur)*np.cos(Thetan)*dt
+            #Yn += 0.5*R*(ul + ur)*np.sin(Thetan)*dt
+            Yn += multiplier*R*(ul + ur)*np.sin(Thetan)*dt
             Thetan += (R/L)*(ur-ul)*dt
             t = t + dt
             cc += self.euclidean_distance(xi, Xn, yi, Yn)
             #ls.add(self.coords_cm_pygame((Xn, Yn), 200))
             ls.add(self.coords_cm_pygame((Xn, Yn), 1280))
         cc += c2c
-        velocity = ((0.5*R*(ul + ur)*np.cos(Thetan)),
-                    (0.5*R*(ul + ur)*np.sin(Thetan)), ((R/L)*(ur-ul)))
+        # velocity = ((0.5*R*(ul + ur)*np.cos(Thetan)),
+                    # (0.5*R*(ul + ur)*np.sin(Thetan)), ((R/L)*(ur-ul)))
+        velocity = ((multiplier*R*(ul + ur)*np.cos(Thetan)),
+                    (multiplier*R*(ul + ur)*np.sin(Thetan)), ((R/L)*(ur-ul)))
         Xn = np.round(Xn, 2)
         Yn = np.round(Yn, 2)
         Thetan = np.round(Thetan, 2)
@@ -406,7 +411,10 @@ class A_star:
         RPM2 = (rpm2*2*math.pi)/60
         global action_set, initial_state, node_state_g, closed_list, queue_nodes, visited_nodes, path_dict, obstacle_space, R, L
         action_set = [0, RPM1], [RPM1, 0], [RPM1, RPM1], [0, RPM2], [
-            RPM2, 0], [RPM2, RPM2], [RPM1, RPM2], [RPM2, RPM1]
+            RPM2, 0] #, [RPM2, RPM2], [RPM1, RPM2], [RPM2, RPM1]
+        #action_set = [0, RPM1], [RPM1, 0], [RPM1, RPM1]
+        #, [0, RPM2], [
+        #    RPM2, 0] #, [RPM2, RPM2], [RPM1, RPM2], [RPM2, RPM1]
         r = 0.105
         R = 0.033
         L = 0.16
@@ -417,9 +425,11 @@ class A_star:
         # initial_state = input_start('Start'), input_cdr('start point')
         # initial_state = (initial_state[0][0], initial_state[0][1], initial_state[1])
         initial_state = (startx, starty, 0)
-        # node_state_g = input_start('Goal'), input_cdr('goal point')
+        #initial_state = (startx +0.5, starty+1.0, 0)
+        #node_state_g = input_start('Goal'), input_cdr('goal point')
         # node_state_g = (node_state_g[0][0], node_state_g[0][1], node_state_g[1])
         node_state_g = (goalx, goaly, 0)
+        #node_state_g = (goalx+0.5, goaly+1.0, 0)
         cost = 0
         closed_list = OrderedSet()
         cg = np.sqrt(
@@ -475,7 +485,7 @@ class ROS_move(Node):
                 self.vel_publisher_.publish(vel_msg)
                 print('Moving turtlebot: ',self.namespace,'-> ', self.i, 'Linear:',
                       vel_msg.linear.x, 'm/s', 'Angular:', vel_msg.angular.z, 'm/s')
-                time.sleep(0.2)
+                time.sleep(1)
             self.i += 1
         else:
             stop_msg = Twist()
@@ -516,7 +526,7 @@ def main():
 
 
     velo_scaled = [(x * 2, y * 2, z * 2) for x, y, z in velo]
-    pygame.time.wait(10000)
+    pygame.time.wait(2000)
     rclpy.init()
     move_turtlebot = ROS_move(velo,"robot1")
     # move_turtlebot2 = ROS_move(velo2,"robot2")
