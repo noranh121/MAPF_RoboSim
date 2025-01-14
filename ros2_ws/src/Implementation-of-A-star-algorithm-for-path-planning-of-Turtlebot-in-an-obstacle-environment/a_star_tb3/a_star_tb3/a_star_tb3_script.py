@@ -25,7 +25,7 @@ Gazebo Video Link - https://drive.google.com/file/d/1zMZkRd9BUZkixb4Scdb6FKqUckA
 
 start_time = time.time()
 
-map_path = map_file_path = '/home/maged/MAPF_RoboSim/ros2_ws/src/Implementation-of-A-star-algorithm-for-path-planning-of-Turtlebot-in-an-obstacle-environment/a_star_tb3/benchmarks/benchmark.txt'
+map_path = map_file_path = '/home/ahmadaw/MAPF_RoboSim/ros2_ws/src/Implementation-of-A-star-algorithm-for-path-planning-of-Turtlebot-in-an-obstacle-environment/a_star_tb3/benchmarks/benchmark.txt'
 class A_star:
 
     
@@ -152,7 +152,7 @@ class A_star:
 ########################ADDED_NEW_CREATE_MAP######################################################
     def create_map(self,d,map_width, map_height, obstacles, explored, optimal_path, path):
         pygame.init()
-        multiplier = 100
+        multiplier = 25
         map_height_mod = map_height*multiplier
         map_width_mod = map_width*multiplier
         size = [map_width_mod, map_height_mod]
@@ -187,14 +187,14 @@ class A_star:
             
             
             # Draw explored paths
-            scale_factor = 1.0  # Scaling factor
+            scale_factor = multiplier/100  # Scaling factor
 
             # for l in range(len(explored)):
             #     curr_list = []
 
-            #     for x, y in path[explored[l]][1]:
-            #         curr_list.append((x*scale_factor,y*scale_factor))
-            #         #print(f"Curr_List ==> x: {x}, y: {y}")
+                # for x, y in path[explored[l]][1]:
+                #     curr_list.append((x*scale_factor,y*scale_factor))
+                #     print(f"Curr_List ==> x: {x}, y: {y}")
 
             #     #pygame.draw.lines(screen, "white", False, path[explored[l]][1], width=1)
             #     pygame.draw.lines(screen, "white", False, curr_list, width=3)
@@ -203,8 +203,12 @@ class A_star:
             #     clock.tick(500)
             # Draw optimal path
             for i in range(len(optimal_path)):
+                curr_list=[]
                 if optimal_path[i] != initial_state:
-                    pygame.draw.lines(screen, "red", False, path[optimal_path[i]][1], width=5)
+                    for x, y in path[optimal_path[i]][1]:
+                        curr_list.append((x*scale_factor,y*scale_factor))
+                        # print(f"Curr_List ==> x: {x}, y: {y}")
+                    pygame.draw.lines(screen, "red", False, curr_list, width=1)
                     #video.update(pygame.surfarray.pixels3d(
                     #     screen).swapaxes(0, 1), inverted=False)
                     pygame.display.flip()
