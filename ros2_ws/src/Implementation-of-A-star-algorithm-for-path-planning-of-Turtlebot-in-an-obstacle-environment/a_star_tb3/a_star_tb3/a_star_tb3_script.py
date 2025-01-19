@@ -11,9 +11,19 @@ import rclpy
 from rclpy.node import Node
 from geometry_msgs.msg import Twist
 from rclpy.exceptions import ROSInterruptException
+from nav_msgs.msg import Odometry
 import argparse
+from std_msgs.msg import Int32  # Import the message type for integer
+from turtlesim.msg import Pose
+from std_msgs.msg import Float64MultiArray
+#from geometry_msgs.msg import Pose
 import itertools
+from tf_transformations import euler_from_quaternion
 
+# import sys
+# print(f'path={sys.path}')
+# # from ....ROS2_turtlesim_PID_demo.src.turtle_demo_controller.turtle_demo_controller.turtle_controller_with_PID_controller_server import Controller_Node
+# /home/maged/MAPF_RoboSim/ros2_ws/src/ROS2_turtlesim_PID_demo/src/turtle_demo_controller/turtle_demo_controller/turtle_controller_with_PID_controller_server.py
 '''
 Github repository - https://github.com/sandipsharan/A-star-algorithm-for-turtlebot.git
 '''
@@ -25,10 +35,9 @@ Gazebo Video Link - https://drive.google.com/file/d/1zMZkRd9BUZkixb4Scdb6FKqUckA
 
 start_time = time.time()
 
-map_path = map_file_path = '/home/ali/MAPF_RoboSim/ros2_ws/src/Implementation-of-A-star-algorithm-for-path-planning-of-Turtlebot-in-an-obstacle-environment/a_star_tb3/benchmarks/benchmark.txt'
+map_path = map_file_path = '/home/maged/MAPF_RoboSim/ros2_ws/src/Implementation-of-A-star-algorithm-for-path-planning-of-Turtlebot-in-an-obstacle-environment/a_star_tb3/benchmarks/benchmark.txt'
 class A_star:
 
-    
     def convert_map_to_obstacles(self,map_file, cell_size=0.1):
         with open(map_file, 'r') as f:
             lines = f.readlines()
@@ -152,7 +161,7 @@ class A_star:
 ########################ADDED_NEW_CREATE_MAP######################################################
     def create_map(self,d,map_width, map_height, obstacles, explored, optimal_path, path):
         pygame.init()
-        multiplier = 100
+        multiplier = 50
         map_height_mod = map_height*multiplier
         map_width_mod = map_width*multiplier
         size = [map_width_mod, map_height_mod]
@@ -208,7 +217,7 @@ class A_star:
                     for x, y in path[optimal_path[i]][1]:
                         curr_list.append((x*scale_factor,y*scale_factor))
                         # print(f"Curr_List ==> x: {x}, y: {y}")
-                    pygame.draw.lines(screen, "red", False, curr_list, width=4)
+                    pygame.draw.lines(screen, "red", False, curr_list, width=2)
                     #video.update(pygame.surfarray.pixels3d(
                     #     screen).swapaxes(0, 1), inverted=False)
                     pygame.display.flip()
@@ -456,47 +465,128 @@ class A_star:
                     end_time = time.time()
                     path_time = end_time - start_time
                     print('Time to calculate path:', path_time, 'seconds')
-                    self.create_map(0.2,12.8,12.8, obstacle_space,visited_nodes, back_track, path_dict)
-                    return velocity_path
+                    #self.create_map(0.2,12.8,12.8, obstacle_space,visited_nodes, back_track, path_dict)
+                    return back_track
+                    # return velocity_path
         print("Path cannot be acheived")
         exit()
 
 
 class ROS_move(Node):
 
-    # Function for initiating publisher, timer and other variables
-    def __init__(self, velo, namespace):
-        super().__init__('ROS_move')
-        self.vel_publisher_ = self.create_publisher(Twist, f'{namespace}/cmd_vel', 10)
-        timer_callback = 1
-        self.timer = self.create_timer(timer_callback, self.publish_velocities)
-        self.i = 0
-        self.velo = velo
+    def __init__(self, velo,namespace,way_points):
+        super().__init__(f"{namespace}_velocity_subscriber")  # Node name
         self.namespace = namespace
-    # Function for publishing velocity commands
-    def publish_velocities(self):
-        vel_msg = Twist()
-        if self.i < len(self.velo):
-            start = time.time()
-            while (time.time() - start) < 1:
-                vel_msg.linear.x = np.sqrt(
-                    (self.velo[self.i][0])**2 + (self.velo[self.i][1])**2)
-                vel_msg.angular.z = (self.velo[self.i][2])
-                self.vel_publisher_.publish(vel_msg)
-                print('Moving turtlebot: ',self.namespace,'-> ', self.i, 'Linear:',
-                      vel_msg.linear.x, 'm/s', 'Angular:', vel_msg.angular.z, 'm/s')
-                time.sleep(1)
-            self.i += 1
-        else:
-            stop_msg = Twist()
-            stop_msg.linear.x = 0.0
-            stop_msg.angular.z = 0.0
-            self.vel_publisher_.publish(stop_msg)
-            print('Stopping turtlebot: ',self.namespace,'-> ',  'Linear:', stop_msg.linear.x,
-                  'm/s', 'Angular:', stop_msg.angular.z, 'm/s')
-            self.timer.cancel()
-            exit()
+        self.way_points = way_points
+
+        # Subscribe to the namespace-specific cmd_vel topic
+        topic_name = f"{namespace}/cmd_vel"
+        self.subscription = self.create_subscription(
+            Twist,               # Message type
+            topic_name,          # Topic name
+            self.cmd_vel_callback, # Callback function
+            10                   # Queue size
+        )
+        self.odom_sub = self.create_subscription(Odometry,"/robot1/odom",self.odom_callback,10)
+
+        self.pose_publisher = self.create_publisher(Pose, "/robot1/pose", 10)
+
+        self.way_points_publisher = self.create_publisher(Float64MultiArray, "/robot1/way_points",  10)
+        
+        self.timer = self.create_timer(0.1, self.publish_points)
+
+    def publish_points(self):
+        # Create the list of (x, y) pairs as a list of Points
+        # Create a Float64MultiArray message
+        msg = Float64MultiArray()
+
+        # Flatten the list of (x, y) pairs and add them to the data field
+        flattened_points = [float(coordinate) for pair in self.way_points for coordinate in pair]
+        msg.data = flattened_points
+
+        # Publish the message to the topic
+        self.way_points_publisher.publish(msg)
+
+
+
+
+    # def odom_callback(self,msg: Odometry):
+    #     self.get_logger().info(
+    #         f"Postition: {msg.pose.pose}"
+    #     )
+    #     print(msg.pose.pose)
+
+    def cmd_vel_callback(self, msg):
         return
+    
+
+
+
+
+    def odom_callback(self, msg: Odometry):
+        # Extract position
+        x = msg.pose.pose.position.x
+        y = msg.pose.pose.position.y
+        z = msg.pose.pose.position.z
+
+        # Extract and convert orientation to roll, pitch, yaw
+        orientation_q = msg.pose.pose.orientation
+        orientation_list = [orientation_q.x, orientation_q.y, orientation_q.z, orientation_q.w]
+        roll, pitch, yaw = euler_from_quaternion(orientation_list)
+
+        msg: Pose = Pose()
+        # Yaw is theta
+        theta = yaw
+        theta = np.round(theta, 3)
+        x = np.round(x, 3)
+        y = np.round(y, 3)
+        msg.x = x
+        msg.y = y
+        msg.theta = theta
+        # msg.position.x = x
+        # msg.position.y = y
+        # msg.position.z = z
+        # msg.orientation.x = orientation_q.x
+        # msg.orientation.y = orientation_q.y
+        # msg.orientation.z = orientation_q.z
+        # msg.orientation.w = orientation_q.w
+
+
+        self.pose_publisher.publish(msg)
+
+    # Function for initiating publisher, timer and other variables
+    # def __init__(self, velo, namespace):
+    #     super().__init__('ROS_move')
+    #     self.vel_publisher_ = self.create_publisher(Twist, f'{namespace}/cmd_vel', 10)
+    #     timer_callback = 1
+    #     self.timer = self.create_timer(timer_callback, self.publish_velocities)
+    #     self.i = 0
+    #     self.velo = velo
+    #     self.namespace = namespace
+    # # Function for publishing velocity commands
+    # def publish_velocities(self):
+    #     vel_msg = Twist()
+    #     if self.i < len(self.velo):
+    #         start = time.time()
+    #         while (time.time() - start) < 1:
+    #             vel_msg.linear.x = np.sqrt(
+    #                 (self.velo[self.i][0])**2 + (self.velo[self.i][1])**2)
+    #             vel_msg.angular.z = (self.velo[self.i][2])
+    #             self.vel_publisher_.publish(vel_msg)
+    #             print('Moving turtlebot: ',self.namespace,'-> ', self.i, 'Linear:',
+    #                   vel_msg.linear.x, 'm/s', 'Angular:', vel_msg.angular.z, 'm/s')
+    #             time.sleep(1)
+    #         self.i += 1
+    #     else:
+    #         stop_msg = Twist()
+    #         stop_msg.linear.x = 0.0
+    #         stop_msg.angular.z = 0.0
+    #         self.vel_publisher_.publish(stop_msg)
+    #         print('Stopping turtlebot: ',self.namespace,'-> ',  'Linear:', stop_msg.linear.x,
+    #               'm/s', 'Angular:', stop_msg.angular.z, 'm/s')
+    #         self.timer.cancel()
+    #         exit()
+    #     return
 
 
 def main():
@@ -518,29 +608,34 @@ def main():
     args.clearance = float(unknown[6])
     print('Given Inputs', args)
     astar = A_star()
-    velo = astar.a_star(args.goal_x, args.goal_y,
+    way_points = astar.a_star(args.goal_x, args.goal_y,
                        args.start_x, args.start_y, args.RPM1, args.RPM2, args.clearance,"robot1")
+    
+    print("FIRST AFTER A STAR ====>", way_points)
 
     # velo2 = astar.a_star(args.goal_x, args.goal_y-0.25,
     #                   -0.25, 0.6, args.RPM1, args.RPM2, args.clearance,"robot2")
 
 
-    velo_scaled = [(x * 2, y * 2, z * 2) for x, y, z in velo]
+    #velo_scaled = [(x * 2, y * 2, z * 2) for x, y, z in velo]
+    velo_empty = []
     pygame.time.wait(2000)
     rclpy.init()
-    move_turtlebot = ROS_move(velo,"robot1")
+
+    move_turtlebot = ROS_move(velo_empty,"robot1",way_points)
+    #node = Controller_Node([])
     # move_turtlebot2 = ROS_move(velo2,"robot2")
-    # rclpy.spin()
-    try:
-        while rclpy.ok():
-            rclpy.spin_once(move_turtlebot)#, timeout_sec=0.1)
-            # rclpy.spin_once(move_turtlebot2, timeout_sec=0.1)
-    except KeyboardInterrupt:
-        pass
-    finally:
-        move_turtlebot.destroy_node()
+    rclpy.spin(move_turtlebot)
+    # try:
+    #     while rclpy.ok():
+    #         rclpy.spin_once(move_turtlebot)#, timeout_sec=0.1)
+    #         # rclpy.spin_once(move_turtlebot2, timeout_sec=0.1)
+    # except KeyboardInterrupt:
+    #     pass
+    # finally:
+    move_turtlebot.destroy_node()
         # move_turtlebot2.destroy_node()
-        rclpy.shutdown()
+    rclpy.shutdown()
 
 if __name__ == '__main__':
     try:

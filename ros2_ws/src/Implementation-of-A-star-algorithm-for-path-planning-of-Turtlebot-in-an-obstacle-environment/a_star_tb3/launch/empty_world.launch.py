@@ -42,7 +42,7 @@ def generate_launch_description():
         'urdf',
         urdf_file_name)
     
-    sdf_path = "/opt/ros/humble/share/turtlebot3_gazebo/models/turtlebot3_burger/model.sdf"
+    sdf_path = "/opt/ros/galactic/share/turtlebot3_gazebo/models/turtlebot3_burger/model.sdf"
 
     with open(urdf_path, 'r') as infp:
         robot_desc = infp.read()
@@ -145,6 +145,25 @@ def generate_launch_description():
                 ],
                 output="screen",
             )
+    
+
+    robot_controller = Node(
+                package="turtle_demo_controller",
+                executable="turt_controller",
+                # arguments=[
+                #     "-file",
+                #     sdf_path,
+                #     "-entity",
+                #     "robot2_burger",
+                #     "-robot_namespace",
+                #     "robot2",
+                #     "-x",
+                #     "-0.25",
+                #     "-y",
+                #     "0.6",
+                # ],
+                output="screen",
+            )
 
 
 
@@ -217,6 +236,13 @@ def generate_launch_description():
     ld.add_action(gzclient_cmd)
     ld.add_action(robot_state_publisher_cmd)
     ld.add_action(spawn_turtlebot_cmd)
+
+
+    #Added =========================
+    ld.add_action(robot_controller)
+    #Added =========================
+
+
     # ld.add_action(robot_state_publisher_cmd2)
     # ld.add_action(spawn_turtlebot_cmd2)
     # ld.add_action(start_rviz)
