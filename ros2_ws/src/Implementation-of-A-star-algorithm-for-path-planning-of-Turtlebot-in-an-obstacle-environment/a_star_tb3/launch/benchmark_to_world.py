@@ -21,10 +21,6 @@ def convert_map_to_world(map_file, world_file, cell_size=0.1):
     width = int([line.split()[1] for line in lines if line.startswith("width")][0])
     grid_lines = [line.strip() for line in lines if not line.startswith("type") and not line.startswith("height") and not line.startswith("width") and not line.startswith("map")]
     grid = [line.ljust(width, '.') for line in grid_lines]
-    # for g in grid:
-    #     print(g)
-
-    # grid = [line.strip() for line in lines if not line.startswith("type") and not line.startswith("height") and not line.startswith("width")]
 
     # Start creating the .world file
     sdf = ET.Element('sdf', version="1.7")

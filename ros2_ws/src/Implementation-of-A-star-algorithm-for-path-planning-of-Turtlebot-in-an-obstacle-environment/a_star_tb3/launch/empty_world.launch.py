@@ -70,15 +70,6 @@ def generate_launch_description():
         )
     )
 
-    # robot_state_publisher_cmd = IncludeLaunchDescription(
-    #     PythonLaunchDescriptionSource(
-    #         os.path.join(launch_file_dir, 'robot_state_publisher.launch.py')
-    #     ),
-    #     launch_arguments={'use_sim_time': use_sim_time}.items()
-    # )
-
-
-
     robot_state_publisher_cmd = Node(
                 package="robot_state_publisher",
                 namespace="robot1",
@@ -89,7 +80,6 @@ def generate_launch_description():
                              "publish_frequency": 50.0,
                              'robot_description': robot_desc}],
                 remappings=remappings,
-                #arguments=[urdf],
             )
     
 
@@ -124,7 +114,6 @@ def generate_launch_description():
                              "publish_frequency": 10.0,
                              'robot_description': robot_desc}],
                 remappings=remappings,
-                #arguments=[urdf],
             )
     
 
@@ -150,38 +139,8 @@ def generate_launch_description():
     robot_controller = Node(
                 package="turtle_demo_controller",
                 executable="turt_controller",
-                # arguments=[
-                #     "-file",
-                #     sdf_path,
-                #     "-entity",
-                #     "robot2_burger",
-                #     "-robot_namespace",
-                #     "robot2",
-                #     "-x",
-                #     "-0.25",
-                #     "-y",
-                #     "0.6",
-                # ],
                 output="screen",
             )
-
-
-
-
-
-
-
-
-
-    # spawn_turtlebot_cmd = IncludeLaunchDescription(
-    #     PythonLaunchDescriptionSource(
-    #         os.path.join(launch_file_dir, 'spawn_turtlebot3.launch.py')
-    #     ),
-    #     launch_arguments={
-    #         'x_pose': x_pose,
-    #         'y_pose': y_pose
-    #     }.items()
-    # )
 
     for arg in unknown:
         if arg.startswith('goal_x:='):
@@ -236,16 +195,11 @@ def generate_launch_description():
     ld.add_action(gzclient_cmd)
     ld.add_action(robot_state_publisher_cmd)
     ld.add_action(spawn_turtlebot_cmd)
-
-
+    
     #Added =========================
     ld.add_action(robot_controller)
     #Added =========================
 
-
-    # ld.add_action(robot_state_publisher_cmd2)
-    # ld.add_action(spawn_turtlebot_cmd2)
-    # ld.add_action(start_rviz)
     ld.add_action(declared_goalx)
     ld.add_action(declared_goaly)
     ld.add_action(my_node)

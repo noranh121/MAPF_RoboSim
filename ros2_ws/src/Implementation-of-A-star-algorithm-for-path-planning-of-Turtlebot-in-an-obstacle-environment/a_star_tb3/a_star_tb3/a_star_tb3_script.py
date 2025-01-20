@@ -16,14 +16,9 @@ import argparse
 from std_msgs.msg import Int32  # Import the message type for integer
 from turtlesim.msg import Pose
 from std_msgs.msg import Float64MultiArray
-#from geometry_msgs.msg import Pose
 import itertools
 from tf_transformations import euler_from_quaternion
 
-# import sys
-# print(f'path={sys.path}')
-# # from ....ROS2_turtlesim_PID_demo.src.turtle_demo_controller.turtle_demo_controller.turtle_controller_with_PID_controller_server import Controller_Node
-# /home/maged/MAPF_RoboSim/ros2_ws/src/ROS2_turtlesim_PID_demo/src/turtle_demo_controller/turtle_demo_controller/turtle_controller_with_PID_controller_server.py
 '''
 Github repository - https://github.com/sandipsharan/A-star-algorithm-for-turtlebot.git
 '''
@@ -36,8 +31,8 @@ Gazebo Video Link - https://drive.google.com/file/d/1zMZkRd9BUZkixb4Scdb6FKqUckA
 start_time = time.time()
 
 map_path = map_file_path = '/home/maged/MAPF_RoboSim/ros2_ws/src/Implementation-of-A-star-algorithm-for-path-planning-of-Turtlebot-in-an-obstacle-environment/a_star_tb3/benchmarks/benchmark.txt'
-class A_star:
 
+class A_star:
     def convert_map_to_obstacles(self,map_file, cell_size=0.1):
         with open(map_file, 'r') as f:
             lines = f.readlines()
@@ -87,8 +82,6 @@ class A_star:
                         size_x = (x - x + 1) * cell_size
                         size_y = (y - y + 1) * cell_size
                         obstacles.add((np.round(center_x, 2), np.round(center_y, 2),np.round(size_x, 2),np.round(size_y, 2)))
-
-        #SET ===> EACH OBSTACLE = TUPLE ==> (CENTER_X, CENTER_Y, SIZE_X, SIZE_Y)
         return obstacles
 
     # Function to flip the co-ordinate points
@@ -107,58 +100,9 @@ class A_star:
     def euclidean_distance(self, x1, x2, y1, y2):
         return (np.sqrt((x1-x2)**2 + (y1-y2)**2))
 
-    # def create_map(self, d, explored, optimal_path, path,name):
-    #     pygame.init()
-    #     size = [600, 200]
-    #     screen = pygame.display.set_mode(size)
-    #     pygame.display.set_caption("Weighted A-star")
-    #     video = vidmaker.Video(f"{name}_anime.mp4", late_export=True)
-    #     clock = pygame.time.Clock()
-    #     running = True
-    #     x1, y1 = self.rect_pygame([150-d, 75-d], 200, 125+d)
-    #     x3, y3 = self.rect_pygame([250-d, 0], 200, 125+d)
-    #     x2, y2 = self.rect_pygame([150, 75], 200, 125)
-    #     x4, y4 = self.rect_pygame([250, 0], 200, 125)
-
-    #     while running:
-    #         for event in pygame.event.get():
-    #             if event.type == pygame.QUIT:
-    #                 running = False
-    #         pygame.draw.rect(screen, "teal", [x1, y1, 15+(2*d), 125+d], 0)
-    #         pygame.draw.rect(screen, "skyblue", [x2, y2, 15, 125], 0)
-    #         pygame.draw.rect(screen, "teal", [x3, y3, 15+(2*d), 125+d], 0)
-    #         pygame.draw.rect(screen, "skyblue", [x4, y4, 15, 125], 0)
-    #         pygame.draw.rect(screen, "teal", [0, 0, d, 200], 0)
-    #         pygame.draw.rect(screen, "teal", [0, 0, 600, d], 0)
-    #         pygame.draw.rect(screen, "teal", [0, 200-d, 600, d], 0)
-    #         pygame.draw.rect(screen, "teal", [600-d, 0, d, 200], 0)
-    #         pygame.draw.circle(
-    #             screen, "teal", self.coords_pygame((400, 110), 200), 50+d)
-    #         pygame.draw.circle(screen, "skyblue",
-    #                            self.coords_pygame((400, 110), 200), 50)
-    #         for l in range(len(explored)):
-    #             pygame.draw.lines(screen, "white", False,
-    #                               path[explored[l]][1], width=1)
-    #             video.update(pygame.surfarray.pixels3d(
-    #                 screen).swapaxes(0, 1), inverted=False)
-    #             pygame.display.flip()
-    #             clock.tick(500)
-    #         for i in range(len(optimal_path)):
-    #             if optimal_path[i] != initial_state:
-    #                 pygame.draw.lines(screen, "red", False,
-    #                                   path[optimal_path[i]][1], width=3)
-    #                 video.update(pygame.surfarray.pixels3d(
-    #                     screen).swapaxes(0, 1), inverted=False)
-    #                 pygame.display.flip()
-    #                 clock.tick(20)
-    #         running = False
-    #     pygame.display.flip()
-    #     pygame.time.wait(3000)
-    #     pygame.quit()
-        # video.export(verbose=True)
-
 
 ########################ADDED_NEW_CREATE_MAP######################################################
+#with new maps ==> ls.add in Actions needs to be changed to fit the new map boundries
     def create_map(self,d,map_width, map_height, obstacles, explored, optimal_path, path):
         pygame.init()
         multiplier = 50
@@ -170,7 +114,6 @@ class A_star:
         video = vidmaker.Video("path.mp4", late_export=True)
         clock = pygame.time.Clock()
         running = True
-        #CHANGE THE rect_pygame IN ACTIONS !!!!!!! 200 ==> 1280
         while running:
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
@@ -193,74 +136,26 @@ class A_star:
                 # Draw actual obstacle (skyblue)
                 pygame.draw.rect(screen, "skyblue", [actual_rect[0], actual_rect[1], size_x*multiplier, size_y*multiplier], 0)
 
-            
-            
             # Draw explored paths
             scale_factor = multiplier/100  # Scaling factor
 
-            # for l in range(len(explored)):
-            #     curr_list = []
-
-                # for x, y in path[explored[l]][1]:
-                #     curr_list.append((x*scale_factor,y*scale_factor))
-                #     print(f"Curr_List ==> x: {x}, y: {y}")
-
-            #     #pygame.draw.lines(screen, "white", False, path[explored[l]][1], width=1)
-            #     pygame.draw.lines(screen, "white", False, curr_list, width=3)
-            #     #video.update(pygame.surfarray.pixels3d(screen).swapaxes(0,1),inverted=False)
-            #     pygame.display.flip()
-            #     clock.tick(500)
             # Draw optimal path
             for i in range(len(optimal_path)):
                 curr_list=[]
                 if optimal_path[i] != initial_state:
                     for x, y in path[optimal_path[i]][1]:
                         curr_list.append((x*scale_factor,y*scale_factor))
-                        # print(f"Curr_List ==> x: {x}, y: {y}")
                     pygame.draw.lines(screen, "red", False, curr_list, width=2)
-                    #video.update(pygame.surfarray.pixels3d(
-                    #     screen).swapaxes(0, 1), inverted=False)
                     pygame.display.flip()
                     clock.tick(20)
             running = False
         pygame.display.flip()
         pygame.time.wait(3000)
-    #    pygame.quit()
+        pygame.quit()
+    #   Line to save video:
     #   video.export(verbose=True)
 
 
-
-
-    
-########################ADDED_NEW_CREATE_MAP######################################################
-
-    # def check_obstacles(self, d):
-    #     obstacles = OrderedSet()
-    #     obstacles_positions = self.convert_map_to_obstacles(map_path)
-    #     #SET ===> EACH OBSTACLE = TUPLE ==> (CENTER_X, CENTER_Y, SIZE_X, SIZE_Y)
-    #     for pos in obstacles_positions:
-    #         x, y = pos
-    #         for obs in self.block_occupancy(x,y):
-    #             _x,_y = obs
-    #             obstacles.add((_x,_y))
-    #     # for x in np.arange(0, 4.1, 0.01):
-    #     #     for y in np.arange(0, 4.1, 0.01):
-    #     #         if (x >= (1.5 - d) and y >= (0.75-d) and x <= (1.65 + d) and y <= 2):
-    #     #             obstacles.add((np.round(x, 2), np.round(y, 2)))
-    #     #         if (x >= (2.5 - d) and y >= 0 and x <= (2.65 + d) and y <= (1.25 + d)):
-    #     #             obstacles.add((np.round(x, 2), np.round(y, 2)))
-    #     #         if ((x-4)**2 + (y-1.1)**2 - (0.5+d)**2) <= 0:
-    #     #             obstacles.add((np.round(x, 2), np.round(y, 2)))
-    #     #         if (x >= (4-d) or y >= (4-d) or x <= d or y <= d):
-    #     #             obstacles.add((np.round(x, 2), np.round(y, 2)))
-    #     return obstacles
-    
-    #ADDED===========================================================ADDED
-    # def is_point_in_any_block(self, x_tocheck, y_tocheck):
-    #     for x_center, y_center, half_length_x , half_length_y in obstacle_space:
-    #         if self.is_point_within_block(x_center, y_center, x_tocheck, y_tocheck, half_length_x, half_length_y):
-    #             return True
-    #     return False
     def is_point_in_any_block(self, x_tocheck, y_tocheck):
         for x_center, y_center, size_x , size_y in obstacle_space:
             if self.is_point_within_block(x_center, y_center, x_tocheck, y_tocheck, size_x/2, size_y/2):
@@ -268,37 +163,16 @@ class A_star:
         return False
     
     def is_point_within_block(self,x_center, y_center, x_tocheck, y_tocheck, half_length_x, half_length_y , threshold_x = 0.2 , threshold_y = 0.2):
-        #half_length = 0.05  # Half the side length (10 cm / 2)
+
         x_min = x_center - (half_length_x + threshold_x)
         x_max = x_center + (half_length_x + threshold_x)
         y_min = y_center - (half_length_y + threshold_y)
         y_max = y_center + (half_length_y + threshold_y)
-
         # Check if the point lies within the block's boundaries
         if x_min <= x_tocheck <= x_max and y_min <= y_tocheck <= y_max:
             return True
         return False
     
-
-
-    # def block_occupancy(self,center_x, center_y, width=0.2, height=0.2, threshold=0.01):
-    #     x_min = center_x - width / 2
-    #     x_max = center_x + width / 2
-    #     y_min = center_y - height / 2
-    #     y_max = center_y + height / 2
-    #     # Generate the (x, y) pairs
-    #     x_values = [round(x, 3) for x in self.frange(x_min, x_max, threshold)]
-    #     y_values = [round(y, 3) for y in self.frange(y_min, y_max, threshold)]
-
-    #     occupied_points = [(x, y) for x in x_values for y in y_values]
-    #     return occupied_points
-    
-    # def frange(self,start, stop, step):
-    #     while start <= stop:
-    #         yield start
-    #         start += step
-    #ADDED===========================================================ADDED
-
 
     def input_start(self, str):
         while True:
@@ -338,7 +212,6 @@ class A_star:
         elif Thetan <= -360:
             Thetan = Thetan % 360 + 360
         current_pos = (X_n, Y_n, np.round(Thetan, 2))
-        #if (current_pos[0], current_pos[1]) not in obstacle_space:
         if not self.is_point_in_any_block(current_pos[0], current_pos[1]):
             if current_pos in queue_nodes:
                 if queue_nodes[current_pos][0] > final_cost:
@@ -354,6 +227,7 @@ class A_star:
         return
 
     def Actions(self, ul, ur, pos, c2c):
+    #   Multiplier originally 0.5
         multiplier = 0.5
         t = 0
         dt = 0.2
@@ -362,29 +236,24 @@ class A_star:
         Thetan = np.deg2rad(pos[2])
         ls = OrderedSet()
         ls.add(self.coords_cm_pygame((Xn, Yn),  1280))
-        #ls.add(self.coords_cm_pygame((Xn, Yn), 200))
         cc = 0
         while t < 1:
             xi = Xn
             yi = Yn
-            #Xn += 0.5*R*(ul + ur)*np.cos(Thetan)*dt
             Xn += multiplier*R*(ul + ur)*np.cos(Thetan)*dt
-            #Yn += 0.5*R*(ul + ur)*np.sin(Thetan)*dt
             Yn += multiplier*R*(ul + ur)*np.sin(Thetan)*dt
             Thetan += (R/L)*(ur-ul)*dt
             t = t + dt
             cc += self.euclidean_distance(xi, Xn, yi, Yn)
-            #ls.add(self.coords_cm_pygame((Xn, Yn), 200))
             ls.add(self.coords_cm_pygame((Xn, Yn), 1280))
         cc += c2c
-        # velocity = ((0.5*R*(ul + ur)*np.cos(Thetan)),
-                    # (0.5*R*(ul + ur)*np.sin(Thetan)), ((R/L)*(ur-ul)))
         velocity = ((multiplier*R*(ul + ur)*np.cos(Thetan)),
                     (multiplier*R*(ul + ur)*np.sin(Thetan)), ((R/L)*(ur-ul)))
         Xn = np.round(Xn, 2)
         Yn = np.round(Yn, 2)
         Thetan = np.round(Thetan, 2)
         Thetan = np.rad2deg(Thetan)
+    #   Boundries here (12.8, 12.8) to be changed to fit new maps
         if 0 <= Xn <= 12.8 and 0 <= Yn <= 12.8:
             self.check_conditions(Xn, Yn, pos[0], pos[1],
                                   pos[2], Thetan, cc, ls, velocity)
@@ -408,37 +277,22 @@ class A_star:
         print("Path Taken: ")
         for i in best_path:
             print(i)
-        #print("Path Vel Taken: ")
-        #for i in path_vel:
-        #    print(i)
         return best_path, path_vel
 
     def a_star(self, goalx, goaly, startx, starty, rpm1, rpm2, d,name):
-        # RPM1 = self.input_cdr('RPM1')
-        # RPM2 = self.input_cdr('RPM2')
         RPM1 = (rpm1*2*math.pi)/60
         RPM2 = (rpm2*2*math.pi)/60
         global action_set, initial_state, node_state_g, closed_list, queue_nodes, visited_nodes, path_dict, obstacle_space, R, L
         action_set = [0, RPM1], [RPM1, 0], [RPM1, RPM1], [0, RPM2], [
             RPM2, 0] , [RPM2, RPM2], [RPM1, RPM2], [RPM2, RPM1]
-        #action_set = [0, RPM1], [RPM1, 0], [RPM1, RPM1]
-        #, [0, RPM2], [
-        #    RPM2, 0] #, [RPM2, RPM2], [RPM1, RPM2], [RPM2, RPM1]
         r = 0.105
         R = 0.033
         L = 0.16
-        # d = self.input_cdr('clearance')
-        #obstacle_space = self.check_obstacles((d/1000)+r)
         obstacle_space = self.convert_map_to_obstacles(map_file_path)
-        # print("Obstacle_space ==> ", obstacle_space)
-        # initial_state = input_start('Start'), input_cdr('start point')
-        # initial_state = (initial_state[0][0], initial_state[0][1], initial_state[1])
+
         initial_state = (startx, starty, 0)
-        #initial_state = (startx +0.5, starty+1.0, 0)
-        #node_state_g = input_start('Goal'), input_cdr('goal point')
-        # node_state_g = (node_state_g[0][0], node_state_g[0][1], node_state_g[1])
         node_state_g = (goalx, goaly, 0)
-        #node_state_g = (goalx+0.5, goaly+1.0, 0)
+
         cost = 0
         closed_list = OrderedSet()
         cg = np.sqrt(
@@ -465,155 +319,62 @@ class A_star:
                     end_time = time.time()
                     path_time = end_time - start_time
                     print('Time to calculate path:', path_time, 'seconds')
+                    #To be change to dynamically recieve clearance and map boundries
                     self.create_map(0.2,12.8,12.8, obstacle_space,visited_nodes, back_track, path_dict)
                     return back_track
-                    # return velocity_path
         print("Path cannot be acheived")
         exit()
 
 
 class ROS_move(Node):
 
-    def __init__(self, velo,namespace,way_points):
+    def __init__(self,namespace,way_points):
         super().__init__(f"{namespace}_velocity_subscriber")  # Node name
         self.namespace = namespace
         self.way_points = way_points
-
         self.update_pose = False
-        # Subscribe to the namespace-specific cmd_vel topic
-        topic_name = f"{namespace}/cmd_vel"
-        self.subscription = self.create_subscription(
-            Twist,               # Message type
-            topic_name,          # Topic name
-            self.cmd_vel_callback, # Callback function
-            10                   # Queue size
-        )
-        self.odom_sub = self.create_subscription(Odometry,"/robot1/odom",self.odom_callback,10)
 
-        #self.update_pose_sub = self.create_subscription(Int32,"/robot1/update_pose",self.update_pose_callback,10)
 
-        self.pose_publisher = self.create_publisher(Pose, "/robot1/pose", 10)
+        ########## Subscriptions ##########
+        self.subscription = self.create_subscription(Twist, f"{namespace}/cmd_vel", self.cmd_vel_callback, 10)
+        self.odom_sub = self.create_subscription(Odometry,  f"{namespace}/odom", self.odom_callback,10)
+        ########## Subscriptions ##########
 
-        self.way_points_publisher = self.create_publisher(Float64MultiArray, "/robot1/way_points",  10)
-        
-        # self.timer = self.create_timer(0.1, self.publish_points)
+        ########## Publishers ##########
+        self.pose_publisher = self.create_publisher(Pose,  f"{namespace}/pose", 10)
+        self.way_points_publisher = self.create_publisher(Float64MultiArray,  f"{namespace}/way_points",  10)
+        ########## Publishers ##########
         self.publish_points()
-
-        #self.published_way_points = False
-        # self.way_points.pop(0)
-        # self.last_way_point = self.way_points.pop(0)
-
 
     def update_pose_callback(self, msg: Int32):
         self.update_pose = True
 
     def publish_points(self):
-            #print("Publishing way_points")
-        #if not self.published_way_points:
- 
-            msg = Float64MultiArray()
-
-            # Flatten the list of (x, y) pairs and add them to the data field
-            flattened_points = [float(coordinate) for pair in self.way_points for coordinate in pair]
-            msg.data = flattened_points
-
-            #print("Publishing msg ===> ", msg)
-            # Publish the message to the topic
-            self.way_points_publisher.publish(msg)
-            #self.published_way_points = True
-        # else:
-        #     self.timer.cancel()
-
-
-
-
-    # def odom_callback(self,msg: Odometry):
-    #     self.get_logger().info(
-    #         f"Postition: {msg.pose.pose}"
-    #     )
-    #     print(msg.pose.pose)
+        msg = Float64MultiArray()
+        flattened_points = [float(coordinate) for pair in self.way_points for coordinate in pair]
+        msg.data = flattened_points
+        self.way_points_publisher.publish(msg)
 
     def cmd_vel_callback(self, msg):
         return
     
-
-
-
-
     def odom_callback(self, msg: Odometry):
-        # Extract position
-        #if self.update_pose:
-            x = msg.pose.pose.position.x
-            y = msg.pose.pose.position.y
-            z = msg.pose.pose.position.z
-
-            # Extract and convert orientation to roll, pitch, yaw
-            orientation_q = msg.pose.pose.orientation
-            orientation_list = [orientation_q.x, orientation_q.y, orientation_q.z, orientation_q.w]
-            roll, pitch, yaw = euler_from_quaternion(orientation_list)
-
-            msg: Pose = Pose()
-            # Yaw is theta
-            theta = yaw
-            theta = np.round(theta, 4)
-            x = np.round(x, 4)
-            y = np.round(y, 4)
-            msg.x = x
-            msg.y = y
-            msg.theta = theta
-            # msg.position.x = x
-            # msg.position.y = y
-            # msg.position.z = z
-            # msg.orientation.x = orientation_q.x
-            # msg.orientation.y = orientation_q.y
-            # msg.orientation.z = orientation_q.z
-            # msg.orientation.w = orientation_q.w
-
-            # if self.is_within_distance((x,y), self.last_way_point):
-            self.pose_publisher.publish(msg)
-                # if self.way_points:
-                #     self.last_way_point = self.way_points.pop(0)
-            #self.update_pose = False
-
-    def is_within_distance(self, curr, desired):
-        x1, y1 = curr
-        x2, y2 = desired
-        distance = math.sqrt((x2 - x1)**2 + (y2 - y1)**2)
-        return distance < 0.05
-    # Function for initiating publisher, timer and other variables
-    # def __init__(self, velo, namespace):
-    #     super().__init__('ROS_move')
-    #     self.vel_publisher_ = self.create_publisher(Twist, f'{namespace}/cmd_vel', 10)
-    #     timer_callback = 1
-    #     self.timer = self.create_timer(timer_callback, self.publish_velocities)
-    #     self.i = 0
-    #     self.velo = velo
-    #     self.namespace = namespace
-    # # Function for publishing velocity commands
-    # def publish_velocities(self):
-    #     vel_msg = Twist()
-    #     if self.i < len(self.velo):
-    #         start = time.time()
-    #         while (time.time() - start) < 1:
-    #             vel_msg.linear.x = np.sqrt(
-    #                 (self.velo[self.i][0])**2 + (self.velo[self.i][1])**2)
-    #             vel_msg.angular.z = (self.velo[self.i][2])
-    #             self.vel_publisher_.publish(vel_msg)
-    #             print('Moving turtlebot: ',self.namespace,'-> ', self.i, 'Linear:',
-    #                   vel_msg.linear.x, 'm/s', 'Angular:', vel_msg.angular.z, 'm/s')
-    #             time.sleep(1)
-    #         self.i += 1
-    #     else:
-    #         stop_msg = Twist()
-    #         stop_msg.linear.x = 0.0
-    #         stop_msg.angular.z = 0.0
-    #         self.vel_publisher_.publish(stop_msg)
-    #         print('Stopping turtlebot: ',self.namespace,'-> ',  'Linear:', stop_msg.linear.x,
-    #               'm/s', 'Angular:', stop_msg.angular.z, 'm/s')
-    #         self.timer.cancel()
-    #         exit()
-    #     return
-
+        x = msg.pose.pose.position.x
+        y = msg.pose.pose.position.y
+        z = msg.pose.pose.position.z
+        # Extract and convert orientation to roll, pitch, yaw
+        orientation_q = msg.pose.pose.orientation
+        orientation_list = [orientation_q.x, orientation_q.y, orientation_q.z, orientation_q.w]
+        roll, pitch, yaw = euler_from_quaternion(orientation_list)
+        msg: Pose = Pose()
+        theta = yaw
+        theta = np.round(theta, 4)
+        x = np.round(x, 4)
+        y = np.round(y, 4)
+        msg.x = x
+        msg.y = y
+        msg.theta = theta
+        self.pose_publisher.publish(msg)
 
 def main():
     parser = argparse.ArgumentParser()
@@ -637,30 +398,12 @@ def main():
     way_points = astar.a_star(args.goal_x, args.goal_y,
                        args.start_x, args.start_y, args.RPM1, args.RPM2, args.clearance,"robot1")
     
-   # print("FIRST AFTER A STAR ====>", way_points)
 
-    # velo2 = astar.a_star(args.goal_x, args.goal_y-0.25,
-    #                   -0.25, 0.6, args.RPM1, args.RPM2, args.clearance,"robot2")
-
-
-    #velo_scaled = [(x * 2, y * 2, z * 2) for x, y, z in velo]
-    velo_empty = []
-    #pygame.time.wait(2000)
+    #pygame.time.wait(5000)
     rclpy.init()
-    #way_points = [(0.5,0.5,0),(0.64,0.5,0)]
-    move_turtlebot = ROS_move(velo_empty,"robot1",way_points)
-    #node = Controller_Node([])
-    # move_turtlebot2 = ROS_move(velo2,"robot2")
+    move_turtlebot = ROS_move("robot1",way_points)
     rclpy.spin(move_turtlebot)
-    # try:
-    #     while rclpy.ok():
-    #         rclpy.spin_once(move_turtlebot)#, timeout_sec=0.1)
-    #         # rclpy.spin_once(move_turtlebot2, timeout_sec=0.1)
-    # except KeyboardInterrupt:
-    #     pass
-    # finally:
     move_turtlebot.destroy_node()
-        # move_turtlebot2.destroy_node()
     rclpy.shutdown()
 
 if __name__ == '__main__':
