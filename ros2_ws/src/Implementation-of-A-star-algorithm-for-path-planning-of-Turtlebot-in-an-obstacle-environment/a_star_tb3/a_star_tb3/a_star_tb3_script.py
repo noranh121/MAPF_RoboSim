@@ -225,7 +225,7 @@ class A_star:
             running = False
         pygame.display.flip()
         pygame.time.wait(3000)
-    #   pygame.quit()
+    #    pygame.quit()
     #   video.export(verbose=True)
 
 
@@ -356,7 +356,7 @@ class A_star:
     def Actions(self, ul, ur, pos, c2c):
         multiplier = 0.5
         t = 0
-        dt = 0.01
+        dt = 0.2
         Xn = pos[0]
         Yn = pos[1]
         Thetan = np.deg2rad(pos[2])
@@ -408,9 +408,9 @@ class A_star:
         print("Path Taken: ")
         for i in best_path:
             print(i)
-        print("Path Vel Taken: ")
-        for i in path_vel:
-            print(i)
+        #print("Path Vel Taken: ")
+        #for i in path_vel:
+        #    print(i)
         return best_path, path_vel
 
     def a_star(self, goalx, goaly, startx, starty, rpm1, rpm2, d,name):
@@ -420,7 +420,7 @@ class A_star:
         RPM2 = (rpm2*2*math.pi)/60
         global action_set, initial_state, node_state_g, closed_list, queue_nodes, visited_nodes, path_dict, obstacle_space, R, L
         action_set = [0, RPM1], [RPM1, 0], [RPM1, RPM1], [0, RPM2], [
-            RPM2, 0] #, [RPM2, RPM2], [RPM1, RPM2], [RPM2, RPM1]
+            RPM2, 0] , [RPM2, RPM2], [RPM1, RPM2], [RPM2, RPM1]
         #action_set = [0, RPM1], [RPM1, 0], [RPM1, RPM1]
         #, [0, RPM2], [
         #    RPM2, 0] #, [RPM2, RPM2], [RPM1, RPM2], [RPM2, RPM1]
@@ -465,7 +465,7 @@ class A_star:
                     end_time = time.time()
                     path_time = end_time - start_time
                     print('Time to calculate path:', path_time, 'seconds')
-                    #self.create_map(0.2,12.8,12.8, obstacle_space,visited_nodes, back_track, path_dict)
+                    self.create_map(0.2,12.8,12.8, obstacle_space,visited_nodes, back_track, path_dict)
                     return back_track
                     # return velocity_path
         print("Path cannot be acheived")
@@ -479,6 +479,7 @@ class ROS_move(Node):
         self.namespace = namespace
         self.way_points = way_points
 
+        self.update_pose = False
         # Subscribe to the namespace-specific cmd_vel topic
         topic_name = f"{namespace}/cmd_vel"
         self.subscription = self.create_subscription(
@@ -489,23 +490,39 @@ class ROS_move(Node):
         )
         self.odom_sub = self.create_subscription(Odometry,"/robot1/odom",self.odom_callback,10)
 
+        #self.update_pose_sub = self.create_subscription(Int32,"/robot1/update_pose",self.update_pose_callback,10)
+
         self.pose_publisher = self.create_publisher(Pose, "/robot1/pose", 10)
 
         self.way_points_publisher = self.create_publisher(Float64MultiArray, "/robot1/way_points",  10)
         
-        self.timer = self.create_timer(0.1, self.publish_points)
+        # self.timer = self.create_timer(0.1, self.publish_points)
+        self.publish_points()
+
+        #self.published_way_points = False
+        # self.way_points.pop(0)
+        # self.last_way_point = self.way_points.pop(0)
+
+
+    def update_pose_callback(self, msg: Int32):
+        self.update_pose = True
 
     def publish_points(self):
-        # Create the list of (x, y) pairs as a list of Points
-        # Create a Float64MultiArray message
-        msg = Float64MultiArray()
+            #print("Publishing way_points")
+        #if not self.published_way_points:
+ 
+            msg = Float64MultiArray()
 
-        # Flatten the list of (x, y) pairs and add them to the data field
-        flattened_points = [float(coordinate) for pair in self.way_points for coordinate in pair]
-        msg.data = flattened_points
+            # Flatten the list of (x, y) pairs and add them to the data field
+            flattened_points = [float(coordinate) for pair in self.way_points for coordinate in pair]
+            msg.data = flattened_points
 
-        # Publish the message to the topic
-        self.way_points_publisher.publish(msg)
+            #print("Publishing msg ===> ", msg)
+            # Publish the message to the topic
+            self.way_points_publisher.publish(msg)
+            #self.published_way_points = True
+        # else:
+        #     self.timer.cancel()
 
 
 
@@ -525,35 +542,44 @@ class ROS_move(Node):
 
     def odom_callback(self, msg: Odometry):
         # Extract position
-        x = msg.pose.pose.position.x
-        y = msg.pose.pose.position.y
-        z = msg.pose.pose.position.z
+        #if self.update_pose:
+            x = msg.pose.pose.position.x
+            y = msg.pose.pose.position.y
+            z = msg.pose.pose.position.z
 
-        # Extract and convert orientation to roll, pitch, yaw
-        orientation_q = msg.pose.pose.orientation
-        orientation_list = [orientation_q.x, orientation_q.y, orientation_q.z, orientation_q.w]
-        roll, pitch, yaw = euler_from_quaternion(orientation_list)
+            # Extract and convert orientation to roll, pitch, yaw
+            orientation_q = msg.pose.pose.orientation
+            orientation_list = [orientation_q.x, orientation_q.y, orientation_q.z, orientation_q.w]
+            roll, pitch, yaw = euler_from_quaternion(orientation_list)
 
-        msg: Pose = Pose()
-        # Yaw is theta
-        theta = yaw
-        theta = np.round(theta, 3)
-        x = np.round(x, 3)
-        y = np.round(y, 3)
-        msg.x = x
-        msg.y = y
-        msg.theta = theta
-        # msg.position.x = x
-        # msg.position.y = y
-        # msg.position.z = z
-        # msg.orientation.x = orientation_q.x
-        # msg.orientation.y = orientation_q.y
-        # msg.orientation.z = orientation_q.z
-        # msg.orientation.w = orientation_q.w
+            msg: Pose = Pose()
+            # Yaw is theta
+            theta = yaw
+            theta = np.round(theta, 4)
+            x = np.round(x, 4)
+            y = np.round(y, 4)
+            msg.x = x
+            msg.y = y
+            msg.theta = theta
+            # msg.position.x = x
+            # msg.position.y = y
+            # msg.position.z = z
+            # msg.orientation.x = orientation_q.x
+            # msg.orientation.y = orientation_q.y
+            # msg.orientation.z = orientation_q.z
+            # msg.orientation.w = orientation_q.w
 
+            # if self.is_within_distance((x,y), self.last_way_point):
+            self.pose_publisher.publish(msg)
+                # if self.way_points:
+                #     self.last_way_point = self.way_points.pop(0)
+            #self.update_pose = False
 
-        self.pose_publisher.publish(msg)
-
+    def is_within_distance(self, curr, desired):
+        x1, y1 = curr
+        x2, y2 = desired
+        distance = math.sqrt((x2 - x1)**2 + (y2 - y1)**2)
+        return distance < 0.05
     # Function for initiating publisher, timer and other variables
     # def __init__(self, velo, namespace):
     #     super().__init__('ROS_move')
@@ -611,7 +637,7 @@ def main():
     way_points = astar.a_star(args.goal_x, args.goal_y,
                        args.start_x, args.start_y, args.RPM1, args.RPM2, args.clearance,"robot1")
     
-    print("FIRST AFTER A STAR ====>", way_points)
+   # print("FIRST AFTER A STAR ====>", way_points)
 
     # velo2 = astar.a_star(args.goal_x, args.goal_y-0.25,
     #                   -0.25, 0.6, args.RPM1, args.RPM2, args.clearance,"robot2")
@@ -619,9 +645,9 @@ def main():
 
     #velo_scaled = [(x * 2, y * 2, z * 2) for x, y, z in velo]
     velo_empty = []
-    pygame.time.wait(2000)
+    #pygame.time.wait(2000)
     rclpy.init()
-
+    #way_points = [(0.5,0.5,0),(0.64,0.5,0)]
     move_turtlebot = ROS_move(velo_empty,"robot1",way_points)
     #node = Controller_Node([])
     # move_turtlebot2 = ROS_move(velo2,"robot2")
