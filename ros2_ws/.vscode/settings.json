@@ -1,5 +1,11 @@
 {
     "python.analysis.extraPaths": [
         "./src/Implementation-of-A-star-algorithm-for-path-planning-of-Turtlebot-in-an-obstacle-environment/a_star_tb3/launch"
+    ],
+    "python.autoComplete.extraPaths": [
+        "/home/maged/MAPF_RoboSim/ros2_ws/install/turtlebot_serv/lib/python3.8/site-packages",
+        "/home/maged/MAPF_RoboSim/ros2_ws/install/turtle_demo_controller/lib/python3.8/site-packages",
+        "/home/maged/MAPF_RoboSim/ros2_ws/install/a_star_tb3/lib/python3.8/site-packages",
+        "/opt/ros/galactic/lib/python3.8/site-packages"
     ]
 }
