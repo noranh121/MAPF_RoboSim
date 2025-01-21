@@ -16,6 +16,12 @@ import argparse
 
 def generate_launch_description():
 
+    number_of_robots = 2
+    start_poses =[
+        (0.5,0.5),
+        (4.0,1.7)
+    ]
+
     parser = argparse.ArgumentParser()
     parser.add_argument('--goal_x', type=float)
     parser.add_argument('--goal_y', type=float)
@@ -42,7 +48,7 @@ def generate_launch_description():
         'urdf',
         urdf_file_name)
     
-    sdf_path = "/opt/ros/galactic/share/turtlebot3_gazebo/models/turtlebot3_burger/model.sdf"
+    sdf_path = "/opt/ros/humble/share/turtlebot3_gazebo/models/turtlebot3_burger/model.sdf"
 
     with open(urdf_path, 'r') as infp:
         robot_desc = infp.read()
@@ -104,6 +110,9 @@ def generate_launch_description():
             )
     
 
+
+
+
     robot_state_publisher_cmd2 = Node(
                 package="robot_state_publisher",
                 namespace="robot2",
@@ -128,9 +137,9 @@ def generate_launch_description():
                     "-robot_namespace",
                     "robot2",
                     "-x",
-                    "-0.25",
+                    "4.0",
                     "-y",
-                    "0.6",
+                    "1.7",
                 ],
                 output="screen",
             )
@@ -195,6 +204,9 @@ def generate_launch_description():
     ld.add_action(gzclient_cmd)
     ld.add_action(robot_state_publisher_cmd)
     ld.add_action(spawn_turtlebot_cmd)
+
+    ld.add_action(robot_state_publisher_cmd2)
+    ld.add_action(spawn_turtlebot_cmd2)
     
     #Added =========================
     ld.add_action(robot_controller)

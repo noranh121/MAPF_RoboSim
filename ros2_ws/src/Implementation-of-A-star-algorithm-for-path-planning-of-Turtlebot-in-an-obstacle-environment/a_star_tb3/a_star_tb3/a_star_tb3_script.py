@@ -408,7 +408,7 @@ def main():
     results_lock = threading.Lock()
     inputs = [
     ((0.5,0.5),(3.0,0.5),A_star(),"robot1"),
-    ((0.5,0.5),(4.0,0.5),A_star(),"robot2"),
+    ((4.0,1.7),(1.0,1.7),A_star(),"robot2"),
     #((2.0,9.5),(4.0,9.5),A_star(),"robot2"),
     # ((7.0,0.5),(9.0,3.8),A_star(),"robot3"),
     # ((10.0,9.5),(7.2,8.0),A_star(),"robot4"),
@@ -437,26 +437,8 @@ def main():
             results[name] = result
         except Exception as e:
             print(f"Error with {name}: {e}")
+  
 
-    print("Results:", results)
-    # print("debug1")
-    # threads = []
-    # print("debug2")
-    # for inp in inputs:
-    #     print("debug3")
-    #     t = threading.Thread(target=thread_target, args=inp)
-    #     print("debug4")
-    #     threads.append(t)
-    #     print("debug5")
-    #     t.start()
-    #     print("debug6")
-    # for t in threads:
-    #     print("debug7")
-    #     t.join()
-    #     print("debug8")
-    # print("HEEEREE")
-    # print(results)
-    
     #pygame.time.wait(5000)
     rclpy.init()
     # move_turtlebot = ROS_move("robot1",way_points)
@@ -469,14 +451,12 @@ def main():
     for i in range(1, size+1):
         robot_name = f"robot{i}"
         way_points = results[robot_name]
-        print("way_Points ===> " , way_points)
         robots.append(ROS_move(robot_name, way_points))
         
     try:
-    # Process each node in a loop using spin_once.
         while rclpy.ok():
             for robot in robots:
-                rclpy.spin(robot)  # Process callbacks for each node.
+                rclpy.spin(robot)
     except KeyboardInterrupt:
         pass
     finally:

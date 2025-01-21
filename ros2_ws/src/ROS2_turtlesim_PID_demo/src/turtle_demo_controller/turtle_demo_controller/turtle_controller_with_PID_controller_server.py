@@ -167,10 +167,27 @@ class Controller_Node(Node):
 
 def main(args=None):
     rclpy.init(args=args)
-    node = Controller_Node("robot1")
-    rclpy.spin(node)
-    node.destroy_node()
-    rclpy.shutdown()
+    controller_nodes = []
+    size = len(2)
+    for i in range(1, size+1):
+        robot_name = f"robot{i}"
+        way_points = controller_nodes[robot_name]
+        controller_nodes.append(Controller_Node(robot_name))
+
+    try:
+        while rclpy.ok():
+            for robot in controller_nodes:
+                rclpy.spin(robot)
+    except KeyboardInterrupt:
+        pass
+    finally:
+        # Destroy all nodes and shutdown rclpy.
+        for robot in controller_nodes:
+            robot.destroy_node()
+        rclpy.shutdown()
+    # rclpy.spin(node)
+    # node.destroy_node()
+    # rclpy.shutdown()
 
 if __name__ == '__main__':
     main()
