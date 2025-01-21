@@ -14,6 +14,7 @@ import rclpy
 from rclpy.node import Node
 from geometry_msgs.msg import Twist
 from rclpy.exceptions import ROSInterruptException
+from rclpy.executors import MultiThreadedExecutor
 from nav_msgs.msg import Odometry
 import argparse
 from std_msgs.msg import Int32  # Import the message type for integer
@@ -33,7 +34,7 @@ Gazebo Video Link - https://drive.google.com/file/d/1zMZkRd9BUZkixb4Scdb6FKqUckA
 
 start_time = time.time()
 
-map_path = map_file_path = '/home/maged/MAPF_RoboSim/ros2_ws/src/Implementation-of-A-star-algorithm-for-path-planning-of-Turtlebot-in-an-obstacle-environment/a_star_tb3/benchmarks/benchmark.txt'
+map_path = map_file_path = '/home/ali/MAPF_RoboSim/ros2_ws/src/Implementation-of-A-star-algorithm-for-path-planning-of-Turtlebot-in-an-obstacle-environment/a_star_tb3/benchmarks/benchmark.txt'
 
 class A_star:
     def convert_map_to_obstacles(self,map_file, cell_size=0.1):
@@ -440,30 +441,34 @@ def main():
   
 
     #pygame.time.wait(5000)
-    rclpy.init()
     # move_turtlebot = ROS_move("robot1",way_points)
     # rclpy.spin(move_turtlebot)
     # move_turtlebot.destroy_node()
     # rclpy.shutdown()
 
+    rclpy.init()
+    executor = MultiThreadedExecutor()
+
     robots = []
-    size = len(inputs)
-    for i in range(1, size+1):
+    size = len(inputs)  # Assuming `inputs` is defined
+    for i in range(1, size + 1):
         robot_name = f"robot{i}"
-        way_points = results[robot_name]
-        robots.append(ROS_move(robot_name, way_points))
-        
+        way_points = results[robot_name]  # Assuming `results` is a dictionary with waypoints for each robot
+        robot_node = ROS_move(robot_name, way_points)
+        robots.append(robot_node)
+        executor.add_node(robot_node)
+
     try:
-        while rclpy.ok():
-            for robot in robots:
-                rclpy.spin(robot)
+        # Spin all nodes concurrently
+        executor.spin()
     except KeyboardInterrupt:
         pass
     finally:
-        # Destroy all nodes and shutdown rclpy.
+        # Destroy all nodes and shutdown rclpy
         for robot in robots:
             robot.destroy_node()
         rclpy.shutdown()
+
 if __name__ == '__main__':
     try:
         main()

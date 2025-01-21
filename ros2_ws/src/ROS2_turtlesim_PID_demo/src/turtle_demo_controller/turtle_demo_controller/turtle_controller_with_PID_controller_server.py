@@ -6,12 +6,13 @@ from geometry_msgs.msg import Twist
 from std_msgs.msg import Int32 
 from std_msgs.msg import Float64MultiArray
 from turtlesim.msg import Pose
+from rclpy.executors import MultiThreadedExecutor
 import numpy as np
 import time
 
 class Controller_Node(Node):
     def __init__(self,namespace):
-        super().__init__('turt_controller')
+        super().__init__(f'turt_controller_{namespace}')
         self.get_logger().info("Node Started")
 
         self.way_points = []
@@ -167,26 +168,23 @@ class Controller_Node(Node):
 
 def main(args=None):
     rclpy.init(args=args)
+    executor = MultiThreadedExecutor()
+
     controller_nodes = []
-    size = 2
-    for i in range(1, size+1):
+    size = 2  # Number of nodes to create
+
+    for i in range(1, size + 1):
         robot_name = f"robot{i}"
-        controller_nodes.append(Controller_Node(robot_name))
+        curr_node = Controller_Node(robot_name)
+        controller_nodes.append(curr_node)
+        executor.add_node(curr_node)
 
     try:
-        while rclpy.ok():
-            for robot in controller_nodes:
-                rclpy.spin(robot)
-    except KeyboardInterrupt:
-        pass
+        executor.spin()
     finally:
-        # Destroy all nodes and shutdown rclpy.
-        for robot in controller_nodes:
-            robot.destroy_node()
+        # Cleanup
+        for node in controller_nodes:
+            node.destroy_node()
         rclpy.shutdown()
-    # rclpy.spin(node)
-    # node.destroy_node()
-    # rclpy.shutdown()
-
 if __name__ == '__main__':
     main()
