@@ -10,7 +10,7 @@ import numpy as np
 import time
 
 class Controller_Node(Node):
-    def __init__(self):
+    def __init__(self,namespace):
         super().__init__('turt_controller')
         self.get_logger().info("Node Started")
 
@@ -24,9 +24,9 @@ class Controller_Node(Node):
         self.current_y = 0.5   
         self.angle = 0   
 
-        self.my_pose_sub = self.create_subscription(Pose, "/robot1/pose", self.pose_callback, 10)
-        self.my_vel_command = self.create_publisher(Twist, "/robot1/cmd_vel", 10)
-        self.int_sub = self.create_subscription(Float64MultiArray, "/robot1/way_points", self.way_points_callback, 10)
+        self.my_pose_sub = self.create_subscription(Pose, f"/{namespace}/pose", self.pose_callback, 10)
+        self.my_vel_command = self.create_publisher(Twist, f"/{namespace}/cmd_vel", 10)
+        self.int_sub = self.create_subscription(Float64MultiArray, f"/{namespace}/way_points", self.way_points_callback, 10)
 
         self.filled_way_points = False
 
@@ -167,7 +167,7 @@ class Controller_Node(Node):
 
 def main(args=None):
     rclpy.init(args=args)
-    node = Controller_Node()
+    node = Controller_Node("robot1")
     rclpy.spin(node)
     node.destroy_node()
     rclpy.shutdown()

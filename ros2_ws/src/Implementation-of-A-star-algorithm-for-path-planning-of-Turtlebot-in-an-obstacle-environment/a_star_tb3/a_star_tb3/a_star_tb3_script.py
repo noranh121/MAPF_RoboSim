@@ -1,6 +1,8 @@
 #!/usr/bin/env python3
 
 import numpy as np
+import threading
+from threading import Thread
 import time
 import math
 import pygame
@@ -279,7 +281,7 @@ class A_star:
             print(i)
         return best_path, path_vel
 
-    def a_star(self, goalx, goaly, startx, starty, rpm1, rpm2, d,name):
+    def a_star(self, goalx, goaly, startx, starty, rpm1, rpm2):
         RPM1 = (rpm1*2*math.pi)/60
         RPM2 = (rpm2*2*math.pi)/60
         global action_set, initial_state, node_state_g, closed_list, queue_nodes, visited_nodes, path_dict, obstacle_space, R, L
@@ -320,7 +322,7 @@ class A_star:
                     path_time = end_time - start_time
                     print('Time to calculate path:', path_time, 'seconds')
                     #To be change to dynamically recieve clearance and map boundries
-                    self.create_map(0.2,12.8,12.8, obstacle_space,visited_nodes, back_track, path_dict)
+                    #self.create_map(0.2,12.8,12.8, obstacle_space,visited_nodes, back_track, path_dict)
                     return back_track
         print("Path cannot be acheived")
         exit()
@@ -376,6 +378,8 @@ class ROS_move(Node):
         msg.theta = theta
         self.pose_publisher.publish(msg)
 
+
+
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument('--goal_x', type=float)
@@ -395,17 +399,65 @@ def main():
     args.clearance = float(unknown[6])
     print('Given Inputs', args)
     astar = A_star()
-    way_points = astar.a_star(args.goal_x, args.goal_y,
-                       args.start_x, args.start_y, args.RPM1, args.RPM2, args.clearance,"robot1")
+    # way_points = astar.a_star(args.goal_x, args.goal_y,
+    #                    args.start_x, args.start_y, args.RPM1, args.RPM2)
+
+    results = {}
+    results_lock = threading.Lock()
+    inputs = [
+    ((0.5,0.5),(3.0,0.5),A_star(),"robot1"),
+    # ((2.0,9.5),(4.0,9.5),A_star(),"robot2"),
+    # ((7.0,0.5),(9.0,3.8),A_star(),"robot3"),
+    # ((10.0,9.5),(7.2,8.0),A_star(),"robot4"),
+    # ((6.0,8.0),(8.0,2.7),astar,"robot5"),
+    ]
+
+    def thread_target(init_pose, goal_pose,astar,name):
+        rpm1 = 20.0
+        rpm2 = 40.0
+        goalx , goaly = goal_pose
+        startx, starty = init_pose
+        result = astar.a_star(goalx, goaly, startx, starty, rpm1, rpm2)
+        with results_lock:
+            results[name] = result
     
 
+    threads = []
+    for inp in inputs:
+        t = threading.Thread(target=thread_target, args=inp)
+        threads.append(t)
+        t.start()
+    for t in threads:
+        t.join()
+    print("HEEEREE")
+    print(results)
+    
     #pygame.time.wait(5000)
     rclpy.init()
-    move_turtlebot = ROS_move("robot1",way_points)
-    rclpy.spin(move_turtlebot)
-    move_turtlebot.destroy_node()
-    rclpy.shutdown()
+    # move_turtlebot = ROS_move("robot1",way_points)
+    # rclpy.spin(move_turtlebot)
+    # move_turtlebot.destroy_node()
+    # rclpy.shutdown()
 
+    robots = []
+    size = len(inputs)
+    for i in range(1, size):
+        robot_name = f"robot{i}"
+        way_points = results[robot_name]
+        robots.append(ROS_move(robot_name, way_points))
+        
+    try:
+    # Process each node in a loop using spin_once.
+        while rclpy.ok():
+            for robot in robots:
+                rclpy.spin_once(robot, timeout_sec=0.1)  # Process callbacks for each node.
+    except KeyboardInterrupt:
+        pass
+    finally:
+        # Destroy all nodes and shutdown rclpy.
+        for robot in robots:
+            robot.destroy_node()
+        rclpy.shutdown()
 if __name__ == '__main__':
     try:
         main()
