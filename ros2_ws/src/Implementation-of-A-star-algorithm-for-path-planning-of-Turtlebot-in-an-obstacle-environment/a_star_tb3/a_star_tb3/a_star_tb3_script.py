@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 
 import numpy as np
+from concurrent.futures import ThreadPoolExecutor, as_completed
 import threading
 from threading import Thread
 import time
@@ -32,7 +33,7 @@ Gazebo Video Link - https://drive.google.com/file/d/1zMZkRd9BUZkixb4Scdb6FKqUckA
 
 start_time = time.time()
 
-map_path = map_file_path = '/home/maged/MAPF_RoboSim/ros2_ws/src/Implementation-of-A-star-algorithm-for-path-planning-of-Turtlebot-in-an-obstacle-environment/a_star_tb3/benchmarks/benchmark.txt'
+map_path = map_file_path = '/home/ali/MAPF_RoboSim/ros2_ws/src/Implementation-of-A-star-algorithm-for-path-planning-of-Turtlebot-in-an-obstacle-environment/a_star_tb3/benchmarks/benchmark.txt'
 
 class A_star:
     def convert_map_to_obstacles(self,map_file, cell_size=0.1):
@@ -105,7 +106,7 @@ class A_star:
 
 ########################ADDED_NEW_CREATE_MAP######################################################
 #with new maps ==> ls.add in Actions needs to be changed to fit the new map boundries
-    def create_map(self,d,map_width, map_height, obstacles, explored, optimal_path, path):
+    def create_map(self,d,map_width, map_height, obstacles, explored, optimal_path, path,initial_state):
         pygame.init()
         multiplier = 50
         map_height_mod = map_height*multiplier
@@ -158,7 +159,7 @@ class A_star:
     #   video.export(verbose=True)
 
 
-    def is_point_in_any_block(self, x_tocheck, y_tocheck):
+    def is_point_in_any_block(self, x_tocheck, y_tocheck, obstacle_space):
         for x_center, y_center, size_x , size_y in obstacle_space:
             if self.is_point_within_block(x_center, y_center, x_tocheck, y_tocheck, size_x/2, size_y/2):
                 return True
@@ -176,7 +177,7 @@ class A_star:
         return False
     
 
-    def input_start(self, str):
+    def input_start(self, str,obstacle_space):
         while True:
             print("Enter", str, "node (Sample: 10, 10 ): ")
             A = [int(i) for i in input().split(', ')]
@@ -203,7 +204,7 @@ class A_star:
                 A = float(input())
                 return A
 
-    def check_conditions(self, X_n, Y_n, X_i, Y_i, T_i, Thetan, cc, ls, vel):
+    def check_conditions(self, X_n, Y_n, X_i, Y_i, T_i, Thetan, cc, ls, vel,node_state_g,queue_nodes,visited_nodes,path_dict,obstacle_space):
         cost2_go = self.euclidean_distance(
             node_state_g[0], X_n, node_state_g[1], Y_n)
         final_cost = (cc + cost2_go*1.75)
@@ -214,7 +215,7 @@ class A_star:
         elif Thetan <= -360:
             Thetan = Thetan % 360 + 360
         current_pos = (X_n, Y_n, np.round(Thetan, 2))
-        if not self.is_point_in_any_block(current_pos[0], current_pos[1]):
+        if not self.is_point_in_any_block(current_pos[0], current_pos[1],obstacle_space):
             if current_pos in queue_nodes:
                 if queue_nodes[current_pos][0] > final_cost:
                     queue_nodes[current_pos] = final_cost, cost2_go, cc
@@ -228,7 +229,7 @@ class A_star:
             visited_nodes.add(current_pos)
         return
 
-    def Actions(self, ul, ur, pos, c2c):
+    def Actions(self, ul, ur, pos, c2c,node_state_g,queue_nodes,visited_nodes,path_dict,obstacle_space,R,L):
     #   Multiplier originally 0.5
         multiplier = 0.5
         t = 0
@@ -258,10 +259,10 @@ class A_star:
     #   Boundries here (12.8, 12.8) to be changed to fit new maps
         if 0 <= Xn <= 12.8 and 0 <= Yn <= 12.8:
             self.check_conditions(Xn, Yn, pos[0], pos[1],
-                                  pos[2], Thetan, cc, ls, velocity)
+                                  pos[2], Thetan, cc, ls, velocity,node_state_g,queue_nodes,visited_nodes,path_dict,obstacle_space)
         return
 
-    def back_tracking(self, path, pre_queue):
+    def back_tracking(self, path, pre_queue,initial_state):
         best_path = []
         path_vel = []
         best_path.append(pre_queue[0])
@@ -282,9 +283,9 @@ class A_star:
         return best_path, path_vel
 
     def a_star(self, goalx, goaly, startx, starty, rpm1, rpm2):
+        print("hi")
         RPM1 = (rpm1*2*math.pi)/60
         RPM2 = (rpm2*2*math.pi)/60
-        global action_set, initial_state, node_state_g, closed_list, queue_nodes, visited_nodes, path_dict, obstacle_space, R, L
         action_set = [0, RPM1], [RPM1, 0], [RPM1, RPM1], [0, RPM2], [
             RPM2, 0] , [RPM2, RPM2], [RPM1, RPM2], [RPM2, RPM1]
         r = 0.105
@@ -313,16 +314,16 @@ class A_star:
                 closed_list.add((x, y))
                 if self.euclidean_distance(node_state_g[0], x, node_state_g[1], y) > 0:
                     for i in action_set:
-                        self.Actions(i[0], i[1], position, cc)
+                        self.Actions(i[0], i[1], position, cc,node_state_g,queue_nodes,visited_nodes,path_dict,obstacle_space,R,L)
                 else:
                     print("Goal reached")
                     back_track, velocity_path = self.back_tracking(
-                        path_dict, queue_pop)
+                        path_dict, queue_pop,initial_state)
                     end_time = time.time()
                     path_time = end_time - start_time
                     print('Time to calculate path:', path_time, 'seconds')
                     #To be change to dynamically recieve clearance and map boundries
-                    #self.create_map(0.2,12.8,12.8, obstacle_space,visited_nodes, back_track, path_dict)
+                    #self.create_map(0.2,12.8,12.8, obstacle_space,visited_nodes, back_track, path_dict,initial_state)
                     return back_track
         print("Path cannot be acheived")
         exit()
@@ -399,6 +400,7 @@ def main():
     args.clearance = float(unknown[6])
     print('Given Inputs', args)
     astar = A_star()
+    astar2 = A_star()
     # way_points = astar.a_star(args.goal_x, args.goal_y,
     #                    args.start_x, args.start_y, args.RPM1, args.RPM2)
 
@@ -406,7 +408,8 @@ def main():
     results_lock = threading.Lock()
     inputs = [
     ((0.5,0.5),(3.0,0.5),A_star(),"robot1"),
-    # ((2.0,9.5),(4.0,9.5),A_star(),"robot2"),
+    ((0.5,0.5),(4.0,0.5),A_star(),"robot2"),
+    #((2.0,9.5),(4.0,9.5),A_star(),"robot2"),
     # ((7.0,0.5),(9.0,3.8),A_star(),"robot3"),
     # ((10.0,9.5),(7.2,8.0),A_star(),"robot4"),
     # ((6.0,8.0),(8.0,2.7),astar,"robot5"),
@@ -418,19 +421,41 @@ def main():
         goalx , goaly = goal_pose
         startx, starty = init_pose
         result = astar.a_star(goalx, goaly, startx, starty, rpm1, rpm2)
-        with results_lock:
-            results[name] = result
+        # with results_lock:
+        #     results[name] = result
+        return name, result
     
+    with ThreadPoolExecutor() as executor:
+    # Submit tasks to the thread pool
+        futures = {executor.submit(thread_target, *inp): inp[3] for inp in inputs}
 
-    threads = []
-    for inp in inputs:
-        t = threading.Thread(target=thread_target, args=inp)
-        threads.append(t)
-        t.start()
-    for t in threads:
-        t.join()
-    print("HEEEREE")
-    print(results)
+    # Collect results as they complete
+    for future in as_completed(futures):
+        name = futures[future]
+        try:
+            name, result = future.result()
+            results[name] = result
+        except Exception as e:
+            print(f"Error with {name}: {e}")
+
+    print("Results:", results)
+    # print("debug1")
+    # threads = []
+    # print("debug2")
+    # for inp in inputs:
+    #     print("debug3")
+    #     t = threading.Thread(target=thread_target, args=inp)
+    #     print("debug4")
+    #     threads.append(t)
+    #     print("debug5")
+    #     t.start()
+    #     print("debug6")
+    # for t in threads:
+    #     print("debug7")
+    #     t.join()
+    #     print("debug8")
+    # print("HEEEREE")
+    # print(results)
     
     #pygame.time.wait(5000)
     rclpy.init()
@@ -441,16 +466,17 @@ def main():
 
     robots = []
     size = len(inputs)
-    for i in range(1, size):
+    for i in range(1, size+1):
         robot_name = f"robot{i}"
         way_points = results[robot_name]
+        print("way_Points ===> " , way_points)
         robots.append(ROS_move(robot_name, way_points))
         
     try:
     # Process each node in a loop using spin_once.
         while rclpy.ok():
             for robot in robots:
-                rclpy.spin_once(robot, timeout_sec=0.1)  # Process callbacks for each node.
+                rclpy.spin(robot)  # Process callbacks for each node.
     except KeyboardInterrupt:
         pass
     finally:
