@@ -284,7 +284,6 @@ class A_star:
         return best_path, path_vel
 
     def a_star(self, goalx, goaly, startx, starty, rpm1, rpm2):
-        print("hi")
         RPM1 = (rpm1*2*math.pi)/60
         RPM2 = (rpm2*2*math.pi)/60
         action_set = [0, RPM1], [RPM1, 0], [RPM1, RPM1], [0, RPM2], [
@@ -400,8 +399,7 @@ def main():
     args.RPM2 = float(unknown[5])
     args.clearance = float(unknown[6])
     print('Given Inputs', args)
-    astar = A_star()
-    astar2 = A_star()
+    #astar = A_star()
     # way_points = astar.a_star(args.goal_x, args.goal_y,
     #                    args.start_x, args.start_y, args.RPM1, args.RPM2)
 
@@ -410,10 +408,11 @@ def main():
     inputs = [
     ((0.5,0.5),(3.0,0.5),A_star(),"robot1"),
     ((4.0,1.7),(1.0,1.7),A_star(),"robot2"),
-    #((2.0,9.5),(4.0,9.5),A_star(),"robot2"),
-    # ((7.0,0.5),(9.0,3.8),A_star(),"robot3"),
-    # ((10.0,9.5),(7.2,8.0),A_star(),"robot4"),
-    # ((6.0,8.0),(8.0,2.7),astar,"robot5"),
+    #((2.0,9.5),(4.0,9.5),A_star(),"robot3"),
+    #((7.0,0.5),(9.0,3.8),A_star(),"robot4"),
+    #((10.0,9.5),(7.2,8.0),A_star(),"robot5"),
+    #((6.0,8.0),(8.0,2.7),A_star(),"robot6"),
+
     ]
 
     def thread_target(init_pose, goal_pose,astar,name):
@@ -440,7 +439,7 @@ def main():
             print(f"Error with {name}: {e}")
   
 
-    #pygame.time.wait(5000)
+    pygame.time.wait(10000)
     # move_turtlebot = ROS_move("robot1",way_points)
     # rclpy.spin(move_turtlebot)
     # move_turtlebot.destroy_node()

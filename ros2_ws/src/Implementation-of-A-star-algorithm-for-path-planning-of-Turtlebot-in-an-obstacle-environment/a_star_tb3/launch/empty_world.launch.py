@@ -15,12 +15,21 @@ import argparse
 
 
 def generate_launch_description():
+    ld = LaunchDescription()
+
+
 
     number_of_robots = 2
     start_poses =[
         (0.5,0.5),
-        (4.0,1.7)
+        (4.0,1.7),
+        (2.0,9.5),
+        (7.0,0.5),
+        (10.0,9.5),
+        (6.0,8.0)
     ]
+
+
 
     parser = argparse.ArgumentParser()
     parser.add_argument('--goal_x', type=float)
@@ -76,10 +85,23 @@ def generate_launch_description():
         )
     )
 
-    robot_state_publisher_cmd = Node(
+
+
+
+
+
+
+
+    for i in range(1,number_of_robots+1):
+        robot_namespace = f"robot{i}"
+        robot_name_entity = f"robot{i}_burger"
+        robo_x_pose = LaunchConfiguration(f'robot{i}_start_x', default=str(start_poses[i - 1][0]))
+        robo_y_pose = LaunchConfiguration(f'robot{i}_start_y', default=str(start_poses[i - 1][1]))
+
+        robot_state_publisher_cmd = Node(
                 package="robot_state_publisher",
-                namespace="robot1",
-                name="robot1_burger",
+                namespace=robot_namespace,
+                name=robot_name_entity,
                 executable="robot_state_publisher",
                 output="screen",
                 parameters=[{"use_sim_time": True,
@@ -87,64 +109,99 @@ def generate_launch_description():
                              'robot_description': robot_desc}],
                 remappings=remappings,
             )
-    
-
-    spawn_turtlebot_cmd = Node(
+        spawn_turtlebot_cmd = Node(
                 package="gazebo_ros",
                 executable="spawn_entity.py",
                 arguments=[
                     "-file",
                     sdf_path,
                     "-entity",
-                    "robot1_burger",
+                    robot_name_entity,
                     "-robot_namespace",
-                    "robot1",
+                    robot_namespace,
                     "-x",
-                    x_pose,
+                    robo_x_pose,
                     "-y",
-                    y_pose,
+                    robo_y_pose,
                     "-z",
                     "0.01"
                 ],
                 output="screen",
             )
+        ld.add_action(robot_state_publisher_cmd)
+        ld.add_action(spawn_turtlebot_cmd)
+
+
+
+
+
+    # robot_state_publisher_cmd = Node(
+    #             package="robot_state_publisher",
+    #             namespace="robot1",
+    #             name="robot1_burger",
+    #             executable="robot_state_publisher",
+    #             output="screen",
+    #             parameters=[{"use_sim_time": True,
+    #                          "publish_frequency": 50.0,
+    #                          'robot_description': robot_desc}],
+    #             remappings=remappings,
+    #         )
+    # spawn_turtlebot_cmd = Node(
+    #             package="gazebo_ros",
+    #             executable="spawn_entity.py",
+    #             arguments=[
+    #                 "-file",
+    #                 sdf_path,
+    #                 "-entity",
+    #                 "robot1_burger",
+    #                 "-robot_namespace",
+    #                 "robot1",
+    #                 "-x",
+    #                 x_pose,
+    #                 "-y",
+    #                 y_pose,
+    #                 "-z",
+    #                 "0.01"
+    #             ],
+    #             output="screen",
+    #         )
     
 
 
 
 
-    robot_state_publisher_cmd2 = Node(
-                package="robot_state_publisher",
-                namespace="robot2",
-                name="robot2_burger",
-                executable="robot_state_publisher",
-                output="screen",
-                parameters=[{"use_sim_time": True,
-                             "publish_frequency": 50.0,
-                             'robot_description': robot_desc}],
-                remappings=remappings,
-            )
+    # robot_state_publisher_cmd2 = Node(
+    #             package="robot_state_publisher",
+    #             namespace="robot2",
+    #             name="robot2_burger",
+    #             executable="robot_state_publisher",
+    #             output="screen",
+    #             parameters=[{"use_sim_time": True,
+    #                          "publish_frequency": 50.0,
+    #                          'robot_description': robot_desc}],
+    #             remappings=remappings,
+    #         )
     
 
-    spawn_turtlebot_cmd2 = Node(
-                package="gazebo_ros",
-                executable="spawn_entity.py",
-                arguments=[
-                    "-file",
-                    sdf_path,
-                    "-entity",
-                    "robot2_burger",
-                    "-robot_namespace",
-                    "robot2",
-                    "-x",
-                    "4.0",
-                    "-y",
-                    "1.7",
-                    "-z",
-                    "0.01"
-                ],
-                output="screen",
-            )
+    # spawn_turtlebot_cmd2 = Node(
+    #             package="gazebo_ros",
+    #             executable="spawn_entity.py",
+    #             arguments=[
+    #                 "-file",
+    #                 sdf_path,
+    #                 "-entity",
+    #                 "robot2_burger",
+    #                 "-robot_namespace",
+    #                 "robot2",
+    #                 "-x",
+    #                 "4.0",
+    #                 "-y",
+    #                 "1.7",
+    #                 "-z",
+    #                 "0.01"
+    #             ],
+    #             output="screen",
+    #         )
     
 
     robot_controller = Node(
@@ -194,7 +251,7 @@ def generate_launch_description():
 
    
 
-    ld = LaunchDescription()
+    # ld = LaunchDescription()
 
     # Add the commands to the launch description
     ld.add_action(declared_startx)
@@ -204,11 +261,12 @@ def generate_launch_description():
     ld.add_action(declared_clearance)
     ld.add_action(gzserver_cmd)
     ld.add_action(gzclient_cmd)
-    ld.add_action(robot_state_publisher_cmd)
-    ld.add_action(spawn_turtlebot_cmd)
 
-    ld.add_action(robot_state_publisher_cmd2)
-    ld.add_action(spawn_turtlebot_cmd2)
+
+    # ld.add_action(robot_state_publisher_cmd)
+    # ld.add_action(spawn_turtlebot_cmd)
+    # ld.add_action(robot_state_publisher_cmd2)
+    # ld.add_action(spawn_turtlebot_cmd2)
     
     #Added =========================
     ld.add_action(robot_controller)
