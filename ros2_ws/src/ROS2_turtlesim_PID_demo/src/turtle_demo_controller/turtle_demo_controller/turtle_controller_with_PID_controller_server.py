@@ -168,10 +168,9 @@ class Controller_Node(Node):
 def main(args=None):
     rclpy.init(args=args)
     controller_nodes = []
-    size = len(2)
+    size = 2
     for i in range(1, size+1):
         robot_name = f"robot{i}"
-        way_points = controller_nodes[robot_name]
         controller_nodes.append(Controller_Node(robot_name))
 
     try:

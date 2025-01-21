@@ -33,7 +33,7 @@ Gazebo Video Link - https://drive.google.com/file/d/1zMZkRd9BUZkixb4Scdb6FKqUckA
 
 start_time = time.time()
 
-map_path = map_file_path = '/home/ali/MAPF_RoboSim/ros2_ws/src/Implementation-of-A-star-algorithm-for-path-planning-of-Turtlebot-in-an-obstacle-environment/a_star_tb3/benchmarks/benchmark.txt'
+map_path = map_file_path = '/home/maged/MAPF_RoboSim/ros2_ws/src/Implementation-of-A-star-algorithm-for-path-planning-of-Turtlebot-in-an-obstacle-environment/a_star_tb3/benchmarks/benchmark.txt'
 
 class A_star:
     def convert_map_to_obstacles(self,map_file, cell_size=0.1):
