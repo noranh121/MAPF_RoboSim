@@ -18,25 +18,26 @@ from turtlesim.msg import Pose
 from std_msgs.msg import Float64MultiArray
 import itertools
 from tf_transformations import euler_from_quaternion
-
-'''
-Github repository - https://github.com/sandipsharan/A-star-algorithm-for-turtlebot.git
-'''
-
-'''
-Visualization Video link - https://drive.google.com/file/d/1J7fFrUmw66ZZ5l-3xftQIBs8zg-AzyZ3/view?usp=share_link
-Gazebo Video Link - https://drive.google.com/file/d/1zMZkRd9BUZkixb4Scdb6FKqUckAuu_gh/view?usp=share_link
-'''
+import os
 
 start_time = time.time()
 
-map_path = map_file_path = '/home/maged/MAPF_RoboSim/ros2_ws/src/Implementation-of-A-star-algorithm-for-path-planning-of-Turtlebot-in-an-obstacle-environment/a_star_tb3/benchmarks/benchmark.txt'
+# map_file_path = '/home/ahmadaw/MAPF_RoboSim/ros2_ws/src/Implementation-of-A-star-algorithm-for-path-planning-of-Turtlebot-in-an-obstacle-environment/a_star_tb3/benchmarks/benchmark.txt'
 
 class A_star:
-    def convert_map_to_obstacles(self,map_file, cell_size=0.1):
+
+    def get_benchmark_path(self,benchmark_file_name):
+        MAPF_ros2_ws=os.getcwd()
+        benchmark_path=MAPF_ros2_ws+'/src/Implementation-of-A-star-algorithm-for-path-planning-of-Turtlebot-in-an-obstacle-environment/a_star_tb3/benchmarks/'+benchmark_file_name
+        return benchmark_path
+
+    def convert_map_to_obstacles(self,benchmark_file_name, cell_size=0.1):
+
+        map_file=self.get_benchmark_path(benchmark_file_name)
         with open(map_file, 'r') as f:
             lines = f.readlines()
 
+        global height,width
         height = int([line.split()[1] for line in lines if line.startswith("height")][0])
         width = int([line.split()[1] for line in lines if line.startswith("width")][0])
         grid_lines = [line.strip() for line in lines if not line.startswith("type") and not line.startswith("height") and not line.startswith("width") and not line.startswith("map")]
@@ -161,13 +162,14 @@ class A_star:
             if self.is_point_within_block(x_center, y_center, x_tocheck, y_tocheck, size_x/2, size_y/2):
                 return True
         return False
-    
-    def is_point_within_block(self,x_center, y_center, x_tocheck, y_tocheck, half_length_x, half_length_y , threshold_x = 0.2 , threshold_y = 0.2):
 
-        x_min = x_center - (half_length_x + threshold_x)
-        x_max = x_center + (half_length_x + threshold_x)
-        y_min = y_center - (half_length_y + threshold_y)
-        y_max = y_center + (half_length_y + threshold_y)
+    # def is_point_within_block(self,x_center, y_center, x_tocheck, y_tocheck, half_length_x, half_length_y , threshold_x = 0.2 , threshold_y = 0.2):
+    def is_point_within_block(self,x_center, y_center, x_tocheck, y_tocheck, half_length_x, half_length_y , threshold=0.2):
+
+        x_min = x_center - (half_length_x + threshold)
+        x_max = x_center + (half_length_x + threshold)
+        y_min = y_center - (half_length_y + threshold)
+        y_max = y_center + (half_length_y + threshold)
         # Check if the point lies within the block's boundaries
         if x_min <= x_tocheck <= x_max and y_min <= y_tocheck <= y_max:
             return True
@@ -254,7 +256,7 @@ class A_star:
         Thetan = np.round(Thetan, 2)
         Thetan = np.rad2deg(Thetan)
     #   Boundries here (12.8, 12.8) to be changed to fit new maps
-        if 0 <= Xn <= 12.8 and 0 <= Yn <= 12.8:
+        if 0 <= Xn <= (width * 0.1)  and 0 <= Yn <= (height * 0.1):
             self.check_conditions(Xn, Yn, pos[0], pos[1],
                                   pos[2], Thetan, cc, ls, velocity)
         return
@@ -279,7 +281,8 @@ class A_star:
             print(i)
         return best_path, path_vel
 
-    def a_star(self, goalx, goaly, startx, starty, rpm1, rpm2, d,name):
+    # def a_star(self, goalx, goaly, startx, starty, rpm1, rpm2, d,name):
+    def a_star(self, goalx, goaly, startx, starty, name,benchmark_file_name, rpm1=40.0, rpm2=20.0):
         RPM1 = (rpm1*2*math.pi)/60
         RPM2 = (rpm2*2*math.pi)/60
         global action_set, initial_state, node_state_g, closed_list, queue_nodes, visited_nodes, path_dict, obstacle_space, R, L
@@ -288,7 +291,7 @@ class A_star:
         r = 0.105
         R = 0.033
         L = 0.16
-        obstacle_space = self.convert_map_to_obstacles(map_file_path)
+        obstacle_space = self.convert_map_to_obstacles(benchmark_file_name)
 
         initial_state = (startx, starty, 0)
         node_state_g = (goalx, goaly, 0)
@@ -382,21 +385,27 @@ def main():
     parser.add_argument('--goal_y', type=float)
     parser.add_argument('--start_x', type=float)
     parser.add_argument('--start_y', type=float)
-    parser.add_argument('--RPM1', type=float)
-    parser.add_argument('--RPM2', type=float)
-    parser.add_argument('--clearance', type=float)
+    parser.add_argument('--benchmark', type=str)
+    parser.add_argument('--ros2_distro', type=str)
+    # parser.add_argument('--RPM1', type=float)
+    # parser.add_argument('--RPM2', type=float)
+    # parser.add_argument('--clearance', type=float)
     args, unknown = parser.parse_known_args()
     args.goal_x = float(unknown[0])
     args.goal_y = float(unknown[1])
     args.start_x = float(unknown[2])
     args.start_y = float(unknown[3])
-    args.RPM1 = float(unknown[4])
-    args.RPM2 = float(unknown[5])
-    args.clearance = float(unknown[6])
+    args.benchmark = str(unknown[4])
+    args.ros2_distro = str(unknown[5])
+    # args.RPM1 = float(unknown[4])
+    # args.RPM2 = float(unknown[5])
+    # args.clearance = float(unknown[6])
     print('Given Inputs', args)
     astar = A_star()
     way_points = astar.a_star(args.goal_x, args.goal_y,
-                       args.start_x, args.start_y, args.RPM1, args.RPM2, args.clearance,"robot1")
+                       args.start_x, args.start_y, "robot1",args.benchmark)
+    # way_points = astar.a_star(args.goal_x, args.goal_y,
+    #                     args.start_x, args.start_y, args.RPM1, args.RPM2, args.clearance,"robot1")
     
 
     #pygame.time.wait(5000)
