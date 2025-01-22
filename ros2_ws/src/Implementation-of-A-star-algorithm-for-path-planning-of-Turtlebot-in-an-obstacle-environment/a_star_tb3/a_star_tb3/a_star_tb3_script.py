@@ -108,7 +108,9 @@ class A_star:
 
 ########################ADDED_NEW_CREATE_MAP######################################################
 #with new maps ==> ls.add in Actions needs to be changed to fit the new map boundries
-    def create_map(self,d,map_width, map_height, obstacles, explored, optimal_path, path,initial_state):
+    def create_map(self,d,map_width, map_height, obstacles, args):
+        colors = ["red", "green", "blue", "yellow", "purple", "cyan", "orange"]
+        color_cycle = itertools.cycle(colors)
         pygame.init()
         multiplier = 50
         map_height_mod = map_height*multiplier
@@ -145,17 +147,20 @@ class A_star:
             scale_factor = multiplier/100  # Scaling factor
 
             # Draw optimal path
+        for arg in args:
+            optimal_path,path,initial_state = arg
+            current_color = next(color_cycle)
             for i in range(len(optimal_path)):
                 curr_list=[]
                 if optimal_path[i] != initial_state:
                     for x, y in path[optimal_path[i]][1]:
                         curr_list.append((x*scale_factor,y*scale_factor))
-                    pygame.draw.lines(screen, "red", False, curr_list, width=2)
+                    pygame.draw.lines(screen, current_color, False, curr_list, width=3)
                     pygame.display.flip()
                     clock.tick(20)
             running = False
         pygame.display.flip()
-        pygame.time.wait(3000)
+        pygame.time.wait(10000)
         pygame.quit()
     #   Line to save video:
     #   video.export(verbose=True)
@@ -289,6 +294,7 @@ class A_star:
     def a_star(self, goalx, goaly, startx, starty,benchmark_file_name, rpm1=40.0, rpm2=20.0):
         RPM1 = (rpm1*2*math.pi)/60
         RPM2 = (rpm2*2*math.pi)/60
+        global obstacle_space
         action_set = [0, RPM1], [RPM1, 0], [RPM1, RPM1], [0, RPM2], [
             RPM2, 0] , [RPM2, RPM2], [RPM1, RPM2], [RPM2, RPM1]
         r = 0.105
@@ -327,7 +333,7 @@ class A_star:
                     print('Time to calculate path:', path_time, 'seconds')
                     #To be change to dynamically recieve clearance and map boundries
                     #self.create_map(0.2,12.8,12.8, obstacle_space,visited_nodes, back_track, path_dict,initial_state)
-                    return back_track
+                    return back_track, path_dict, initial_state
         print("Path cannot be acheived")
         exit()
 
@@ -406,7 +412,7 @@ def main():
     # args.RPM2 = float(unknown[5])
     # args.clearance = float(unknown[6])
     print('Given Inputs', args)
-    #astar = A_star()
+    drawer = A_star()
     # way_points = astar.a_star(args.goal_x, args.goal_y,
     #                    args.start_x, args.start_y, args.RPM1, args.RPM2)
 
@@ -444,7 +450,7 @@ def main():
             print(f"Error with {name}: {e}")
   
 
-    pygame.time.wait(10000)
+    # pygame.time.wait(2000)
     # move_turtlebot = ROS_move("robot1",way_points)
     # rclpy.spin(move_turtlebot)
     # move_turtlebot.destroy_node()
@@ -453,11 +459,19 @@ def main():
     rclpy.init()
     executor = MultiThreadedExecutor()
 
+    #Draw:
+    args = []
+    for res in results:
+        args.append(results[res])
+    drawer.create_map(0.2,width*0.1,height*0.1,obstacle_space,args)
+
+
+
     robots = []
     size = len(inputs)  # Assuming `inputs` is defined
     for i in range(1, size + 1):
         robot_name = f"robot{i}"
-        way_points = results[robot_name]  # Assuming `results` is a dictionary with waypoints for each robot
+        way_points = results[robot_name][0]  # Assuming `results` is a dictionary with waypoints for each robot
         robot_node = ROS_move(robot_name, way_points)
         robots.append(robot_node)
         executor.add_node(robot_node)
