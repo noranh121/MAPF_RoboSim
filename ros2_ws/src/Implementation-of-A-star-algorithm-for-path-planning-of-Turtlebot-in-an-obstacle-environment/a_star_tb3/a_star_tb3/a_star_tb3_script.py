@@ -147,18 +147,18 @@ class A_star:
             scale_factor = multiplier/100  # Scaling factor
 
             # Draw optimal path
-        for arg in args:
-            optimal_path,path,initial_state = arg
-            current_color = next(color_cycle)
-            for i in range(len(optimal_path)):
-                curr_list=[]
-                if optimal_path[i] != initial_state:
-                    for x, y in path[optimal_path[i]][1]:
-                        curr_list.append((x*scale_factor,y*scale_factor))
-                    pygame.draw.lines(screen, current_color, False, curr_list, width=3)
-                    pygame.display.flip()
-                    clock.tick(20)
-            running = False
+            for arg in args:
+                optimal_path,path,initial_state = arg
+                current_color = next(color_cycle)
+                for i in range(len(optimal_path)):
+                    curr_list=[]
+                    if optimal_path[i] != initial_state:
+                        for x, y in path[optimal_path[i]][1]:
+                            curr_list.append((x*scale_factor,y*scale_factor))
+                        pygame.draw.lines(screen, current_color, False, curr_list, width=3)
+                        pygame.display.flip()
+                        clock.tick(20)
+                running = False
         pygame.display.flip()
         pygame.time.wait(10000)
         pygame.quit()
@@ -246,7 +246,7 @@ class A_star:
         Yn = pos[1]
         Thetan = np.deg2rad(pos[2])
         ls = OrderedSet()
-        ls.add(self.coords_cm_pygame((Xn, Yn),  1280))
+        ls.add(self.coords_cm_pygame((Xn, Yn),  height*10))
         cc = 0
         while t < 1:
             xi = Xn
@@ -256,7 +256,7 @@ class A_star:
             Thetan += (R/L)*(ur-ul)*dt
             t = t + dt
             cc += self.euclidean_distance(xi, Xn, yi, Yn)
-            ls.add(self.coords_cm_pygame((Xn, Yn), 1280))
+            ls.add(self.coords_cm_pygame((Xn, Yn), height*10))
         cc += c2c
         velocity = ((multiplier*R*(ul + ur)*np.cos(Thetan)),
                     (multiplier*R*(ul + ur)*np.sin(Thetan)), ((R/L)*(ur-ul)))
@@ -420,11 +420,11 @@ def main():
     results_lock = threading.Lock()
     inputs = [
     ((0.5,0.5),(3.0,0.5),A_star(),"robot1"),
-    ((4.0,1.7),(1.0,1.7),A_star(),"robot2"),
-    #((2.0,9.5),(4.0,9.5),A_star(),"robot3"),
-    #((7.0,0.5),(9.0,3.8),A_star(),"robot4"),
-    #((10.0,9.5),(7.2,8.0),A_star(),"robot5"),
-    #((6.0,8.0),(8.0,2.7),A_star(),"robot6"),
+    # ((4.0,1.7),(1.0,1.7),A_star(),"robot2"),
+    # ((2.0,9.5),(4.0,9.5),A_star(),"robot3"),
+    # ((7.0,0.5),(9.0,3.8),A_star(),"robot4"),
+    # ((10.0,9.5),(7.2,8.0),A_star(),"robot5"),
+    # ((6.0,8.0),(8.0,2.7),A_star(),"robot6"),
 
     ]
 

@@ -171,7 +171,7 @@ def main(args=None):
     executor = MultiThreadedExecutor()
 
     controller_nodes = []
-    size = 2  # Number of nodes to create
+    size = 1  # Number of nodes to create
 
     for i in range(1, size + 1):
         robot_name = f"robot{i}"
