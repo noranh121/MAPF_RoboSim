@@ -21,15 +21,18 @@ def generate_launch_description():
 
 
 
-    number_of_robots = 2
-    start_poses =[
-        (0.5,0.5),
-        (4.0,1.7),
-        (2.0,9.5),
-        (7.0,0.5),
-        (10.0,9.5),
-        (6.0,8.0)
-    ]
+    start_goal_poses ,number_of_robots = start_goal_parser()
+    start_poses = []
+    for start,goal in start_goal_poses:
+        start_poses.append(start)
+    # start_poses =[
+    #     (0.5,0.5),
+    #     (4.0,1.7),
+    #     (2.0,9.5),
+    #     (7.0,0.5),
+    #     (10.0,9.5),
+    #     (6.0,8.0)
+    # ]
 
 
 
@@ -315,3 +318,24 @@ def generate_launch_description():
     ld.add_action(my_node)
 
     return ld
+
+def get_benchmark_path(benchmark_file_name):
+    MAPF_ros2_ws=os.getcwd()
+    benchmark_path=MAPF_ros2_ws+'/src/Implementation-of-A-star-algorithm-for-path-planning-of-Turtlebot-in-an-obstacle-environment/a_star_tb3/benchmarks/'+benchmark_file_name
+    return benchmark_path
+    
+def start_goal_parser():
+    file_path = get_benchmark_path("test.txt")
+    star_goal_pairs = []
+    with open(file_path, 'r') as file:
+        for line in file:
+            line = line.strip()  # Remove leading/trailing whitespace
+            if line:
+                parts = line.split()  # Split the line into start and goal parts
+                # Parse the start and goal coordinates from the line
+                start = tuple(map(float, parts[0].strip('()').split(',')))
+                goal = tuple(map(float, parts[1].strip('()').split(',')))
+                # Add the pair to the list
+                star_goal_pairs.append([start, goal])
+    number_of_robots = len(star_goal_pairs)
+    return star_goal_pairs, number_of_robots
