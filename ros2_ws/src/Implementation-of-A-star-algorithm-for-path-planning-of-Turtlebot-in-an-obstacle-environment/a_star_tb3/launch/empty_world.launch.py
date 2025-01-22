@@ -33,10 +33,10 @@ def generate_launch_description():
 
 
     parser = argparse.ArgumentParser()
-    parser.add_argument('--goal_x', type=float)
-    parser.add_argument('--goal_y', type=float)
-    parser.add_argument('--start_x', type=float)
-    parser.add_argument('--start_y', type=float)
+    # parser.add_argument('--goal_x', type=float)
+    # parser.add_argument('--goal_y', type=float)
+    # parser.add_argument('--start_x', type=float)
+    # parser.add_argument('--start_y', type=float)
     parser.add_argument('--benchmark', type=str)
     parser.add_argument('--ros2_distro', type=str)
     # parser.add_argument('--RPM1', type=float)
@@ -45,15 +45,15 @@ def generate_launch_description():
     args, unknown = parser.parse_known_args()
 
     for arg in unknown:
-        if arg.startswith('goal_x:='):
-            args.goal_x = float(arg.split(':=')[1])
-        elif arg.startswith('goal_y:='):
-            args.goal_y = float(arg.split(':=')[1])
-        elif arg.startswith('start_x:='):
-            args.start_x = float(arg.split(':=')[1])
-        elif arg.startswith('start_y:='):
-            args.start_y = float(arg.split(':=')[1])
-        elif arg.startswith('benchmark:='):
+        # if arg.startswith('goal_x:='):
+        #     args.goal_x = float(arg.split(':=')[1])
+        # elif arg.startswith('goal_y:='):
+        #     args.goal_y = float(arg.split(':=')[1])
+        # elif arg.startswith('start_x:='):
+        #     args.start_x = float(arg.split(':=')[1])
+        # elif arg.startswith('start_y:='):
+        #     args.start_y = float(arg.split(':=')[1])
+        if arg.startswith('benchmark:='):
             args.benchmark = str(arg.split(':=')[1])
         elif arg.startswith('ros2_distro:='):
             args.ros2_distro = str(arg.split(':=')[1])
@@ -85,9 +85,9 @@ def generate_launch_description():
     with open(urdf_path, 'r') as infp:
         robot_desc = infp.read()
 
-    use_sim_time = LaunchConfiguration('use_sim_time', default='true')
-    x_pose = LaunchConfiguration('--start_x', default='0.0')
-    y_pose = LaunchConfiguration('--start_y', default='0.0')
+    # use_sim_time = LaunchConfiguration('use_sim_time', default='true')
+    # x_pose = LaunchConfiguration('--start_x', default='0.0')
+    # y_pose = LaunchConfiguration('--start_y', default='0.0')
     
     world_file_name = args.benchmark.removesuffix('.txt')+'.world'
     MAPF_ros2_ws=os.getcwd()
@@ -260,10 +260,10 @@ def generate_launch_description():
     
     print('args', args)
     
-    declared_goalx = DeclareLaunchArgument('--goal_x', default_value=str(args.goal_x))
-    declared_goaly = DeclareLaunchArgument('--goal_y', default_value=str(args.goal_y))
-    declared_startx = DeclareLaunchArgument('--start_x', default_value=str(args.start_x))
-    declared_starty = DeclareLaunchArgument('--start_y', default_value=str(args.start_y))
+    # declared_goalx = DeclareLaunchArgument('--goal_x', default_value=str(args.goal_x))
+    # declared_goaly = DeclareLaunchArgument('--goal_y', default_value=str(args.goal_y))
+    # declared_startx = DeclareLaunchArgument('--start_x', default_value=str(args.start_x))
+    # declared_starty = DeclareLaunchArgument('--start_y', default_value=str(args.start_y))
     declared_benchmark = DeclareLaunchArgument('--benchmark', default_value=str(args.benchmark))
     declared_ros2_distro = DeclareLaunchArgument('--ros2_distro', default_value=str(args.ros2_distro))
     # declared_RPM1 = DeclareLaunchArgument('--RPM1', default_value=str(args.RPM1))
@@ -281,7 +281,7 @@ def generate_launch_description():
         emulate_tty=True,
         # arguments = [LaunchConfiguration('--goal_x'), LaunchConfiguration('--goal_y'), LaunchConfiguration('--start_x'), LaunchConfiguration('--start_y'),
         #             LaunchConfiguration('--RPM1'), LaunchConfiguration('--RPM2'), LaunchConfiguration('--clearance')  ],
-        arguments = [LaunchConfiguration('--goal_x'), LaunchConfiguration('--goal_y'), LaunchConfiguration('--start_x'), LaunchConfiguration('--start_y'),LaunchConfiguration('--benchmark'),LaunchConfiguration('--ros2_distro')],
+        arguments = [LaunchConfiguration('--benchmark'),LaunchConfiguration('--ros2_distro')],
     ), ])
 
    
@@ -289,8 +289,8 @@ def generate_launch_description():
     # ld = LaunchDescription()
 
     # Add the commands to the launch description
-    ld.add_action(declared_startx)
-    ld.add_action(declared_starty)
+    # ld.add_action(declared_startx)
+    # ld.add_action(declared_starty)
     ld.add_action(declared_benchmark)
     ld.add_action(declared_ros2_distro)
     # ld.add_action(declared_RPM1)
@@ -309,8 +309,8 @@ def generate_launch_description():
     ld.add_action(robot_controller)
     #Added =========================
 
-    ld.add_action(declared_goalx)
-    ld.add_action(declared_goaly)
+    # ld.add_action(declared_goalx)
+    # ld.add_action(declared_goaly)
     ld.add_action(my_node)
 
     return ld
