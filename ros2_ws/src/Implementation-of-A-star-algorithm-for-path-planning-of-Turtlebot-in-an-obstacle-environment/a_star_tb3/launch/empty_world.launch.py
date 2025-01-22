@@ -1,5 +1,6 @@
 
 import os
+import pathlib
 import sys
 from ament_index_python.packages import get_package_share_directory
 from launch import LaunchDescription
@@ -88,8 +89,8 @@ def generate_launch_description():
     # use_sim_time = LaunchConfiguration('use_sim_time', default='true')
     # x_pose = LaunchConfiguration('--start_x', default='0.0')
     # y_pose = LaunchConfiguration('--start_y', default='0.0')
-    
-    world_file_name = args.benchmark.removesuffix('.txt')+'.world'
+    # world_file_name = args.benchmark.removesuffix('.txt')+'.world'
+    world_file_name=str(pathlib.Path(args.benchmark).with_suffix(".world"))
     MAPF_ros2_ws=os.getcwd()
     world_file_path=MAPF_ros2_ws+'/src/Implementation-of-A-star-algorithm-for-path-planning-of-Turtlebot-in-an-obstacle-environment/a_star_tb3/worlds/'+world_file_name
     if not Path(world_file_path).exists():
