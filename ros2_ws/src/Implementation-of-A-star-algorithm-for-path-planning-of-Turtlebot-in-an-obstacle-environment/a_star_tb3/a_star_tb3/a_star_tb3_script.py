@@ -34,6 +34,28 @@ class A_star:
         MAPF_ros2_ws=os.getcwd()
         benchmark_path=MAPF_ros2_ws+'/src/Implementation-of-A-star-algorithm-for-path-planning-of-Turtlebot-in-an-obstacle-environment/a_star_tb3/benchmarks/'+benchmark_file_name
         return benchmark_path
+    
+    def start_goal_parser(self):
+        file_path = self.get_benchmark_path("test.txt")
+        star_goal_pairs = []
+        with open(file_path, 'r') as file:
+            for line in file:
+                line = line.strip()  # Remove leading/trailing whitespace
+                if line:
+                    parts = line.split()  # Split the line into start and goal parts
+
+                    # Parse the start and goal coordinates from the line
+                    start = tuple(map(float, parts[0].strip('()').split(',')))
+                    goal = tuple(map(float, parts[1].strip('()').split(',')))
+
+                    # Add the pair to the list
+                    star_goal_pairs.append([start, goal])
+
+        number_of_robots = len(star_goal_pairs)
+
+        return star_goal_pairs, number_of_robots
+    
+
 
     def convert_map_to_obstacles(self,benchmark_file_name, cell_size=0.1):
 
@@ -158,9 +180,9 @@ class A_star:
                         pygame.draw.lines(screen, current_color, False, curr_list, width=3)
                         pygame.display.flip()
                         clock.tick(20)
-                running = False
+            running = False
         pygame.display.flip()
-        pygame.time.wait(10000)
+        pygame.time.wait(1000)
         pygame.quit()
     #   Line to save video:
     #   video.export(verbose=True)
@@ -416,17 +438,17 @@ def main():
     # way_points = astar.a_star(args.goal_x, args.goal_y,
     #                    args.start_x, args.start_y, args.RPM1, args.RPM2)
 
+    coordinates , number_of_robots = drawer.start_goal_parser()
     results = {}
     results_lock = threading.Lock()
-    inputs = [
-    ((0.5,0.5),(3.0,0.5),A_star(),"robot1"),
-    # ((4.0,1.7),(1.0,1.7),A_star(),"robot2"),
-    # ((2.0,9.5),(4.0,9.5),A_star(),"robot3"),
-    # ((7.0,0.5),(9.0,3.8),A_star(),"robot4"),
-    # ((10.0,9.5),(7.2,8.0),A_star(),"robot5"),
-    # ((6.0,8.0),(8.0,2.7),A_star(),"robot6"),
 
-    ]
+    inputs = []
+    for i in range(number_of_robots):
+        robot_name = f"robot{i+1}"
+        start = coordinates[i][0]
+        goal = coordinates[i][1]
+        curr_tuple = (start,goal,A_star(),robot_name)
+        inputs.append(curr_tuple)
 
     def thread_target(init_pose, goal_pose,astar:A_star,name):
         goalx , goaly = goal_pose

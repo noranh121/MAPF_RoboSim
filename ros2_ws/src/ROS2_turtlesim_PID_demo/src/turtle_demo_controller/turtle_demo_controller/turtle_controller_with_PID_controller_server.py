@@ -9,6 +9,7 @@ from turtlesim.msg import Pose
 from rclpy.executors import MultiThreadedExecutor
 import numpy as np
 import time
+import os
 
 class Controller_Node(Node):
     def __init__(self,namespace):
@@ -125,7 +126,6 @@ class Controller_Node(Node):
 
     def pose_callback(self, msg: Pose):
         if self.filled_way_points:
-
             if self.is_within_distance((msg.x,msg.y),(self.desired_x,self.desired_y)):
                 self.current_x = np.round(msg.x,self.round_by)
                 self.current_y = np.round(msg.y,self.round_by)
@@ -134,10 +134,9 @@ class Controller_Node(Node):
                     desired_point = self.way_points.pop(0)
                     self.desired_x, self.desired_y = desired_point
                 else:
-                    l_v = 0
-                    l_a = 0
-                    self.my_velocity_cont(l_v,l_a)
+                    self.current_x, self.current_y = self.desired_x,self.desired_y
             self.path_calculator()
+        
 
 
     def my_velocity_cont(self, l_v, a_v):
@@ -164,14 +163,34 @@ class Controller_Node(Node):
         else:
             # No waypoints left to update
             return False
+        
+def get_benchmark_path(benchmark_file_name):
+    MAPF_ros2_ws=os.getcwd()
+    benchmark_path=MAPF_ros2_ws+'/src/Implementation-of-A-star-algorithm-for-path-planning-of-Turtlebot-in-an-obstacle-environment/a_star_tb3/benchmarks/'+benchmark_file_name
+    return benchmark_path
 
+def start_goal_parser():
+    file_path = get_benchmark_path("test.txt")
+    star_goal_pairs = []
+    with open(file_path, 'r') as file:
+        for line in file:
+            line = line.strip()  # Remove leading/trailing whitespace
+            if line:
+                parts = line.split()  # Split the line into start and goal parts
+                # Parse the start and goal coordinates from the line
+                start = tuple(map(float, parts[0].strip('()').split(',')))
+                goal = tuple(map(float, parts[1].strip('()').split(',')))
+                # Add the pair to the list
+                star_goal_pairs.append([start, goal])
+    number_of_robots = len(star_goal_pairs)
+    return star_goal_pairs, number_of_robots
 
 def main(args=None):
     rclpy.init(args=args)
     executor = MultiThreadedExecutor()
 
     controller_nodes = []
-    size = 1  # Number of nodes to create
+    ss , size = start_goal_parser()  # Number of nodes to create
 
     for i in range(1, size + 1):
         robot_name = f"robot{i}"
