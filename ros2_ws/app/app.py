@@ -76,9 +76,23 @@ def upload_map():
 def simulate():
     selected_algo = request.form.get('algorithm', 'None')
     selected_map = request.form.get('map', 'None')
-    flash(f'Simulation started for "{selected_algo}" on map: "{selected_map}"')
+    number = request.form.get('agents' ,'None')
+    start_points = request.form.get('start' ,'None')
+    end_points = request.form.get('end' ,'None')
+    flash(f'Simulation started for "{selected_algo}" on map: "{selected_map}" number of agents "{number}" start points "{start_points}" end points "{end_points}" ')
     return redirect(url_for('dashboard'))
 
+# @app.route('/algorithm-upload', methods=['GET'])
+# def algorithm_upload():
+#     return render_template('algorithm_upload.html')
+
+# @app.route('/map-selection', methods=['GET'])
+# def map_selection():
+#     return render_template('map_selection.html')
+
+@app.route('/home', methods=['GET'])
+def home():
+    return render_template('home.html')
 
 if __name__ == '__main__':
     app.run(debug=True)

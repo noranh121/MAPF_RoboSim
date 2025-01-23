@@ -1,0 +1,104 @@
+body {
+    /* padding-top: 100px;      */
+    margin: 0;
+    overflow: hidden;
+}
+.hero-section {
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: white;
+    text-align: center;
+}
+
+.mainContent {
+    height: 200vh;
+}
+
+
+
+.grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px; 
+}
+
+.item {
+    display: flex;
+    flex-direction: column; 
+    align-items: center;
+    justify-content: flex-start; 
+    width: 150px; 
+    height: 200px;
+    background-color: #e3d1ef;
+    padding: 10px;
+    border-radius: 8px;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+    text-align: center;
+
+}
+
+.item2 {
+    display: flex;
+    flex-direction: column; 
+    align-items: center;
+    justify-content: flex-start; 
+    width: 250px; 
+    height: 300px;
+    background-color: #d3d3d3;
+    padding: 10px;
+    border-radius: 8px;
+    box-shadow: 0px 4px 8px #d3d3d3(0, 0, 0, 0.1);
+    text-align: center;
+}
+.map {
+    height: 100px;
+    width: 100px;
+    object-fit: cover;
+    border-radius: 4px; 
+}
+
+.map-name {
+    margin-top: 10px;
+    color: #333;
+    font-weight: bold;
+     font-size: 14px;
+}
+
+
+.nav-link {
+    color:#808080;
+}
+
+#headerMain {
+  font-family: "Space Grotesk", serif;
+  font-optical-sizing: auto;
+  font-weight: bold;
+  font-style: noraml;
+}
+
+.button-color {
+    background-color: #8852b5;
+}
+
+.form-check-input:checked {
+    background-color: #8852b5; /* Change to button color (gray in this example) */
+    border-color: #8852b5;
+}
+
+.btn-spacing {
+    margin-right: 5px; /* Adjust the space between buttons */
+}
+
+@media (max-width: 544px) {
+    body {
+      padding-top: 150px; 
+    }
+}
+
+@media (max-width: 390px) {
+    body {
+      padding-top: 200px; 
+    }
+}

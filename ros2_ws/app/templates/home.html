@@ -1,0 +1,406 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>MAPF Simulator</title>
+    <!-- Bootstrap CSS -->
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+      integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH"
+      crossorigin="anonymous"
+    />
+    <link rel="stylesheet" href="../static/css/styles.css" />
+    <link rel="icon" href="../static/images/icons8-robot-2-30.png" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&family=Satisfy&family=Space+Grotesk:wght@300..700&display=swap"
+      rel="stylesheet"
+    />
+  </head>
+  <body>
+    <div class="container-fluid">
+      <!-- Hero Section -->
+      <div
+        class="hero-section d-flex flex-column align-items-center justify-content-center text-center"
+        style="height: 100vh; background-color: #f8f9fa; color: #343a40"
+      >
+        <h1>Welcome to MAPF RoboSim</h1>
+        <p>Welcome to the Multi-Agent Pathfinding Simulation System! </p> 
+         <p> Before getting started, we recommend reviewing the usage instructions to ensure a smooth experience. </p> 
+          <p>When you're ready, click "Continue" to begin your simulation journey!</p>
+        <div class="container">
+          <button id="scrollButton" class="btn btn-outline-light button-color mt-3 ">Continue</button>
+          <button class="btn btn-outline-dark mt-3 ">Read Info</button>
+        </div>
+      </div>
+      <!-- header -->
+        <header
+          class="d-flex flex-wrap justify-content-center py-3 mb-4 border-bottom fixed-top bg-light"
+        >
+          <a
+            href="/"
+            class="d-flex align-items-center mb-3 mb-md-0 me-md-auto link-body-emphasis text-decoration-none"
+          >
+            <img
+              src="../static/images/icons8-robot-2-30.png"
+              class="bi me-2"
+              width="40"
+              height="32"
+            />
+            <span id="headerMain" class="fs-4">RoboSim</span>
+          </a>
+
+          <ul class="nav">
+            <li class="nav-item">
+              <a href="/home" class="nav-link active" aria-current="page">Home</a>
+            </li>
+            <li class="nav-item"><a href="/about" class="nav-link">About</a></li>
+          </ul>
+        </header>
+        <div class="mainContent">
+
+        <!-- maps -->
+        <!-- existing maps -->
+         <br>
+         <br>
+         <br>
+        <div class="row mb-5 mt-5">
+          <div class="col">
+            <!-- <form  method="post" action="/simulate"> -->
+            <h4 class="mb-4">Select An Existing Map</h4>
+            <div class="container">
+              <div class="grid d-flex flex-wrap gap-3">
+                <div class="item">
+                  <img
+                    class="map"
+                    src="../static/images/maze-128-128-10.png"
+                    alt="Map 1"
+                  />
+                  <h6 class="map-name mt-2">Maze</h6>
+                  <button id="select-button-{{ loop.index }}" class="btn btn-outline-light btn-sm button-color"onclick="selectMap('{{ map }}', {{ loop.index }})">
+                    Select
+                  </button>
+                </div>
+                <div class="item">
+                  <img
+                    class="map"
+                    src="../static/images/room-64-64-16.png"
+                    alt="Map 2"
+                  />
+                  <h6 class="map-name mt-2">Room</h6>
+                  <button id="select-button-{{ loop.index }}" class="btn btn-outline-light btn-sm button-color"onclick="selectMap('{{ map }}', {{ loop.index }})">
+                    Select
+                  </button>
+                </div>
+                <!-- <div class="item">
+              <img class="map" src="../static/images/maze-128-128-10.png" alt="Map 3">
+              <h6 class="map-name mt-2">Map 3</h6>
+            </div> -->
+              </div>
+            </div>
+            <br />
+            <br />
+            <ul class="list-group">
+              <li
+                class="list-group-item d-flex justify-content-between align-items-center"
+              >
+              
+                Uploaded Map 1
+                <button id="select-button-{{ loop.index }}" class="btn btn-outline-light btn-sm button-color"onclick="selectMap('{{ map }}', {{ loop.index }})">
+                  Select
+                </button>
+              </li>
+              <li
+                class="list-group-item d-flex justify-content-between align-items-center"
+              >
+                Uploaded Map 2
+                <button id="select-button-{{ loop.index }}" class="btn btn-outline-light btn-sm button-color"onclick="selectMap('{{ map }}', {{ loop.index }})">
+                  Select
+                </button>
+              </li>
+            </ul>
+          </div>
+
+          <!-- upload maps-->
+          <div class="col">
+            <h4 class="mb-4">Upload a Custom Map</h4>
+            <form method="post" action="/upload-map" enctype="multipart/form-data">
+              <div class="mb-3">
+                <label for="mapName" class="form-label">Map Name</label>
+                <input
+                  type="text"
+                  class="form-control"
+                  id="mapName"
+                  placeholder="Enter map name"
+                />
+              </div>
+              <div class="mb-3">
+                <input type="file" class="form-control" id="mapFile" />
+              </div>
+              <div class="d-grid gap-2">
+                <button
+                  type="submit"
+                  class="btn btn-outline-light btn-block button-color"
+                >
+                  Upload
+                </button>
+              </div>
+            </form>
+          </div>
+          <div class="row mt-3">
+            <button class="btn btn-outline-light button-color">
+              view selected map on Gazebo
+            </button>
+          </div>
+        </div>
+        <hr />
+
+
+        <!-- algorithms -->
+        <div class="container mt-5">
+          <div class="modal-content rounded-4 shadow">
+            <div class="modal-header p-5 pb-4 border-bottom-0">
+              <h1 class="mb-0 fs-2">Select or Upload Algorithm</h1>
+            </div>
+            <div class="modal-body p-5 pt-0">
+              <form class>
+                <!-- Radio buttons for selecting either select or upload option -->
+                <div class="mb-4">
+                  <input
+                    class="form-check-input"
+                    type="radio"
+                    id="selectAlgoOption"
+                    name="algoOption"
+                    onclick="toggleFormInputs()"
+                    checked
+                  />
+                  <label for="selectAlgoOption"
+                    >Select Existing Algorithm</label
+                  >
+                  <input
+                    class="form-check-input"
+                    type="radio"
+                    id="uploadAlgoOption"
+                    name="algoOption"
+                    onclick="toggleFormInputs()"
+                  />
+                  <label for="uploadAlgoOption">Upload Custom Algorithm</label>
+                </div>
+
+                <!-- algorithm name -->
+                <div class="mb-3 row">
+                  <label for="algoName" class="col-sm-2 col-form-label"
+                    >Algorithm Name</label
+                  >
+                  <div class="col-sm-10">
+                    <input type="text" class="form-control" id="algoName" />
+                  </div>
+                </div>
+
+                <!-- upload file -->
+                <div class="mb-3 row">
+                  <label for="formFile" class="col-sm-2 col-form-label"
+                    >Upload Your Algorithm</label
+                  >
+                  <div class="col-sm-10">
+                    <input class="form-control" type="file" id="formFile" />
+                  </div>
+                </div>
+
+                <!-- select -->
+                <div class="mb-3 row">
+                  <label for="selectAlgo" class="col-sm-2 col-form-label"
+                    >Select Existing</label
+                  >
+                  <div class="col-sm-10">
+                    <select class="form-select" id="selectAlgo"></select>
+                  </div>
+                </div>
+
+                <!-- number of agents-->
+                <div class="mb-3 row">
+                  <label for="agents" class="col-sm-2 col-form-label"
+                    >Number Of Agents</label
+                  >
+                  <div class="col-sm-10">
+                    <input
+                      type="text"
+                      class="form-control"
+                      id="agents"
+                      placeholder="2"
+                    />
+                  </div>
+                </div>
+
+                <!-- start points -->
+                <div class="mb-3 row">
+                  <label for="start" class="col-sm-2 col-form-label"
+                    >Start Points</label
+                  >
+                  <div class="col-sm-10">
+                    <input
+                      type="text"
+                      class="form-control"
+                      id="start"
+                      placeholder="e.g., (1,1),(2,2)"
+                    />
+                  </div>
+                </div>
+
+                <!-- end points -->
+                <div class="mb-3 row">
+                  <label for="end" class="col-sm-2 col-form-label"
+                    >Algorithm Name</label
+                  >
+                  <div class="col-sm-10">
+                    <input
+                      type="text"
+                      class="form-control"
+                      id="end"
+                      placeholder="e.g., (5,5),(6,6)"
+                    />
+                  </div>
+                </div>
+
+                <!-- buttons -->
+                <div class="d-flex justify-content-end">
+                  <button
+                    type="submit"
+                    class="btn btn-outline-light button-color btn-spacing"
+                  >
+                    Submit
+                  </button>
+                  <button type="button" class="btn btn-outline-dark">
+                    Cancel
+                  </button>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+
+        <!-- <div class="container mt-4 mb-5">
+          <button class="btn btn-outline-light button-color">simulate</button>
+          <button class="btn btn-outline-dark" disabled>
+            download results
+          </button>
+        </div> -->
+
+        <!-- Form for simulation -->
+        <div class="container mt-4 mb-5">
+<form id="simulation-form" method="POST" action="{{ url_for('simulate') }}">
+    <input type="hidden" id="selected-map" name="map" value="">
+    <!-- Add other form fields like algorithm selection -->
+    <button type="button" class="btn btn-outline-light button-color" onclick="submitForm()">simulate</button>
+    <button class="btn btn-outline-dark" disabled>
+      download results
+    </button>
+</form>
+</div>
+
+        <div class="mt-4">
+          {% with messages = get_flashed_messages() %}
+            {% if messages %}
+              <div class="alert alert-info">
+                  {{ messages[0] }}
+              </div>
+            {% endif %}
+          {% endwith %}
+
+          <br>
+      </div>
+      <!-- footer -->
+      <footer class="bd-footer py-4 py-md-5 mt-5">
+        <div
+          class="d-flex flex-column flex-sm-row justify-content-between py-4 my-4 border-top"
+        >
+          <p>© 2025. All rights reserved.</p>
+          <ul class="list-unstyled d-flex">
+            <li class="ms-3">
+              <a
+                class="link-body-emphasis"
+                href="https://github.com/noranh121/MAPF_RoboSim"
+                target="_blank"
+                ><svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="40"
+                  height="40"
+                  fill="currentColor"
+                  class="bi bi-github"
+                  viewBox="0 0 16 16"
+                >
+                  <path
+                    d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27s1.36.09 2 .27c1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.01 8.01 0 0 0 16 8c0-4.42-3.58-8-8-8"
+                  /></svg
+              ></a>
+            </li>
+            <li class="ms-3">
+              <a
+                class="link-body-emphasis"
+                href="https://www.bgu.ac.il/en/"
+                target="_blank"
+                ><svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  xmlns:xlink="http://www.w3.org/1999/xlink"
+                  width="40"
+                  height="40"
+                  viewBox="0 0 158.14851 158.14851"
+                >
+                  <clipPath id="a" fill="#000000">
+                    <path d="m0 500h500v-500h-500z" fill="#000000" />
+                  </clipPath>
+                  <g
+                    clip-path="url(#a)"
+                    fill-rule="evenodd"
+                    transform="matrix(.35277777 0 0 -.35277777 -9.120187 167.268874)"
+                  >
+                    <path
+                      d="m0 0c0-123.793-100.354-224.147-224.147-224.147-123.794 0-224.148 100.354-224.148 224.147s100.354 224.148 224.148 224.148c123.793 0 224.147-100.355 224.147-224.148"
+                      fill="#f2f2f2"
+                      transform="translate(474.1475 250)"
+                    />
+                    <g fill="#ffffff">
+                      <path
+                        d="m0 0c-43.131 24.868-38.31 71.006-12.976 106.512l-29.378 15.724c-37.489-26.34-40.888-88.541-15.683-122.236z"
+                        transform="translate(355.5195 65.3486)"
+                        fill="#000000"
+                      />
+                      <path
+                        d="m0 0 56.53.008c-14.709 29.632-14.351 68.88-1.112 98.671 17.554 39.501 72.276 61.359 70.952 111.13-1.755 65.952-67.065 129.361-121.912 159.509 39.596-77.25-180.256-171.121-6.685-259.882 0 0 5.01 13.568 9.45 21.634 4.083 7.417 12.027 18.074 12.027 18.074-104.042 49.053 9.969 117.035 1.719 190.991 26.284-28.56 65.403-86.888 61.311-126.648-4.055-39.401-40.532-55.917-61.412-85.659-21.115-30.076-24.558-84.209-20.868-127.828"
+                        transform="translate(223.4531 65.3408)"
+                        fill="#000000"
+                      />
+                      <path
+                        d="m0 0s-13.635 6.438-21.879 11.4c-12.055 7.254-29.117 21.3-29.117 21.3 12.689-45.14 13.45-98.642-21.596-129.821h66.049c-1.2 38.074.273 65.742 6.543 97.121"
+                        transform="translate(217.0728 162.4619)"
+                        fill="#000000"
+                      />
+                    </g>
+                  </g></svg
+              ></a>
+            </li>
+            <li></li>
+          </ul>
+        </div>
+      </footer>
+    </div>
+
+    </div>
+
+    <!-- Bootstrap JS -->
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+      integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
+      crossorigin="anonymous"
+    ></script>
+    <!-- icons -->
+    <script src="https://unpkg.com/feather-icons"></script>
+    <script>
+      feather.replace();
+    </script>
+    <script src="../static/js/script.js"></script>
+  </body>
+</html>
