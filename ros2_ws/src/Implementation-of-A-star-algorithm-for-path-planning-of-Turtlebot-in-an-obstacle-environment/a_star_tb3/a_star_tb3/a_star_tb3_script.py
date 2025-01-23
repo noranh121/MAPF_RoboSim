@@ -336,6 +336,8 @@ class A_star:
         path_dict = {}
         visited_nodes = OrderedSet()
         queue_nodes[(initial_state)] = total_cost, cg, cost
+        if goalx>width*0.1 or goaly>height*0.1:
+            return None
         while (len(queue_nodes) != 0):
             queue_pop = queue_nodes.popitem()
             position = queue_pop[0]
