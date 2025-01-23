@@ -1,4 +1,5 @@
-from flask import Flask, render_template, request, redirect, url_for, flash
+from flask import Flask, render_template, request, redirect, url_for, flash,jsonify
+import subprocess
 import os
 
 app = Flask(__name__)
@@ -74,13 +75,44 @@ def upload_map():
 
 @app.route('/simulate', methods=['POST'])
 def simulate():
-    selected_algo = request.form.get('algorithm', 'None')
-    selected_map = request.form.get('map', 'None')
-    number = request.form.get('agents' ,'None')
-    start_points = request.form.get('start' ,'None')
-    end_points = request.form.get('end' ,'None')
-    flash(f'Simulation started for "{selected_algo}" on map: "{selected_map}" number of agents "{number}" start points "{start_points}" end points "{end_points}" ')
-    return redirect(url_for('dashboard'))
+    print("simulating!!")
+    try:
+        # Get the benchmark file path from the request payload
+        #benchmark_file = request.json.get('benchmark', '<default_path>')
+        benchmark_file = "benchmark.txt"
+        
+        # Define the commands with dynamic benchmark file path
+        #command = "ros2 launch a_star_tb3 empty_world.launch.py goal_x:=5 goal_y:=0 start_x:=0 start_y:=0.25 RPM1:=40 RPM2:=20 clearance:=100"
+        command = f"ros2 launch a_start_tb3 empty_world.launch benchmark:={benchmark_file} ros2_distro:=galactic"
+        commands = [
+            "cd ~/MAPF_RoboSim/ros2_ws",
+            "colcon build",
+            "source ~/MAPF_RoboSim/ros2_ws/install/setup.bash",
+            "source ~/MAPF_RoboSim/ros2_ws/install/local_setup.bash",
+            command
+        ]
+
+        full_command = " && ".join(commands)
+
+        result = subprocess.run(full_command, shell=True, executable="/bin/bash", text=True, capture_output=True)
+
+        if result.returncode == 0:
+            return jsonify({"status": "success", "output": result.stdout})
+        else:
+            return jsonify({"status": "error", "error": result.stderr}), 500
+    except Exception as e:
+        return jsonify({"status": "error", "error": str(e)}), 500
+
+    # selected_algo = request.form.get('algorithm', 'None')
+    # selected_map = request.form.get('map', 'None')
+    # number = request.form.get('agents' ,'None')
+    # start_points = request.form.get('start' ,'None')
+    # end_points = request.form.get('end' ,'None')
+    # flash(f'Simulation started for "{selected_algo}" on map: "{selected_map}" number of agents "{number}" start points "{start_points}" end points "{end_points}" ')
+    # return redirect(url_for('dashboard'))
+
+
+
 
 # @app.route('/algorithm-upload', methods=['GET'])
 # def algorithm_upload():
