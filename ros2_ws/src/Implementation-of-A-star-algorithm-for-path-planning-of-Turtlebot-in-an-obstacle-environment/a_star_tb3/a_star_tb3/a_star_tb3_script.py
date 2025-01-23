@@ -323,7 +323,6 @@ class A_star:
         R = 0.033
         L = 0.16
         obstacle_space = self.convert_map_to_obstacles(benchmark_file_name)
-
         initial_state = (startx, starty, 0)
         node_state_g = (goalx, goaly, 0)
 
