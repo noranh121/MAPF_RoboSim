@@ -78,7 +78,11 @@ def upload_map():
 
         flash(f'Map "{file.filename}" uploaded successfully!')
         return redirect(url_for('dashboard'))
+    
 
+# @app.route('/upload-points', methods=['POST'])
+# def upload_points():
+    
 
 @app.route('/simulate', methods=['POST'])
 def simulate():

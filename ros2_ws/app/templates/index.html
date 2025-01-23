@@ -104,22 +104,22 @@
                 </select>
                 <!-- number of agents-->
                 <div class="mb-3 row">
-                    <label for="agents" class="col-sm-2 col-form-label"
-                      >Number Of Agents</label
-                    >
-                    <div class="col-sm-10">
-                      <input
-                        type="text"
-                        class="form-control"
-                        id="agents"
-                        placeholder="2"
-                        name="agents"
-                      />
-                    </div>
+                  <label for="agents" class="col-sm-2 col-form-label"
+                    >Number Of Agents</label
+                  >
+                  <div class="col-sm-10">
+                    <input
+                      type="text"
+                      class="form-control"
+                      id="agents"
+                      placeholder="2"
+                      name="agents"
+                    />
                   </div>
-  
-                  <!-- start points -->
-                  <div class="mb-3 row">
+                </div>
+
+                <!-- start points -->
+                <!-- <div class="mb-3 row">
                     <label for="start" class="col-sm-2 col-form-label"
                       >Start Points</label
                     >
@@ -132,23 +132,37 @@
                         name="start"
                       />
                     </div>
-                  </div>
-  
-                  <!-- end points -->
-                  <div class="mb-3 row">
-                    <label for="end" class="col-sm-2 col-form-label"
-                      >Goal Points</label
+                  </div> -->
+
+                <!-- start and goal points -->
+                <div class="mb-3 row">
+                  <label for="end" class="col-sm-2 col-form-label"
+                      >Start and Goal Points</label
                     >
-                    <div class="col-sm-10">
-                      <input
+                  <div class="col-md-6">    
+                    <form
+                      method="post"
+                      action="/upload-points"
+                      enctype="multipart/form-data"
+                    >
+                      <div class="mb-3">
+                        <input type="file" class="form-control" name="file" />
+                      </div>
+                      <button type="submit" class="btn btn-success">
+                        Upload
+                      </button>
+                    </form>
+                  </div>
+                  <div class="col-sm-10">
+                    <!-- <input
                         type="text"
                         class="form-control"
                         id="end"
                         placeholder="e.g., (5,5),(6,6)"
                         name="end"
-                      />
-                    </div>
+                      /> -->
                   </div>
+                </div>
                 <button type="submit" class="btn btn-primary">Simulate</button>
                 <button type="submit" class="btn btn-primary">
                   View Stats
