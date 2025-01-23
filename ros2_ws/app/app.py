@@ -1,6 +1,8 @@
 from flask import Flask, render_template, request, redirect, url_for, flash,jsonify
 import subprocess
 import os
+import time
+
 
 app = Flask(__name__)
 app.secret_key = "secret-key"
@@ -63,7 +65,12 @@ def upload_map():
         return redirect(url_for('dashboard'))
 
     if file:
-        filepath = os.path.join(app.config['UPLOAD_FOLDER'], file.filename)
+        MAPF_ros2_ws=os.getcwd()
+        parent_directory = os.path.dirname(MAPF_ros2_ws)
+        path = parent_directory + '/src/Implementation-of-A-star-algorithm-for-path-planning-of-Turtlebot-in-an-obstacle-environment/a_star_tb3/benchmarks/'
+
+        filepath = os.path.join(path, file.filename)
+        # file.save(filepath)
         file.save(filepath)
 
         if file.filename not in uploaded_maps:
@@ -75,26 +82,45 @@ def upload_map():
 
 @app.route('/simulate', methods=['POST'])
 def simulate():
-    print("simulating!!")
+    selected_algo = request.form.get('algorithm', 'None')
+    selected_map = request.form.get('map', 'None')
+    number = request.form.get('agents' ,'None')
+    start_points = request.form.get('start' ,'None')
+    end_points = request.form.get('end' ,'None')
+
+    flash(f'Simulation started for "{selected_algo}" on map: "{selected_map}" number of agents "{number}" start points "{start_points}" end points "{end_points}" ')
+
+
     try:
         # Get the benchmark file path from the request payload
         #benchmark_file = request.json.get('benchmark', '<default_path>')
-        benchmark_file = "benchmark.txt"
+        upfront_command = "wmctrl -a 'Gazebo'"
         
         # Define the commands with dynamic benchmark file path
         #command = "ros2 launch a_star_tb3 empty_world.launch.py goal_x:=5 goal_y:=0 start_x:=0 start_y:=0.25 RPM1:=40 RPM2:=20 clearance:=100"
-        command = f"ros2 launch a_start_tb3 empty_world.launch benchmark:={benchmark_file} ros2_distro:=galactic"
+        command = f"ros2 launch a_star_tb3 empty_world.launch.py benchmark:={selected_map} ros2_distro:=galactic"
         commands = [
             "cd ~/MAPF_RoboSim/ros2_ws",
             "colcon build",
-            "source ~/MAPF_RoboSim/ros2_ws/install/setup.bash",
-            "source ~/MAPF_RoboSim/ros2_ws/install/local_setup.bash",
-            command
+            "source install/setup.bash",
+            "source install/local_setup.bash",
+            command,
+            upfront_command
         ]
+        
 
         full_command = " && ".join(commands)
 
-        result = subprocess.run(full_command, shell=True, executable="/bin/bash", text=True, capture_output=True)
+        #result = subprocess.run(full_command, shell=True, executable="/bin/bash", text=True, capture_output=True)
+        result = subprocess.Popen(full_command, shell=True, executable="/bin/bash", text=True)
+
+        time.sleep(5)
+
+        process_upfront = subprocess.Popen(upfront_command, shell=True, executable="/bin/bash", text=True)
+
+        result.wait()
+
+        process_upfront.wait()
 
         if result.returncode == 0:
             return jsonify({"status": "success", "output": result.stdout})
@@ -102,13 +128,6 @@ def simulate():
             return jsonify({"status": "error", "error": result.stderr}), 500
     except Exception as e:
         return jsonify({"status": "error", "error": str(e)}), 500
-
-    # selected_algo = request.form.get('algorithm', 'None')
-    # selected_map = request.form.get('map', 'None')
-    # number = request.form.get('agents' ,'None')
-    # start_points = request.form.get('start' ,'None')
-    # end_points = request.form.get('end' ,'None')
-    # flash(f'Simulation started for "{selected_algo}" on map: "{selected_map}" number of agents "{number}" start points "{start_points}" end points "{end_points}" ')
     # return redirect(url_for('dashboard'))
 
 
