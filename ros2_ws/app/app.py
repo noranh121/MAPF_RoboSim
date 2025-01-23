@@ -80,8 +80,10 @@ def upload_map():
         return redirect(url_for('dashboard'))
     
 
-# @app.route('/upload-points', methods=['POST'])
-# def upload_points():
+@app.route('/upload-points', methods=['POST'])
+def upload_points():
+    flash("file uploaded successfully!")
+    return redirect(url_for('dashboard'))
     
 
 @app.route('/simulate', methods=['POST'])
