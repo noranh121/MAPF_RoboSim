@@ -149,10 +149,11 @@ def simulate():
         
         # Define the commands with dynamic benchmark file path
         #command = "ros2 launch a_star_tb3 empty_world.launch.py goal_x:=5 goal_y:=0 start_x:=0 start_y:=0.25 RPM1:=40 RPM2:=20 clearance:=100"
-        command = f"ros2 launch a_star_tb3 empty_world.launch.py benchmark:={selected_map} ros2_distro:=galactic"
+        command = f"ros2 launch a_star_tb3 empty_world.launch.py benchmark:={selected_map} ros2_distro:=humble"
         commands = [
             "cd ~/MAPF_RoboSim/ros2_ws",
             "colcon build",
+            "source /opt/ros/humble/setup.bash",
             "source install/setup.bash",
             "source install/local_setup.bash",
             command,
