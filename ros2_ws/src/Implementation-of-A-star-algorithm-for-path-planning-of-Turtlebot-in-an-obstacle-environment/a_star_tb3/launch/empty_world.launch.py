@@ -363,6 +363,15 @@ def start_goal_parser():
 #     convert_map_to_world(benchmark_path,world_path)
 
 import xml.etree.ElementTree as ET
+
+# <gui>
+#             <camera name="top_down_camera">
+#                 <!-- Position the camera above the map -->
+#                 <pose>7 -20 20 0 0.6435 1.56</pose>
+#                 <!-- Set the view angle -->
+#                 <view_controller>ortho</view_controller>
+#             </camera>
+#         </gui>
 def convert_map_to_world(map_file, world_file, cell_size=0.1):
     with open(map_file, 'r') as f:
         lines = f.readlines()
@@ -371,10 +380,15 @@ def convert_map_to_world(map_file, world_file, cell_size=0.1):
     width = int([line.split()[1] for line in lines if line.startswith("width")][0])
     grid_lines = [line.strip() for line in lines if not line.startswith("type") and not line.startswith("height") and not line.startswith("width") and not line.startswith("map")]
     grid = [line.ljust(width, '.') for line in grid_lines]
-
     # Start creating the .world file
     sdf = ET.Element('sdf', version="1.7")
     world = ET.SubElement(sdf, 'world', name="default")
+
+    # gui
+    gui=ET.SubElement(world,'gui')
+    camera=ET.SubElement(gui,'camera',name='top_down_camera')
+    ET.SubElement(camera,'pose').text='7 -20 20 0 0.6435 1.56'
+    ET.SubElement(camera,'view_controller').text='ortho'
 
     # Insert light
     light = ET.SubElement(world, 'light', name="sun", type="directional")
@@ -427,7 +441,7 @@ def convert_map_to_world(map_file, world_file, cell_size=0.1):
     geometry = ET.SubElement(collision, 'geometry')
     plane = ET.SubElement(geometry, 'plane')
     ET.SubElement(plane, 'normal').text = "0 0 1"
-    ET.SubElement(plane, 'size').text = "100 100"
+    ET.SubElement(plane, 'size').text = "1000 1000"
     surface=ET.SubElement(collision,'surface')
     friction=ET.SubElement(surface,'friction')
     ode=ET.SubElement(friction,'ode')
@@ -439,7 +453,7 @@ def convert_map_to_world(map_file, world_file, cell_size=0.1):
     geometry = ET.SubElement(visual, 'geometry')
     plane = ET.SubElement(geometry, 'plane')
     ET.SubElement(plane, 'normal').text = "0 0 1"
-    ET.SubElement(plane, 'size').text = "100 100"
+    ET.SubElement(plane, 'size').text = "1000 1000"
     material = ET.SubElement(visual, 'material')
     script = ET.SubElement(material, 'script')
     ET.SubElement(script, 'uri').text = "file://media/materials/scripts/gazebo.material"

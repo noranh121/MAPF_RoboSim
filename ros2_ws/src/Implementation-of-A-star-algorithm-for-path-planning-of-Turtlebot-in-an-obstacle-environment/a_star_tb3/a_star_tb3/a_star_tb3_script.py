@@ -170,7 +170,7 @@ class A_star:
 
             # Draw optimal path
             for arg in args:
-                optimal_path,path,initial_state = arg
+                optimal_path,path,initial_state,goal_state,time,reached = arg
                 current_color = next(color_cycle)
                 for i in range(len(optimal_path)):
                     curr_list=[]
@@ -182,7 +182,7 @@ class A_star:
                         clock.tick(20)
             running = False
         pygame.display.flip()
-        pygame.time.wait(1000)
+        pygame.time.wait(5000)
         pygame.quit()
     #   Line to save video:
     #   video.export(verbose=True)
@@ -307,9 +307,9 @@ class A_star:
             best_path.append(parent_node)
         best_path.reverse()
         path_vel.reverse()
-        print("Path Taken: ")
-        for i in best_path:
-            print(i)
+        # print("Path Taken: ")
+        # for i in best_path:
+        #     print(i)
         return best_path, path_vel
 
     # def a_star(self, goalx, goaly, startx, starty, rpm1, rpm2, d,name):
@@ -346,16 +346,17 @@ class A_star:
                     for i in action_set:
                         self.Actions(i[0], i[1], position, cc,node_state_g,queue_nodes,visited_nodes,path_dict,obstacle_space,R,L)
                 else:
-                    print("Goal reached")
+                    #print("Goal reached")
                     back_track, velocity_path = self.back_tracking(
                         path_dict, queue_pop,initial_state)
                     end_time = time.time()
                     path_time = end_time - start_time
-                    print('Time to calculate path:', path_time, 'seconds')
+                    #print('Time to calculate path:', path_time, 'seconds')
                     #To be change to dynamically recieve clearance and map boundries
                     #self.create_map(0.2,12.8,12.8, obstacle_space,visited_nodes, back_track, path_dict,initial_state)
-                    return back_track, path_dict, initial_state
-        print("Path cannot be acheived")
+                    return back_track, path_dict, initial_state,node_state_g,path_time,True
+        #print("Path cannot be acheived")
+        return [],[],initial_state,node_state_g,0.0,False
         exit()
 
 
@@ -432,7 +433,7 @@ def main():
     # args.RPM1 = float(unknown[4])
     # args.RPM2 = float(unknown[5])
     # args.clearance = float(unknown[6])
-    print('Given Inputs', args)
+    # print('Given Inputs', args)
     drawer = A_star()
     # way_points = astar.a_star(args.goal_x, args.goal_y,
     #                    args.start_x, args.start_y, args.RPM1, args.RPM2)
@@ -455,6 +456,7 @@ def main():
         result = astar.a_star(goalx, goaly, startx, starty,args.benchmark)
         # with results_lock:
         #     results[name] = result
+        print(f"calculating path for {name}, start_point: {startx, starty} done.")
         return name, result
     
     with ThreadPoolExecutor() as executor:
@@ -476,6 +478,43 @@ def main():
     # rclpy.spin(move_turtlebot)
     # move_turtlebot.destroy_node()
     # rclpy.shutdown()
+    result_str = ""
+
+
+    # with open("results.txt", "w") as file:
+    #     for robot_name in results:
+    #         return_back_track, path_dict, initial_state, path_time, goal_reached = results[robot_name]
+    #         start_x,start_y = initial_state
+
+    #         file.write(f"{robot_name}:\n")
+    #         file.write(f"          <start_point>: ({start_x}), {start_y})\n")  # Replace with actual start point later
+    #         file.write(f"          <goal_point>: (x_goal, y_goal)\n")    # Replace with actual goal point later
+    #         file.write(f"          <goal_reached>: {goal_reached}\n")
+    #         file.write(f"          <time_to_calculate>: {path_time}\n")
+    #         file.write(f"          <path_taken>: {return_back_track}\n\n")
+
+    for robot_name in results:
+        return_back_track, path_dict, initial_state,goal_state, path_time, goal_reached = results[robot_name]
+        start_x,start_y,start_z = initial_state
+        goal_x,goal_y,goal_z = goal_state
+        result_str += f"{robot_name}:\n"
+        result_str += f"\t<start_point>: ({start_x}, {start_y})\n"  # Replace with actual start point later
+        result_str += f"\t<goal_point>: ({goal_x}, {goal_y})\n"    # Replace with actual goal point later
+        result_str += f"\t<goal_reached>: {goal_reached}\n"
+        result_str += f"\t<time_to_calculate_path>: {path_time}\n"
+        result_str += f"\t<path_taken>: {return_back_track}\n\n"
+    
+    #print(result_str)
+    Mapf_ros2_ws = os.getcwd()
+    export_path = Mapf_ros2_ws + '/src/Implementation-of-A-star-algorithm-for-path-planning-of-Turtlebot-in-an-obstacle-environment/a_star_tb3/benchmarks/stats.txt'
+    try:
+        with open(export_path, 'w', encoding='utf-8') as file:
+            file.write(result_str)
+        print(f"Content successfully written to {export_path}")
+    except Exception as e:
+        #Update to add to sys stderr
+        print(f"An error occurred while writing to the file: {e}")
+
 
     rclpy.init()
     executor = MultiThreadedExecutor()

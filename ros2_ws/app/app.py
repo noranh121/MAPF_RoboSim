@@ -70,7 +70,6 @@ def upload_map():
         path = MAPF_ros2_ws + '/src/Implementation-of-A-star-algorithm-for-path-planning-of-Turtlebot-in-an-obstacle-environment/a_star_tb3/benchmarks/'
 
         filepath = os.path.join(path, file.filename)
-        # file.save(filepath)
         file.save(filepath)
 
         if file.filename not in uploaded_maps:
@@ -114,23 +113,6 @@ def upload_points():
     return redirect(url_for('dashboard'))
     
 
-
-
-
-
-
-
-
-    if file:
-        
-        command = f"cp {destinationpath} {goalpath}"
-        print(f"cp {destinationpath} {goalpath}")
-        content = subprocess.run(command, shell=True, executable="/bin/bash", text=True)
-        #subprocess.run(command, shell=True, check=True)
-        flash("file uploaded successfully!")
-        return redirect(url_for('dashboard'))
-    
-
 @app.route('/simulate', methods=['POST'])
 def simulate():
     selected_algo = request.form.get('algorithm', 'None')
@@ -143,12 +125,8 @@ def simulate():
 
 
     try:
-        # Get the benchmark file path from the request payload
-        #benchmark_file = request.json.get('benchmark', '<default_path>')
         upfront_command = "wmctrl -a 'Gazebo'"
         
-        # Define the commands with dynamic benchmark file path
-        #command = "ros2 launch a_star_tb3 empty_world.launch.py goal_x:=5 goal_y:=0 start_x:=0 start_y:=0.25 RPM1:=40 RPM2:=20 clearance:=100"
         command = f"ros2 launch a_star_tb3 empty_world.launch.py benchmark:={selected_map} ros2_distro:=galactic"
         commands = [
             "cd ~/MAPF_RoboSim/ros2_ws",
@@ -179,18 +157,34 @@ def simulate():
             return jsonify({"status": "error", "error": result.stderr}), 500
     except Exception as e:
         return jsonify({"status": "error", "error": str(e)}), 500
-    # return redirect(url_for('dashboard'))
 
 
 
 
-# @app.route('/algorithm-upload', methods=['GET'])
-# def algorithm_upload():
-#     return render_template('algorithm_upload.html')
+@app.route('/export', methods=['POST'])
+def export():
+    try:
 
-# @app.route('/map-selection', methods=['GET'])
-# def map_selection():
-#     return render_template('map_selection.html')
+        MAPF_ros2_ws=os.getcwd()
+        path = MAPF_ros2_ws + '/src/Implementation-of-A-star-algorithm-for-path-planning-of-Turtlebot-in-an-obstacle-environment/a_star_tb3/benchmarks/'
+
+        path = os.path.join(path, "stats.txt")
+        with open(path, 'r', encoding='utf-8') as f:
+            data_to_export = f.read()
+
+        # Path to the temporary file to store data
+        export_file_path = os.path.join(app.config['UPLOAD_FOLDER'], "exported_data.txt")
+
+        # Write data to the file
+        with open(export_file_path, 'w', encoding='utf-8') as file:
+            file.write(data_to_export)
+
+    except Exception as e:
+        flash(f"An error occurred: {str(e)}")
+        return redirect(url_for('dashboard'))
+    
+    flash(f"Stats Exprted Successfully")
+    return redirect(url_for('dashboard'))
 
 @app.route('/home', methods=['GET'])
 def home():
