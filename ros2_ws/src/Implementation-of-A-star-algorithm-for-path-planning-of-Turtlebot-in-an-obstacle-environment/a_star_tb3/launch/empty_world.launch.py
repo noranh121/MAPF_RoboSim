@@ -108,11 +108,9 @@ def generate_launch_description():
     world_file_name=str(pathlib.Path(args.benchmark).with_suffix(".world"))
     MAPF_ros2_ws=os.getcwd()
     world_file_path=MAPF_ros2_ws+'/src/Implementation-of-A-star-algorithm-for-path-planning-of-Turtlebot-in-an-obstacle-environment/a_star_tb3/worlds/'+world_file_name
-    if not Path(world_file_path).exists():
-        print('no world file')
-        benchmark_file_path=MAPF_ros2_ws+'/src/Implementation-of-A-star-algorithm-for-path-planning-of-Turtlebot-in-an-obstacle-environment/a_star_tb3/benchmarks/'+args.benchmark
-        Map_Parser().convert_map_to_world(benchmark_file_path,world_file_path)
-        Map_Parser().convert_map_to_world(benchmark_file_path,os.path.dirname(__file__)+'/worlds/'+world_file_name)
+    benchmark_file_path=MAPF_ros2_ws+'/src/Implementation-of-A-star-algorithm-for-path-planning-of-Turtlebot-in-an-obstacle-environment/a_star_tb3/benchmarks/'+args.benchmark
+    Map_Parser().convert_map_to_world(benchmark_file_path,world_file_path)
+    Map_Parser().convert_map_to_world(benchmark_file_path,os.path.dirname(__file__)+'/worlds/'+world_file_name)
 
 
     world = os.path.join(
@@ -343,15 +341,19 @@ def start_goal_parser():
     file_path = get_benchmark_path("test.txt")
     star_goal_pairs = []
     with open(file_path, 'r') as file:
-        for line in file:
-            line = line.strip()  # Remove leading/trailing whitespace
-            if line:
-                parts = line.split()  # Split the line into start and goal parts
-                # Parse the start and goal coordinates from the line
-                start = tuple(map(float, parts[0].strip('()').split(',')))
-                goal = tuple(map(float, parts[1].strip('()').split(',')))
-                # Add the pair to the list
-                star_goal_pairs.append([start, goal])
+        try:
+            for line in file:
+                line = line.strip()  # Remove leading/trailing whitespace
+                if line:
+                    parts = line.split()  # Split the line into start and goal parts
+                    # Parse the start and goal coordinates from the line
+                    start = tuple(map(float, parts[0].strip('()').split(',')))
+                    goal = tuple(map(float, parts[1].strip('()').split(',')))
+                    # Add the pair to the list
+                    star_goal_pairs.append([start, goal])
+        except:
+            sys.stderr.write("invaled start_end points format\n")
+            raise Exception("invaled start_end points format")
     number_of_robots = len(star_goal_pairs)
     return star_goal_pairs, number_of_robots
 
@@ -365,14 +367,18 @@ def start_goal_parser():
 import xml.etree.ElementTree as ET
 
 class Map_Parser:
-    def convert_map_to_world(map_file, world_file, cell_size=0.1):
+    def convert_map_to_world(self,map_file, world_file, cell_size=0.1):
         with open(map_file, 'r') as f:
             lines = f.readlines()
     
-        height = int([line.split()[1] for line in lines if line.startswith("height")][0])
-        width = int([line.split()[1] for line in lines if line.startswith("width")][0])
-        grid_lines = [line.strip() for line in lines if not line.startswith("type") and not line.startswith("height") and not line.startswith("width") and not line.startswith("map")]
-        grid = [line.ljust(width, '.') for line in grid_lines]
+        try:
+            height = int([line.split()[1] for line in lines if line.startswith("height")][0])
+            width = int([line.split()[1] for line in lines if line.startswith("width")][0])
+            grid_lines = [line.strip() for line in lines if not line.startswith("type") and not line.startswith("height") and not line.startswith("width") and not line.startswith("map")]
+            grid = [line.ljust(width, '.') for line in grid_lines]
+        except:
+            sys.stderr.write("invaled map format\n")
+            raise Exception("invaled map format")
     
         # Start creating the .world file
         sdf = ET.Element('sdf', version="1.7")

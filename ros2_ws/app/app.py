@@ -55,29 +55,32 @@ def upload():
 
 @app.route('/upload-map', methods=['POST'])
 def upload_map():
-    if 'file' not in request.files:
-        flash('No file part')
-        return redirect(url_for('dashboard'))
+    try:
+        if 'file' not in request.files:
+            flash('No file part')
+            return redirect(url_for('dashboard'))
 
-    file = request.files['file']
-    if file.filename == '':
-        flash('No file selected')
-        return redirect(url_for('dashboard'))
+        file = request.files['file']
+        if file.filename == '':
+            flash('No file selected')
+            return redirect(url_for('dashboard'))
 
-    if file:
-        MAPF_ros2_ws=os.getcwd()
-        #parent_directory = os.path.dirname(MAPF_ros2_ws)
-        path = MAPF_ros2_ws + '/src/Implementation-of-A-star-algorithm-for-path-planning-of-Turtlebot-in-an-obstacle-environment/a_star_tb3/benchmarks/'
+        if file:
+            MAPF_ros2_ws=os.getcwd()
+            #parent_directory = os.path.dirname(MAPF_ros2_ws)
+            path = MAPF_ros2_ws + '/src/Implementation-of-A-star-algorithm-for-path-planning-of-Turtlebot-in-an-obstacle-environment/a_star_tb3/benchmarks/'
 
-        filepath = os.path.join(path, file.filename)
-        # file.save(filepath)
-        file.save(filepath)
+            filepath = os.path.join(path, file.filename)
+            # file.save(filepath)
+            file.save(filepath)
 
-        if file.filename not in uploaded_maps:
-            uploaded_maps.append(file.filename)
+            if file.filename not in uploaded_maps:
+                uploaded_maps.append(file.filename)
 
-        flash(f'Map "{file.filename}" uploaded successfully!')
-        return redirect(url_for('dashboard'))
+            flash(f'Map "{file.filename}" uploaded successfully!')
+            return redirect(url_for('dashboard'))
+    except Exception as e:
+        flash(f"An error occurred: {e}")
     
 
 @app.route('/upload-points', methods=['POST'])
@@ -139,7 +142,7 @@ def simulate():
     start_points = request.form.get('start' ,'None')
     end_points = request.form.get('end' ,'None')
 
-    flash(f'Simulation started for "{selected_algo}" on map: "{selected_map}" number of agents "{number}" start points "{start_points}" end points "{end_points}" ')
+    # flash(f'Simulation started for "{selected_algo}" on map: "{selected_map}" number of agents "{number}" start points "{start_points}" end points "{end_points}" ')
 
 
     try:
@@ -164,22 +167,33 @@ def simulate():
         full_command = " && ".join(commands)
 
         #result = subprocess.run(full_command, shell=True, executable="/bin/bash", text=True, capture_output=True)
-        result = subprocess.Popen(full_command, shell=True, executable="/bin/bash", text=True)
+        result = subprocess.Popen(full_command, shell=True, executable="/bin/bash", text=True,stderr=subprocess.PIPE)
 
         time.sleep(5)
 
-        process_upfront = subprocess.Popen(upfront_command, shell=True, executable="/bin/bash", text=True)
+        process_upfront = subprocess.Popen(upfront_command, shell=True, executable="/bin/bash", text=True,stderr=subprocess.PIPE)
 
-        result.wait()
+        # result.wait()
 
-        process_upfront.wait()
-
+        # process_upfront.wait()
+        stdout, stderr = result.communicate()
+        process_upfront.communicate()
         if result.returncode == 0:
-            return jsonify({"status": "success", "output": result.stdout})
+            flash(f'success output:{stdout}')
+            time.sleep(5)
+            # return jsonify({"status": "success", "output": result.stdout})
+            return redirect(url_for('dashboard'))
         else:
-            return jsonify({"status": "error", "error": result.stderr}), 500
+            print(stdout)
+            flash(f"Error occurred: {stderr}",'error')
+            time.sleep(5)
+            return redirect(url_for('dashboard'))
+            # return jsonify({"status": "error", "error": result.stderr}), 500
     except Exception as e:
-        return jsonify({"status": "error", "error": str(e)}), 500
+        flash(f"An error occurred: {e}")
+        time.sleep(5)
+        return redirect(url_for('dashboard'))
+        # return jsonify({"status": "error", "error": str(e)}), 500
     # return redirect(url_for('dashboard'))
 
 

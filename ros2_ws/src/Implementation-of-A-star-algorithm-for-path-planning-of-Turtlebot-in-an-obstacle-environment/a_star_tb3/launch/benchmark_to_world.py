@@ -16,11 +16,14 @@ import argparse
 def convert_map_to_world(map_file, world_file, cell_size=0.1):
     with open(map_file, 'r') as f:
         lines = f.readlines()
-
-    height = int([line.split()[1] for line in lines if line.startswith("height")][0])
-    width = int([line.split()[1] for line in lines if line.startswith("width")][0])
-    grid_lines = [line.strip() for line in lines if not line.startswith("type") and not line.startswith("height") and not line.startswith("width") and not line.startswith("map")]
-    grid = [line.ljust(width, '.') for line in grid_lines]
+    
+    try:
+        height = int([line.split()[1] for line in lines if line.startswith("height")][0])
+        width = int([line.split()[1] for line in lines if line.startswith("width")][0])
+        grid_lines = [line.strip() for line in lines if not line.startswith("type") and not line.startswith("height") and not line.startswith("width") and not line.startswith("map")]
+        grid = [line.ljust(width, '.') for line in grid_lines]
+    except:
+        raise Exception("invaled map format")
 
     # Start creating the .world file
     sdf = ET.Element('sdf', version="1.7")
@@ -169,12 +172,10 @@ def convert_map_to_world(map_file, world_file, cell_size=0.1):
     tree = ET.ElementTree(sdf)
     with open(world_file, 'wb') as f:
         tree.write(f)
-    
-    print('new world is ready!!!!')
 
 # File paths
-# map_file_path = '/home/ahmadaw/MAPF_RoboSim/ros2_ws/src/Implementation-of-A-star-algorithm-for-path-planning-of-Turtlebot-in-an-obstacle-environment/a_star_tb3/benchmarks/benchmark.txt'
-# world_file_path = '/home/ahmadaw/MAPF_RoboSim/ros2_ws/src/Implementation-of-A-star-algorithm-for-path-planning-of-Turtlebot-in-an-obstacle-environment/a_star_tb3/worlds/benchmark.world'
+map_file_path = '/home/ahmadaw/MAPF_RoboSim/ros2_ws/src/Implementation-of-A-star-algorithm-for-path-planning-of-Turtlebot-in-an-obstacle-environment/a_star_tb3/benchmarks/bb.txt'
+world_file_path = '/home/ahmadaw/MAPF_RoboSim/ros2_ws/src/Implementation-of-A-star-algorithm-for-path-planning-of-Turtlebot-in-an-obstacle-environment/a_star_tb3/worlds/bb.world'
 
 # # Convert
-# convert_map_to_world(map_file_path, world_file_path)
+convert_map_to_world(map_file_path, world_file_path)

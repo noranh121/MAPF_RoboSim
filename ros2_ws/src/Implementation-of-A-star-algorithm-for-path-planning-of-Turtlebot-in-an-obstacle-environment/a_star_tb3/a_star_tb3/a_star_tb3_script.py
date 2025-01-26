@@ -1,5 +1,7 @@
 #!/usr/bin/env python3
 
+import sys
+from flask import flash
 import numpy as np
 from concurrent.futures import ThreadPoolExecutor, as_completed
 import threading
@@ -55,17 +57,21 @@ class Backend_Engine:
         file_path = self.get_benchmark_path("test.txt")
         star_goal_pairs = []
         with open(file_path, 'r') as file:
-            for line in file:
-                line = line.strip()  # Remove leading/trailing whitespace
-                if line:
-                    parts = line.split()  # Split the line into start and goal parts
+            try:
+                for line in file:
+                    line = line.strip()  # Remove leading/trailing whitespace
+                    if line:
+                        parts = line.split()  # Split the line into start and goal parts
 
-                    # Parse the start and goal coordinates from the line
-                    start = tuple(map(float, parts[0].strip('()').split(',')))
-                    goal = tuple(map(float, parts[1].strip('()').split(',')))
+                        # Parse the start and goal coordinates from the line
+                        start = tuple(map(float, parts[0].strip('()').split(',')))
+                        goal = tuple(map(float, parts[1].strip('()').split(',')))
 
-                    # Add the pair to the list
-                    star_goal_pairs.append([start, goal])
+                        # Add the pair to the list
+                        star_goal_pairs.append([start, goal])
+            except:
+                sys.stderr.write("invaled start_end points format\n")
+                raise Exception("invaled start_end points format")
 
         number_of_robots = len(star_goal_pairs)
 
