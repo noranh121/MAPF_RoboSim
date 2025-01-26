@@ -53,8 +53,8 @@ class Backend_Engine:
         benchmark_path=MAPF_ros2_ws+'/src/Implementation-of-A-star-algorithm-for-path-planning-of-Turtlebot-in-an-obstacle-environment/a_star_tb3/benchmarks/'+benchmark_file_name
         return benchmark_path
     
-    def start_goal_parser(self):
-        file_path = self.get_benchmark_path("test.txt")
+    def start_goal_parser(self,start_goal):
+        file_path = self.get_benchmark_path(start_goal)
         star_goal_pairs = []
         with open(file_path, 'r') as file:
             try:
@@ -391,7 +391,7 @@ def main():
     args.benchmark = str(unknown[0])
     args.ros2_distro = str(unknown[1])
     drawer = A_star()
-    coordinates , number_of_robots = Backend_Engine().start_goal_parser()
+    coordinates , number_of_robots = Backend_Engine().start_goal_parser('test.txt')
     results = {}
     results_lock = threading.Lock()
 

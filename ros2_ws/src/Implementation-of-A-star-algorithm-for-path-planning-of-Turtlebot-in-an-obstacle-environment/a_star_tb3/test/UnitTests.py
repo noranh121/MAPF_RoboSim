@@ -27,7 +27,7 @@ def test_a_star_failure(setup_A_star):
     """
     a_star,bakcend_engine = setup_A_star
     result = a_star.a_star(8.0, 3.0, 1.0, 1.0, 'bb.txt')
-    assert result is None, f"Expected {result}, but got {not None}"
+    assert result == ([], [], (1.0, 1.0, 0), (8.0, 3.0, 0), 0.0, False), f"Expected ([], [], (1.0, 1.0, 0), (8.0, 3.0, 0), 0.0, False), but got {result}"
 
 def test_is_point_in_any_block_success(setup_A_star):
     """
@@ -97,3 +97,29 @@ def test_convert_map_to_obstacles_failure(setup_A_star):
     obstacle_space = bakcend_engine.convert_map_to_obstacles('bb.txt')
     assert obstacle_space!=expected_obstacle_space, f"Expected {expected_obstacle_space}, but got {obstacle_space}"
 
+def test_start_goal_parser_sucess(setup_A_star):
+    """
+    Test parsing the start_goal file
+    """
+    a_star,bakcend_engine = setup_A_star
+    star_goal_pairs, number_of_robots=bakcend_engine.start_goal_parser('valiTest.txt')
+    assert star_goal_pairs==[[(0.5,0.5),(3.0,0.5)],[(4.0,1.7),(1.0,1.7)]], f"Expected [[(0.5,0.5),(3.0,0.5)],[(4.0,1.7),(1.0,1.7)]], but got {star_goal_pairs}"
+    assert number_of_robots==2,f"Expected 2, but got {number_of_robots}"
+
+def test_start_goal_parser_failure(setup_A_star):
+    """
+    Test parsing the start_goal file
+    """
+    a_star,bakcend_engine = setup_A_star
+    with pytest.raises(Exception, match="invaled start_end points format"):
+        bakcend_engine.start_goal_parser('badTest.txt')
+
+
+def test_start_goal_parser_failure(setup_A_star):
+    """
+    Test parsing the map.txt file
+    """
+    from a_star_tb3.launch.benchmark_to_world import convert_map_to_world
+    with pytest.raises(Exception, match="invaled map format"):
+        convert_map_to_world('a.txt','a.txt')
+    
