@@ -130,7 +130,7 @@ def simulate():
     try:
         upfront_command = "wmctrl -a 'Gazebo'"
         
-        command = f"ros2 launch a_star_tb3 empty_world.launch.py benchmark:={selected_map} ros2_distro:=galactic"
+        command = f"ros2 launch a_star_tb3 empty_world.launch.py benchmark:={selected_map} ros2_distro:=humble"
         commands = [
             "cd ~/MAPF_RoboSim/ros2_ws",
             "colcon build",
