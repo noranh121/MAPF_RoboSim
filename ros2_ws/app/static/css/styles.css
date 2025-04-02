@@ -83,7 +83,7 @@ body {
 }
 
 .form-check-input:checked {
-    background-color: #8852b5; /* Change to button color (gray in this example) */
+    background-color: #8852b5; 
     border-color: #8852b5;
 }
 

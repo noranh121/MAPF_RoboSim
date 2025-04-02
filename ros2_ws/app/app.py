@@ -23,7 +23,7 @@ uploaded_maps = []
 def dashboard():
     all_algorithms = builtin_algorithms + uploaded_algorithms
     all_maps = builtin_maps + uploaded_maps
-    return render_template('index.html', algorithms=all_algorithms, maps=all_maps)
+    return render_template('home.html', algorithms=all_algorithms, maps=all_maps)
 
 
 @app.route('/about')
@@ -66,8 +66,8 @@ def upload_map():
 
     if file:
         MAPF_ros2_ws=os.getcwd()
-        parent_directory = os.path.dirname(MAPF_ros2_ws)
-        path = parent_directory + '/src/Implementation-of-A-star-algorithm-for-path-planning-of-Turtlebot-in-an-obstacle-environment/a_star_tb3/benchmarks/'
+        #parent_directory = os.path.dirname(MAPF_ros2_ws)
+        path = MAPF_ros2_ws + '/src/Implementation-of-A-star-algorithm-for-path-planning-of-Turtlebot-in-an-obstacle-environment/a_star_tb3/benchmarks/'
 
         filepath = os.path.join(path, file.filename)
         # file.save(filepath)
@@ -82,8 +82,53 @@ def upload_map():
 
 @app.route('/upload-points', methods=['POST'])
 def upload_points():
-    flash("file uploaded successfully!")
+    if 'file' not in request.files:
+        flash('No file part')
+        return redirect(url_for('dashboard'))
+
+    file = request.files['file']
+    if file.filename == '':
+        flash('No file selected')
+        return redirect(url_for('dashboard'))
+
+    if not file.filename.endswith('.txt'):
+        flash('Only .txt files are allowed')
+        return redirect(url_for('dashboard'))
+
+    try:
+        file_content = file.read().decode('utf-8')  # Decode if it's a text file
+
+        MAPF_ros2_ws=os.getcwd()
+        path = MAPF_ros2_ws + '/src/Implementation-of-A-star-algorithm-for-path-planning-of-Turtlebot-in-an-obstacle-environment/a_star_tb3/benchmarks/'
+
+        goalpath = os.path.join(path, "test.txt")
+
+        # Write the content to the target file
+        with open(goalpath, 'w', encoding='utf-8') as target_file:
+            target_file.write(file_content)
+        flash('File uploaded and copied successfully')
+
+    except Exception as e:
+        flash(f"An error occurred: {str(e)}")
+
     return redirect(url_for('dashboard'))
+    
+
+
+
+
+
+
+
+
+    if file:
+        
+        command = f"cp {destinationpath} {goalpath}"
+        print(f"cp {destinationpath} {goalpath}")
+        content = subprocess.run(command, shell=True, executable="/bin/bash", text=True)
+        #subprocess.run(command, shell=True, check=True)
+        flash("file uploaded successfully!")
+        return redirect(url_for('dashboard'))
     
 
 @app.route('/simulate', methods=['POST'])
@@ -147,9 +192,9 @@ def simulate():
 # def map_selection():
 #     return render_template('map_selection.html')
 
-@app.route('/home', methods=['GET'])
-def home():
-    return render_template('home.html')
+# @app.route('/home', methods=['GET'])
+# def home():
+#     return render_template('home.html')
 
 if __name__ == '__main__':
     app.run(debug=True)

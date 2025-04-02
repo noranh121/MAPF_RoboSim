@@ -25,14 +25,18 @@ function toggleFormInputs() {
     const selectAlgo = document.getElementById("selectAlgo");
     const formFile = document.getElementById("formFile");
     const algoName = document.getElementById("algoName");
+    const button = document.getElementById("upload-algo-btn");
+
     if (document.getElementById("selectAlgoOption").checked) {
       algoName.disabled = true;
       selectAlgo.disabled = false;
       formFile.disabled = true;
+      button.disabled = true;
     } else {
       algoName.disabled = false;
       selectAlgo.disabled = true;
       formFile.disabled = false;
+      button.disabled = false;
     }
 }
 
