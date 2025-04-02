@@ -74,13 +74,14 @@ https://ros2-industrial-workshop.readthedocs.io/en/latest/_source/navigation/ROS
 * cloning the project
 ```
 git clone https://github.com/noranh121/MAPF_RoboSim.git
-cd MAPF_RoboSim 
+cd MAPF_RoboSim/ros2_ws
  ```
 * run the server
 ```
-python3 ros2_ws/app/app.py
+python3 app/app.py
 ```
 * upload benchmark (example: MAPF_RoboSim/ros2_ws/src/Implementation-of-A-star-algorithm-for-path-planning-of-Turtlebot-in-an-obstacle-environment/a_star_tb3/benchmarks/benchmark.txt)
 * upload start_end points (example: MAPF_RoboSim/ros2_ws/src/Implementation-of-A-star-algorithm-for-path-planning-of-Turtlebot-in-an-obstacle-environment/a_star_tb3/benchmarks/test.txt)
+* to upload stats click the button "upload stats" and you can find the stats in this path MAPF_RoboSim/ros2_ws/uploads/exported_data.txt (it will change so the user can choose the location to download stats)
 
 NOTE: The start_end format will change, but this is the current format that the system accepts for now.
