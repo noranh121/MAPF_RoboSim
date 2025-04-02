@@ -89,7 +89,7 @@
               </form>
             </div>
             <div class="col-md-6">
-              <form method="post" action="/simulate">
+              <form id="simulationForm" method="post" action="/simulate">
                 <h4>Select Algorithm to Simulate</h4>
                 <select class="form-select mb-3" name="algorithm">
                   {% for algo in algorithms %}
@@ -134,12 +134,19 @@
                     </div>
                   </div> -->
 
-                <button type="submit" class="btn btn-primary">Simulate</button>
-                <button type="submit" class="btn btn-primary">
+                <button type="submit" class="btn btn-primary" onclick="setFormAction('/simulate')">Simulate</button>
+                <button type="submit" class="btn btn-primary" onclick="setFormAction('/export')">
                   View Stats
                 </button>
               </form>
             </div>
+            <script>
+              // JavaScript function to set the form action dynamically
+              function setFormAction(action) {
+                const form = document.getElementById('simulationForm');
+                form.action = action;
+              }
+            </script>
           </div>
           <br />
           <div class="row align-items-end mb-3">

@@ -34,7 +34,7 @@ https://stackoverflow.com/questions/67302265/gazebo-11-does-not-run
 
 ### `Pygame`
 
-<br />To install pygame, type the following command in the terminal
+To install pygame, type the following command in the terminal
 
 ```
 pip install pygame
@@ -42,7 +42,7 @@ pip install pygame
 
 ### `OrderedSet`
 
-<br />To install ordered set, type the following command in the terminal
+To install ordered set, type the following command in the terminal
 
 ```
 pip install orderedset
@@ -50,7 +50,7 @@ pip install orderedset
 
 ### `Heapdict`
 
-<br />To install heapdict, type the following command in the terminal
+To install heapdict, type the following command in the terminal
 
 ```
 pip install heapdict
@@ -58,7 +58,7 @@ pip install heapdict
 
 ### `Argparse`
 
-<br />To install argparse, type the following command in the terminal
+To install argparse, type the following command in the terminal
 
 ```
 pip install argparse
@@ -70,10 +70,18 @@ https://ros2-industrial-workshop.readthedocs.io/en/latest/_source/navigation/ROS
 ````
 
 
-## cloning project (for now)
- * git clone 
- * cd ros2_ws
- * colcon build
- * source /opt/ros/humble/setup.bash
- * source ~/MAPF_RoboSim/ros2_ws/install/setup.bash
- * ros2 launch a_star_tb3 empty_world.launch.py goal_x:=5 goal_y:=0 start_x:=0 start_y:=0.25 RPM1:=40 RPM2:=20 clearance:=100 
+## run project (for now)
+* cloning the project
+```
+git clone https://github.com/noranh121/MAPF_RoboSim.git
+cd MAPF_RoboSim/ros2_ws
+ ```
+* run the server
+```
+python3 app/app.py
+```
+* upload benchmark (example: MAPF_RoboSim/ros2_ws/src/Implementation-of-A-star-algorithm-for-path-planning-of-Turtlebot-in-an-obstacle-environment/a_star_tb3/benchmarks/benchmark.txt)
+* upload start_end points (example: MAPF_RoboSim/ros2_ws/src/Implementation-of-A-star-algorithm-for-path-planning-of-Turtlebot-in-an-obstacle-environment/a_star_tb3/benchmarks/test.txt)
+* to upload stats click the button "upload stats" and you can find the stats in this path MAPF_RoboSim/ros2_ws/uploads/exported_data.txt (it will change so the user can choose the location to download stats)
+
+NOTE: The start_end format will change, but this is the current format that the system accepts for now.

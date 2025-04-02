@@ -1,5 +1,7 @@
 #!/usr/bin/env python3
 
+import sys
+from flask import flash
 import numpy as np
 from concurrent.futures import ThreadPoolExecutor, as_completed
 import threading
@@ -27,36 +29,54 @@ import os
 start_time = time.time()
 
 # map_file_path = '/home/ahmadaw/MAPF_RoboSim/ros2_ws/src/Implementation-of-A-star-algorithm-for-path-planning-of-Turtlebot-in-an-obstacle-environment/a_star_tb3/benchmarks/benchmark.txt'
+class Backend_Engine:
+    def is_point_in_any_block(self, x_tocheck, y_tocheck, obstacle_space):
+        for x_center, y_center, size_x , size_y in obstacle_space:
+            if self.is_point_within_block(x_center, y_center, x_tocheck, y_tocheck, size_x/2, size_y/2):
+                return True
+        return False
 
-class A_star:
+    # def is_point_within_block(self,x_center, y_center, x_tocheck, y_tocheck, half_length_x, half_length_y , threshold_x = 0.2 , threshold_y = 0.2):
+    def is_point_within_block(self,x_center, y_center, x_tocheck, y_tocheck, half_length_x, half_length_y , threshold=0.2):
 
+        x_min = x_center - (half_length_x + threshold)
+        x_max = x_center + (half_length_x + threshold)
+        y_min = y_center - (half_length_y + threshold)
+        y_max = y_center + (half_length_y + threshold)
+        # Check if the point lies within the block's boundaries
+        if x_min <= x_tocheck <= x_max and y_min <= y_tocheck <= y_max:
+            return True
+        return False
+    
     def get_benchmark_path(self,benchmark_file_name):
         MAPF_ros2_ws=os.getcwd()
         benchmark_path=MAPF_ros2_ws+'/src/Implementation-of-A-star-algorithm-for-path-planning-of-Turtlebot-in-an-obstacle-environment/a_star_tb3/benchmarks/'+benchmark_file_name
         return benchmark_path
     
-    def start_goal_parser(self):
-        file_path = self.get_benchmark_path("test.txt")
+    def start_goal_parser(self,start_goal):
+        file_path = self.get_benchmark_path(start_goal)
         star_goal_pairs = []
         with open(file_path, 'r') as file:
-            for line in file:
-                line = line.strip()  # Remove leading/trailing whitespace
-                if line:
-                    parts = line.split()  # Split the line into start and goal parts
+            try:
+                for line in file:
+                    line = line.strip()  # Remove leading/trailing whitespace
+                    if line:
+                        parts = line.split()  # Split the line into start and goal parts
 
-                    # Parse the start and goal coordinates from the line
-                    start = tuple(map(float, parts[0].strip('()').split(',')))
-                    goal = tuple(map(float, parts[1].strip('()').split(',')))
+                        # Parse the start and goal coordinates from the line
+                        start = tuple(map(float, parts[0].strip('()').split(',')))
+                        goal = tuple(map(float, parts[1].strip('()').split(',')))
 
-                    # Add the pair to the list
-                    star_goal_pairs.append([start, goal])
+                        # Add the pair to the list
+                        star_goal_pairs.append([start, goal])
+            except:
+                sys.stderr.write("invaled start_end points format\n")
+                raise Exception("invaled start_end points format")
 
         number_of_robots = len(star_goal_pairs)
 
         return star_goal_pairs, number_of_robots
     
-
-
     def convert_map_to_obstacles(self,benchmark_file_name, cell_size=0.1):
 
         map_file=self.get_benchmark_path(benchmark_file_name)
@@ -110,10 +130,10 @@ class A_star:
                         size_y = (y - y + 1) * cell_size
                         obstacles.add((np.round(center_x, 2), np.round(center_y, 2),np.round(size_x, 2),np.round(size_y, 2)))
         return obstacles
-
+    
     # Function to flip the co-ordinate points
-    def coords_pygame(self, coords, height):
-        return (coords[0], height - coords[1])
+    # def coords_pygame(self, coords, height):
+    #     return (coords[0], height - coords[1])
 
     # Function to flip the co-ordinate points and covert them into cm
     def coords_cm_pygame(self, coords, height):
@@ -122,14 +142,9 @@ class A_star:
     # Function to flip the co-ordinate points for a rectangle
     def rect_pygame(self, coords, height, obj_height):
         return (coords[0], height - coords[1] - obj_height)
-
-    # Function to find the euclidean distance
-    def euclidean_distance(self, x1, x2, y1, y2):
-        return (np.sqrt((x1-x2)**2 + (y1-y2)**2))
-
-
-########################ADDED_NEW_CREATE_MAP######################################################
-#with new maps ==> ls.add in Actions needs to be changed to fit the new map boundries
+    
+    ########################ADDED_NEW_CREATE_MAP######################################################
+    #with new maps ==> ls.add in Actions needs to be changed to fit the new map boundries
     def create_map(self,d,map_width, map_height, obstacles, args):
         colors = ["red", "green", "blue", "yellow", "purple", "cyan", "orange"]
         color_cycle = itertools.cycle(colors)
@@ -170,7 +185,7 @@ class A_star:
 
             # Draw optimal path
             for arg in args:
-                optimal_path,path,initial_state = arg
+                optimal_path,path,initial_state,goal_state,time,reached = arg
                 current_color = next(color_cycle)
                 for i in range(len(optimal_path)):
                     curr_list=[]
@@ -182,57 +197,15 @@ class A_star:
                         clock.tick(20)
             running = False
         pygame.display.flip()
-        pygame.time.wait(1000)
+        pygame.time.wait(5000)
         pygame.quit()
     #   Line to save video:
     #   video.export(verbose=True)
 
+class A_star:
 
-    def is_point_in_any_block(self, x_tocheck, y_tocheck, obstacle_space):
-        for x_center, y_center, size_x , size_y in obstacle_space:
-            if self.is_point_within_block(x_center, y_center, x_tocheck, y_tocheck, size_x/2, size_y/2):
-                return True
-        return False
-
-    # def is_point_within_block(self,x_center, y_center, x_tocheck, y_tocheck, half_length_x, half_length_y , threshold_x = 0.2 , threshold_y = 0.2):
-    def is_point_within_block(self,x_center, y_center, x_tocheck, y_tocheck, half_length_x, half_length_y , threshold=0.2):
-
-        x_min = x_center - (half_length_x + threshold)
-        x_max = x_center + (half_length_x + threshold)
-        y_min = y_center - (half_length_y + threshold)
-        y_max = y_center + (half_length_y + threshold)
-        # Check if the point lies within the block's boundaries
-        if x_min <= x_tocheck <= x_max and y_min <= y_tocheck <= y_max:
-            return True
-        return False
-    
-
-    def input_start(self, str,obstacle_space):
-        while True:
-            print("Enter", str, "node (Sample: 10, 10 ): ")
-            A = [int(i) for i in input().split(', ')]
-            A_1 = (A[0], A[1])
-            if A_1 in obstacle_space:
-                print(
-                    "The entered input lies on the obstacles (or) not valid, please try again")
-            else:
-                return A_1
-
-    def input_cdr(self, str):
-        while True:
-            if str == 'RPM1' or str == 'RPM2':
-                print("Enter", str, "(Sample: Enter a float): ")
-                A = float(input())
-                return (A*2*math.pi/60)
-            elif str == 'start point' or str == 'goal point':
-                print("Enter orientation of the", str,
-                      "(Sample: Angles in degrees - 30): ")
-                A = float(input())
-                return A
-            elif str == 'clearance':
-                print("Enter", str, " in cm (Sample: 5): ")
-                A = float(input())
-                return A
+    def euclidean_distance(self, x1, x2, y1, y2):
+        return (np.sqrt((x1-x2)**2 + (y1-y2)**2))
 
     def check_conditions(self, X_n, Y_n, X_i, Y_i, T_i, Thetan, cc, ls, vel,node_state_g,queue_nodes,visited_nodes,path_dict,obstacle_space):
         cost2_go = self.euclidean_distance(
@@ -245,7 +218,7 @@ class A_star:
         elif Thetan <= -360:
             Thetan = Thetan % 360 + 360
         current_pos = (X_n, Y_n, np.round(Thetan, 2))
-        if not self.is_point_in_any_block(current_pos[0], current_pos[1],obstacle_space):
+        if not Backend_Engine().is_point_in_any_block(current_pos[0], current_pos[1],obstacle_space):
             if current_pos in queue_nodes:
                 if queue_nodes[current_pos][0] > final_cost:
                     queue_nodes[current_pos] = final_cost, cost2_go, cc
@@ -268,7 +241,7 @@ class A_star:
         Yn = pos[1]
         Thetan = np.deg2rad(pos[2])
         ls = OrderedSet()
-        ls.add(self.coords_cm_pygame((Xn, Yn),  height*10))
+        ls.add(Backend_Engine().coords_cm_pygame((Xn, Yn),  height*10))
         cc = 0
         while t < 1:
             xi = Xn
@@ -278,7 +251,7 @@ class A_star:
             Thetan += (R/L)*(ur-ul)*dt
             t = t + dt
             cc += self.euclidean_distance(xi, Xn, yi, Yn)
-            ls.add(self.coords_cm_pygame((Xn, Yn), height*10))
+            ls.add(Backend_Engine().coords_cm_pygame((Xn, Yn), height*10))
         cc += c2c
         velocity = ((multiplier*R*(ul + ur)*np.cos(Thetan)),
                     (multiplier*R*(ul + ur)*np.sin(Thetan)), ((R/L)*(ur-ul)))
@@ -286,7 +259,6 @@ class A_star:
         Yn = np.round(Yn, 2)
         Thetan = np.round(Thetan, 2)
         Thetan = np.rad2deg(Thetan)
-    #   Boundries here (12.8, 12.8) to be changed to fit new maps
         if 0 <= Xn <= (width * 0.1)  and 0 <= Yn <= (height * 0.1):
             self.check_conditions(Xn, Yn, pos[0], pos[1],
                                   pos[2], Thetan, cc, ls, velocity,node_state_g,queue_nodes,visited_nodes,path_dict,obstacle_space)
@@ -307,12 +279,11 @@ class A_star:
             best_path.append(parent_node)
         best_path.reverse()
         path_vel.reverse()
-        print("Path Taken: ")
-        for i in best_path:
-            print(i)
+        # print("Path Taken: ")
+        # for i in best_path:
+        #     print(i)
         return best_path, path_vel
 
-    # def a_star(self, goalx, goaly, startx, starty, rpm1, rpm2, d,name):
     def a_star(self, goalx, goaly, startx, starty,benchmark_file_name, rpm1=40.0, rpm2=20.0):
         RPM1 = (rpm1*2*math.pi)/60
         RPM2 = (rpm2*2*math.pi)/60
@@ -322,8 +293,7 @@ class A_star:
         r = 0.105
         R = 0.033
         L = 0.16
-        obstacle_space = self.convert_map_to_obstacles(benchmark_file_name)
-
+        obstacle_space = Backend_Engine().convert_map_to_obstacles(benchmark_file_name)
         initial_state = (startx, starty, 0)
         node_state_g = (goalx, goaly, 0)
 
@@ -347,16 +317,17 @@ class A_star:
                     for i in action_set:
                         self.Actions(i[0], i[1], position, cc,node_state_g,queue_nodes,visited_nodes,path_dict,obstacle_space,R,L)
                 else:
-                    print("Goal reached")
+                    #print("Goal reached")
                     back_track, velocity_path = self.back_tracking(
                         path_dict, queue_pop,initial_state)
                     end_time = time.time()
                     path_time = end_time - start_time
-                    print('Time to calculate path:', path_time, 'seconds')
+                    #print('Time to calculate path:', path_time, 'seconds')
                     #To be change to dynamically recieve clearance and map boundries
                     #self.create_map(0.2,12.8,12.8, obstacle_space,visited_nodes, back_track, path_dict,initial_state)
-                    return back_track, path_dict, initial_state
-        print("Path cannot be acheived")
+                    return back_track, path_dict, initial_state,node_state_g,path_time,True
+        #print("Path cannot be acheived")
+        return [],[],initial_state,node_state_g,0.0,False
         exit()
 
 
@@ -414,31 +385,13 @@ class ROS_move(Node):
 
 def main():
     parser = argparse.ArgumentParser()
-    # parser.add_argument('--goal_x', type=float)
-    # parser.add_argument('--goal_y', type=float)
-    # parser.add_argument('--start_x', type=float)
-    # parser.add_argument('--start_y', type=float)
     parser.add_argument('--benchmark', type=str)
     parser.add_argument('--ros2_distro', type=str)
-    # parser.add_argument('--RPM1', type=float)
-    # parser.add_argument('--RPM2', type=float)
-    # parser.add_argument('--clearance', type=float)
     args, unknown = parser.parse_known_args()
-    # args.goal_x = float(unknown[0])
-    # args.goal_y = float(unknown[1])
-    # args.start_x = float(unknown[2])
-    # args.start_y = float(unknown[3])
     args.benchmark = str(unknown[0])
     args.ros2_distro = str(unknown[1])
-    # args.RPM1 = float(unknown[4])
-    # args.RPM2 = float(unknown[5])
-    # args.clearance = float(unknown[6])
-    print('Given Inputs', args)
     drawer = A_star()
-    # way_points = astar.a_star(args.goal_x, args.goal_y,
-    #                    args.start_x, args.start_y, args.RPM1, args.RPM2)
-
-    coordinates , number_of_robots = drawer.start_goal_parser()
+    coordinates , number_of_robots = Backend_Engine().start_goal_parser('test.txt')
     results = {}
     results_lock = threading.Lock()
 
@@ -454,8 +407,7 @@ def main():
         goalx , goaly = goal_pose
         startx, starty = init_pose
         result = astar.a_star(goalx, goaly, startx, starty,args.benchmark)
-        # with results_lock:
-        #     results[name] = result
+        print(f"calculating path for {name}, start_point: {startx, starty} done.")
         return name, result
     
     with ThreadPoolExecutor() as executor:
@@ -470,13 +422,35 @@ def main():
             results[name] = result
         except Exception as e:
             print(f"Error with {name}: {e}")
-  
 
-    # pygame.time.wait(2000)
-    # move_turtlebot = ROS_move("robot1",way_points)
-    # rclpy.spin(move_turtlebot)
-    # move_turtlebot.destroy_node()
-    # rclpy.shutdown()
+
+
+
+    result_str = ""
+    for robot_name in results:
+        return_back_track, path_dict, initial_state,goal_state, path_time, goal_reached = results[robot_name]
+        start_x,start_y,start_z = initial_state
+        goal_x,goal_y,goal_z = goal_state
+        result_str += f"{robot_name}:\n"
+        result_str += f"\t<start_point>: ({start_x}, {start_y})\n"  # Replace with actual start point later
+        result_str += f"\t<goal_point>: ({goal_x}, {goal_y})\n"    # Replace with actual goal point later
+        result_str += f"\t<goal_reached>: {goal_reached}\n"
+        result_str += f"\t<time_to_calculate_path>: {path_time}\n"
+        result_str += f"\t<path_taken>: {return_back_track}\n\n"
+    
+
+
+
+    Mapf_ros2_ws = os.getcwd()
+    export_path = Mapf_ros2_ws + '/src/Implementation-of-A-star-algorithm-for-path-planning-of-Turtlebot-in-an-obstacle-environment/a_star_tb3/benchmarks/stats.txt'
+    try:
+        with open(export_path, 'w', encoding='utf-8') as file:
+            file.write(result_str)
+        print(f"Content successfully written to {export_path}")
+    except Exception as e:
+        #Update to add to sys stderr
+        print(f"An error occurred while writing to the file: {e}")
+
 
     rclpy.init()
     executor = MultiThreadedExecutor()
@@ -486,7 +460,7 @@ def main():
     for res in results:
         args.append(results[res])
     time.sleep(2)
-    drawer.create_map(0.2,width*0.1,height*0.1,obstacle_space,args)
+    Backend_Engine().create_map(0.2,width*0.1,height*0.1,obstacle_space,args)
 
 
 
