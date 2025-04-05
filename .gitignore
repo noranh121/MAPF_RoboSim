@@ -1,4 +1,4 @@
 build/
 install/
 log/
-.vscode/
+ros2_ws/.vscode/
