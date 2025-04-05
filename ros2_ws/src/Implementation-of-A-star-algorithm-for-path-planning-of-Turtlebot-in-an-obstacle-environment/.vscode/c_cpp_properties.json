@@ -6,15 +6,12 @@
         "limitSymbolsToIncludedHeaders": false
       },
       "includePath": [
-        "/home/ali/custom_ws/install/turtlebot3_gazebo/include/**",
-        "/home/ali/custom_ws/install/turtlebot3_fake_node/include/**",
-        "/home/ali/ros2_ws/install/turtlesim/include/**",
-        "/home/ali/ros2_ws/src/install/turtlesim/include/**",
-        "/opt/ros/humble/include/**",
+        "/opt/ros/galactic/include/**",
+        "/home/maged/MAPF_RoboSim/ros2_ws/src/ros_tutorials/turtlesim/include/**",
         "/usr/include/**"
       ],
       "name": "ROS",
-      "intelliSenseMode": "gcc-x64",
+      "intelliSenseMode": "gcc-arm64",
       "compilerPath": "/usr/bin/gcc",
       "cStandard": "gnu11",
       "cppStandard": "c++14"
