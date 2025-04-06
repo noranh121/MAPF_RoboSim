@@ -25,6 +25,7 @@ def generate_launch_description():
 
 
     start_goal_poses ,number_of_robots = start_goal_parser()
+    print(start_goal_poses)
     start_poses = []
     for start,goal in start_goal_poses:
         start_poses.append(start)
@@ -337,18 +338,18 @@ def get_benchmark_path(benchmark_file_name):
     benchmark_path=MAPF_ros2_ws+'/src/Implementation-of-A-star-algorithm-for-path-planning-of-Turtlebot-in-an-obstacle-environment/a_star_tb3/benchmarks/'+benchmark_file_name
     return benchmark_path
     
-def start_goal_parser():
+def start_goal_parser(scenarion_file_name=None):
     file_path = get_benchmark_path("test.txt")
     star_goal_pairs = []
     with open(file_path, 'r') as file:
         try:
             for line in file:
                 line = line.strip()  # Remove leading/trailing whitespace
-                if line:
+                if line and not line.startswith("version"):  # Ignore first line
                     parts = line.split()  # Split the line into start and goal parts
                     # Parse the start and goal coordinates from the line
-                    start = tuple(map(float, parts[0].strip('()').split(',')))
-                    goal = tuple(map(float, parts[1].strip('()').split(',')))
+                    start = tuple(map(float, parts[4:6]))
+                    goal = tuple(map(float, parts[6:8]))
                     # Add the pair to the list
                     star_goal_pairs.append([start, goal])
         except:
@@ -356,6 +357,26 @@ def start_goal_parser():
             raise Exception("invaled start_end points format")
     number_of_robots = len(star_goal_pairs)
     return star_goal_pairs, number_of_robots
+    # start_end_points = []
+    # with open(file_path, "r") as file:
+    #     try:
+    #         for line in file:
+    #             parts = line.strip().split()
+    #             if len(parts) >= 9:
+    #                 # startx = float(parts[4])
+    #                 # starty = float(parts[5])
+    #                 # endx = float(parts[6])
+    #                 # endy = float(parts[7])
+    #                 start=tuple(map(float, parts[4:6]))
+    #                 goal=tuple(map(float, parts[6:8]))
+    #                 # Add the pair to the list
+    #                 start_end_points.append([start, goal])
+    #     except:
+    #         sys.stderr.write("invaled start_end points format\n")
+    #         raise Exception("invaled start_end points format")
+    # number_of_robots = len(start_end_points)
+    # print(start_end_points)
+    # return start_end_points, number_of_robots
 
 
 # def get_convert_map_to_world(benchmark_path,world_path):

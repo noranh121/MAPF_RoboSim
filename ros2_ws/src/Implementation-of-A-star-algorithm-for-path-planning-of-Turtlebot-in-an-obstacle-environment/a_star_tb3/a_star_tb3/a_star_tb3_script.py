@@ -25,6 +25,8 @@ from std_msgs.msg import Float64MultiArray
 import itertools
 from tf_transformations import euler_from_quaternion
 import os
+# os.environ["SDL_AUDIODRIVER"] = "dummy"
+
 
 start_time = time.time()
 
@@ -53,29 +55,29 @@ class Backend_Engine:
         benchmark_path=MAPF_ros2_ws+'/src/Implementation-of-A-star-algorithm-for-path-planning-of-Turtlebot-in-an-obstacle-environment/a_star_tb3/benchmarks/'+benchmark_file_name
         return benchmark_path
     
-    def start_goal_parser(self,start_goal):
-        file_path = self.get_benchmark_path(start_goal)
-        star_goal_pairs = []
-        with open(file_path, 'r') as file:
-            try:
-                for line in file:
-                    line = line.strip()  # Remove leading/trailing whitespace
-                    if line:
-                        parts = line.split()  # Split the line into start and goal parts
+    # def start_goal_parser(self,start_goal):
+    #     file_path = self.get_benchmark_path(start_goal)
+    #     star_goal_pairs = []
+    #     with open(file_path, 'r') as file:
+    #         try:
+    #             for line in file:
+    #                 line = line.strip()  # Remove leading/trailing whitespace
+    #                 if line:
+    #                     parts = line.split()  # Split the line into start and goal parts
 
-                        # Parse the start and goal coordinates from the line
-                        start = tuple(map(float, parts[0].strip('()').split(',')))
-                        goal = tuple(map(float, parts[1].strip('()').split(',')))
+    #                     # Parse the start and goal coordinates from the line
+    #                     start = tuple(map(float, parts[0].strip('()').split(',')))
+    #                     goal = tuple(map(float, parts[1].strip('()').split(',')))
 
-                        # Add the pair to the list
-                        star_goal_pairs.append([start, goal])
-            except:
-                sys.stderr.write("invaled start_end points format\n")
-                raise Exception("invaled start_end points format")
+    #                     # Add the pair to the list
+    #                     star_goal_pairs.append([start, goal])
+    #         except:
+    #             sys.stderr.write("invaled start_end points format\n")
+    #             raise Exception("invaled start_end points format")
 
-        number_of_robots = len(star_goal_pairs)
+    #     number_of_robots = len(star_goal_pairs)
 
-        return star_goal_pairs, number_of_robots
+    #     return star_goal_pairs, number_of_robots
     
     def convert_map_to_obstacles(self,benchmark_file_name, cell_size=0.1):
 
@@ -202,133 +204,133 @@ class Backend_Engine:
     #   Line to save video:
     #   video.export(verbose=True)
 
-class A_star:
+# class A_star:
 
-    def euclidean_distance(self, x1, x2, y1, y2):
-        return (np.sqrt((x1-x2)**2 + (y1-y2)**2))
+#     def euclidean_distance(self, x1, x2, y1, y2):
+#         return (np.sqrt((x1-x2)**2 + (y1-y2)**2))
 
-    def check_conditions(self, X_n, Y_n, X_i, Y_i, T_i, Thetan, cc, ls, vel,node_state_g,queue_nodes,visited_nodes,path_dict,obstacle_space):
-        cost2_go = self.euclidean_distance(
-            node_state_g[0], X_n, node_state_g[1], Y_n)
-        final_cost = (cc + cost2_go*1.75)
-        if Thetan > 360:
-            Thetan = Thetan % 360
-        elif -360 < Thetan < 0:
-            Thetan += 360
-        elif Thetan <= -360:
-            Thetan = Thetan % 360 + 360
-        current_pos = (X_n, Y_n, np.round(Thetan, 2))
-        if not Backend_Engine().is_point_in_any_block(current_pos[0], current_pos[1],obstacle_space):
-            if current_pos in queue_nodes:
-                if queue_nodes[current_pos][0] > final_cost:
-                    queue_nodes[current_pos] = final_cost, cost2_go, cc
-                    path_dict[current_pos] = (X_i, Y_i, T_i), ls, vel
-                    visited_nodes.add(current_pos)
-                    return
-                else:
-                    return
-            queue_nodes[current_pos] = final_cost, cost2_go, cc
-            path_dict[current_pos] = (X_i, Y_i, T_i), ls, vel
-            visited_nodes.add(current_pos)
-        return
+#     def check_conditions(self, X_n, Y_n, X_i, Y_i, T_i, Thetan, cc, ls, vel,node_state_g,queue_nodes,visited_nodes,path_dict,obstacle_space):
+#         cost2_go = self.euclidean_distance(
+#             node_state_g[0], X_n, node_state_g[1], Y_n)
+#         final_cost = (cc + cost2_go*1.75)
+#         if Thetan > 360:
+#             Thetan = Thetan % 360
+#         elif -360 < Thetan < 0:
+#             Thetan += 360
+#         elif Thetan <= -360:
+#             Thetan = Thetan % 360 + 360
+#         current_pos = (X_n, Y_n, np.round(Thetan, 2))
+#         if not Backend_Engine().is_point_in_any_block(current_pos[0], current_pos[1],obstacle_space):
+#             if current_pos in queue_nodes:
+#                 if queue_nodes[current_pos][0] > final_cost:
+#                     queue_nodes[current_pos] = final_cost, cost2_go, cc
+#                     path_dict[current_pos] = (X_i, Y_i, T_i), ls, vel
+#                     visited_nodes.add(current_pos)
+#                     return
+#                 else:
+#                     return
+#             queue_nodes[current_pos] = final_cost, cost2_go, cc
+#             path_dict[current_pos] = (X_i, Y_i, T_i), ls, vel
+#             visited_nodes.add(current_pos)
+#         return
 
-    def Actions(self, ul, ur, pos, c2c,node_state_g,queue_nodes,visited_nodes,path_dict,obstacle_space,R,L):
-    #   Multiplier originally 0.5
-        multiplier = 0.5
-        t = 0
-        dt = 0.2
-        Xn = pos[0]
-        Yn = pos[1]
-        Thetan = np.deg2rad(pos[2])
-        ls = OrderedSet()
-        ls.add(Backend_Engine().coords_cm_pygame((Xn, Yn),  height*10))
-        cc = 0
-        while t < 1:
-            xi = Xn
-            yi = Yn
-            Xn += multiplier*R*(ul + ur)*np.cos(Thetan)*dt
-            Yn += multiplier*R*(ul + ur)*np.sin(Thetan)*dt
-            Thetan += (R/L)*(ur-ul)*dt
-            t = t + dt
-            cc += self.euclidean_distance(xi, Xn, yi, Yn)
-            ls.add(Backend_Engine().coords_cm_pygame((Xn, Yn), height*10))
-        cc += c2c
-        velocity = ((multiplier*R*(ul + ur)*np.cos(Thetan)),
-                    (multiplier*R*(ul + ur)*np.sin(Thetan)), ((R/L)*(ur-ul)))
-        Xn = np.round(Xn, 2)
-        Yn = np.round(Yn, 2)
-        Thetan = np.round(Thetan, 2)
-        Thetan = np.rad2deg(Thetan)
-        if 0 <= Xn <= (width * 0.1)  and 0 <= Yn <= (height * 0.1):
-            self.check_conditions(Xn, Yn, pos[0], pos[1],
-                                  pos[2], Thetan, cc, ls, velocity,node_state_g,queue_nodes,visited_nodes,path_dict,obstacle_space)
-        return
+#     def Actions(self, ul, ur, pos, c2c,node_state_g,queue_nodes,visited_nodes,path_dict,obstacle_space,R,L):
+#     #   Multiplier originally 0.5
+#         multiplier = 0.5
+#         t = 0
+#         dt = 0.2
+#         Xn = pos[0]
+#         Yn = pos[1]
+#         Thetan = np.deg2rad(pos[2])
+#         ls = OrderedSet()
+#         ls.add(Backend_Engine().coords_cm_pygame((Xn, Yn),  height*10))
+#         cc = 0
+#         while t < 1:
+#             xi = Xn
+#             yi = Yn
+#             Xn += multiplier*R*(ul + ur)*np.cos(Thetan)*dt
+#             Yn += multiplier*R*(ul + ur)*np.sin(Thetan)*dt
+#             Thetan += (R/L)*(ur-ul)*dt
+#             t = t + dt
+#             cc += self.euclidean_distance(xi, Xn, yi, Yn)
+#             ls.add(Backend_Engine().coords_cm_pygame((Xn, Yn), height*10))
+#         cc += c2c
+#         velocity = ((multiplier*R*(ul + ur)*np.cos(Thetan)),
+#                     (multiplier*R*(ul + ur)*np.sin(Thetan)), ((R/L)*(ur-ul)))
+#         Xn = np.round(Xn, 2)
+#         Yn = np.round(Yn, 2)
+#         Thetan = np.round(Thetan, 2)
+#         Thetan = np.rad2deg(Thetan)
+#         if 0 <= Xn <= (width * 0.1)  and 0 <= Yn <= (height * 0.1):
+#             self.check_conditions(Xn, Yn, pos[0], pos[1],
+#                                   pos[2], Thetan, cc, ls, velocity,node_state_g,queue_nodes,visited_nodes,path_dict,obstacle_space)
+#         return
 
-    def back_tracking(self, path, pre_queue,initial_state):
-        best_path = []
-        path_vel = []
-        best_path.append(pre_queue[0])
-        parent_node = path[pre_queue[0]][0]
-        vel_parent = path.get(pre_queue[0])[2]
-        path_vel.append(vel_parent)
-        best_path.append(parent_node)
-        while parent_node != initial_state:
-            vel_parent = path.get(parent_node)
-            path_vel.append(vel_parent[2])
-            parent_node = path[parent_node][0]
-            best_path.append(parent_node)
-        best_path.reverse()
-        path_vel.reverse()
-        # print("Path Taken: ")
-        # for i in best_path:
-        #     print(i)
-        return best_path, path_vel
+#     def back_tracking(self, path, pre_queue,initial_state):
+#         best_path = []
+#         path_vel = []
+#         best_path.append(pre_queue[0])
+#         parent_node = path[pre_queue[0]][0]
+#         vel_parent = path.get(pre_queue[0])[2]
+#         path_vel.append(vel_parent)
+#         best_path.append(parent_node)
+#         while parent_node != initial_state:
+#             vel_parent = path.get(parent_node)
+#             path_vel.append(vel_parent[2])
+#             parent_node = path[parent_node][0]
+#             best_path.append(parent_node)
+#         best_path.reverse()
+#         path_vel.reverse()
+#         # print("Path Taken: ")
+#         # for i in best_path:
+#         #     print(i)
+#         return best_path, path_vel
 
-    def a_star(self, goalx, goaly, startx, starty,benchmark_file_name, rpm1=40.0, rpm2=20.0):
-        RPM1 = (rpm1*2*math.pi)/60
-        RPM2 = (rpm2*2*math.pi)/60
-        global obstacle_space
-        action_set = [0, RPM1], [RPM1, 0], [RPM1, RPM1], [0, RPM2], [
-            RPM2, 0] , [RPM2, RPM2], [RPM1, RPM2], [RPM2, RPM1]
-        r = 0.105
-        R = 0.033
-        L = 0.16
-        obstacle_space = Backend_Engine().convert_map_to_obstacles(benchmark_file_name)
-        initial_state = (startx, starty, 0)
-        node_state_g = (goalx, goaly, 0)
+#     def a_star(self, goalx, goaly, startx, starty,benchmark_file_name, rpm1=40.0, rpm2=20.0):
+#         RPM1 = (rpm1*2*math.pi)/60
+#         RPM2 = (rpm2*2*math.pi)/60
+#         global obstacle_space
+#         action_set = [0, RPM1], [RPM1, 0], [RPM1, RPM1], [0, RPM2], [
+#             RPM2, 0] , [RPM2, RPM2], [RPM1, RPM2], [RPM2, RPM1]
+#         r = 0.105
+#         R = 0.033
+#         L = 0.16
+#         obstacle_space = Backend_Engine().convert_map_to_obstacles(benchmark_file_name)
+#         initial_state = (startx, starty, 0)
+#         node_state_g = (goalx, goaly, 0)
 
-        cost = 0
-        closed_list = OrderedSet()
-        cg = np.sqrt(
-            (node_state_g[0]-initial_state[0])**2 + (node_state_g[1]-initial_state[1])**2)
-        total_cost = cg + cost
-        queue_nodes = heapdict.heapdict()
-        path_dict = {}
-        visited_nodes = OrderedSet()
-        queue_nodes[(initial_state)] = total_cost, cg, cost
-        while (len(queue_nodes) != 0):
-            queue_pop = queue_nodes.popitem()
-            position = queue_pop[0]
-            x, y, theta = position
-            cc = queue_pop[1][2]
-            if (x, y) not in closed_list:
-                closed_list.add((x, y))
-                if self.euclidean_distance(node_state_g[0], x, node_state_g[1], y) > 0:
-                    for i in action_set:
-                        self.Actions(i[0], i[1], position, cc,node_state_g,queue_nodes,visited_nodes,path_dict,obstacle_space,R,L)
-                else:
-                    #print("Goal reached")
-                    back_track, velocity_path = self.back_tracking(
-                        path_dict, queue_pop,initial_state)
-                    end_time = time.time()
-                    path_time = end_time - start_time
-                    #print('Time to calculate path:', path_time, 'seconds')
-                    #To be change to dynamically recieve clearance and map boundries
-                    #self.create_map(0.2,12.8,12.8, obstacle_space,visited_nodes, back_track, path_dict,initial_state)
-                    return back_track, path_dict, initial_state,node_state_g,path_time,True
-        #print("Path cannot be acheived")
-        return [],[],initial_state,node_state_g,0.0,False
-        exit()
+#         cost = 0
+#         closed_list = OrderedSet()
+#         cg = np.sqrt(
+#             (node_state_g[0]-initial_state[0])**2 + (node_state_g[1]-initial_state[1])**2)
+#         total_cost = cg + cost
+#         queue_nodes = heapdict.heapdict()
+#         path_dict = {}
+#         visited_nodes = OrderedSet()
+#         queue_nodes[(initial_state)] = total_cost, cg, cost
+#         while (len(queue_nodes) != 0):
+#             queue_pop = queue_nodes.popitem()
+#             position = queue_pop[0]
+#             x, y, theta = position
+#             cc = queue_pop[1][2]
+#             if (x, y) not in closed_list:
+#                 closed_list.add((x, y))
+#                 if self.euclidean_distance(node_state_g[0], x, node_state_g[1], y) > 0:
+#                     for i in action_set:
+#                         self.Actions(i[0], i[1], position, cc,node_state_g,queue_nodes,visited_nodes,path_dict,obstacle_space,R,L)
+#                 else:
+#                     #print("Goal reached")
+#                     back_track, velocity_path = self.back_tracking(
+#                         path_dict, queue_pop,initial_state)
+#                     end_time = time.time()
+#                     path_time = end_time - start_time
+#                     #print('Time to calculate path:', path_time, 'seconds')
+#                     #To be change to dynamically recieve clearance and map boundries
+#                     #self.create_map(0.2,12.8,12.8, obstacle_space,visited_nodes, back_track, path_dict,initial_state)
+#                     return back_track, path_dict, initial_state,node_state_g,path_time,True
+#         #print("Path cannot be acheived")
+#         return [],[],initial_state,node_state_g,0.0,False
+#         exit()
 
 
 class ROS_move(Node):
@@ -382,16 +384,18 @@ class ROS_move(Node):
         self.pose_publisher.publish(msg)
 
 
-
+from a_star_algorithm import A_star,Parser_Engine
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument('--benchmark', type=str)
     parser.add_argument('--ros2_distro', type=str)
     args, unknown = parser.parse_known_args()
     args.benchmark = str(unknown[0])
+    benchmark_file_name_ = args.benchmark
     args.ros2_distro = str(unknown[1])
     drawer = A_star()
-    coordinates , number_of_robots = Backend_Engine().start_goal_parser('test.txt')
+    coordinates , number_of_robots = Parser_Engine().start_goal_parser('test.txt')
+    print(coordinates)
     results = {}
     results_lock = threading.Lock()
 
@@ -403,6 +407,7 @@ def main():
         curr_tuple = (start,goal,A_star(),robot_name)
         inputs.append(curr_tuple)
 
+    
     def thread_target(init_pose, goal_pose,astar:A_star,name):
         goalx , goaly = goal_pose
         startx, starty = init_pose
@@ -455,14 +460,14 @@ def main():
     rclpy.init()
     executor = MultiThreadedExecutor()
 
-    #Draw:
+    # Draw:
     args = []
     for res in results:
         args.append(results[res])
     time.sleep(2)
-    Backend_Engine().create_map(0.2,width*0.1,height*0.1,obstacle_space,args)
-
-
+    global obstacle_space
+    obstacle_space = Backend_Engine().convert_map_to_obstacles(benchmark_file_name_)
+    Parser_Engine().create_map(0.2,width*0.1,height*0.1,obstacle_space,args)
 
     robots = []
     size = len(inputs)  # Assuming `inputs` is defined
@@ -472,10 +477,11 @@ def main():
         robot_node = ROS_move(robot_name, way_points)
         robots.append(robot_node)
         executor.add_node(robot_node)
-
     try:
         # Spin all nodes concurrently
+        print("Spinning nodes...")
         executor.spin()
+        print("All nodes have been spun.")
     except KeyboardInterrupt:
         pass
     finally:

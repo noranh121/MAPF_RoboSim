@@ -175,11 +175,11 @@ def start_goal_parser():
     with open(file_path, 'r') as file:
         for line in file:
             line = line.strip()  # Remove leading/trailing whitespace
-            if line:
+            if line and not line.startswith("version"):
                 parts = line.split()  # Split the line into start and goal parts
                 # Parse the start and goal coordinates from the line
-                start = tuple(map(float, parts[0].strip('()').split(',')))
-                goal = tuple(map(float, parts[1].strip('()').split(',')))
+                start = tuple(map(float, parts[4:6]))
+                goal = tuple(map(float, parts[6:8]))
                 # Add the pair to the list
                 star_goal_pairs.append([start, goal])
     number_of_robots = len(star_goal_pairs)
