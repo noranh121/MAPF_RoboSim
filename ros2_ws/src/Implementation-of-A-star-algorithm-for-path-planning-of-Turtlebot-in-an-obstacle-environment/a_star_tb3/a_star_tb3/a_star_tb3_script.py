@@ -388,11 +388,20 @@ from a_star_algorithm import A_star,Parser_Engine
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument('--benchmark', type=str)
-    parser.add_argument('--ros2_distro', type=str)
+    parser.add_argument('--scenario', type=str)
+    parser.add_argument('--algorithm', type=str)
+
     args, unknown = parser.parse_known_args()
+
     args.benchmark = str(unknown[0])
     benchmark_file_name_ = args.benchmark
-    args.ros2_distro = str(unknown[1])
+    args.scenario = str(unknown[1])
+    scenario_file_name_ = args.scenario
+    args.algorithm = str(unknown[2])
+    algorithm_file_name_ = args.algorithm
+
+
+
     drawer = A_star()
     coordinates , number_of_robots = Parser_Engine().start_goal_parser('test.txt')
     print(coordinates)

@@ -24,62 +24,33 @@ def generate_launch_description():
 
 
 
-    start_goal_poses ,number_of_robots = start_goal_parser()
-    print(start_goal_poses)
-    start_poses = []
-    for start,goal in start_goal_poses:
-        start_poses.append(start)
-    # start_poses =[
-    #     (0.5,0.5),
-    #     (4.0,1.7),
-    #     (2.0,9.5),
-    #     (7.0,0.5),
-    #     (10.0,9.5),
-    #     (6.0,8.0)
-    # ]
-    # number_of_robots = 1
-    # start_poses =[
-    #     (0.5,0.5),
-    #     (4.0,1.7),
-    #     (2.0,9.5),
-    #     (7.0,0.5),
-    #     (10.0,9.5),
-    #     (6.0,8.0)
-    # ]
+
 
 
 
     parser = argparse.ArgumentParser()
-    # parser.add_argument('--goal_x', type=float)
-    # parser.add_argument('--goal_y', type=float)
-    # parser.add_argument('--start_x', type=float)
-    # parser.add_argument('--start_y', type=float)
+
     parser.add_argument('--benchmark', type=str)
-    parser.add_argument('--ros2_distro', type=str)
-    # parser.add_argument('--RPM1', type=float)
-    # parser.add_argument('--RPM2', type=float)
-    # parser.add_argument('--clearance', type=float)
+    parser.add_argument('--scenario', type=str)
+    parser.add_argument('--algorithm', type=str)
+    
     args, unknown = parser.parse_known_args()
 
     for arg in unknown:
-        # if arg.startswith('goal_x:='):
-        #     args.goal_x = float(arg.split(':=')[1])
-        # elif arg.startswith('goal_y:='):
-        #     args.goal_y = float(arg.split(':=')[1])
-        # elif arg.startswith('start_x:='):
-        #     args.start_x = float(arg.split(':=')[1])
-        # elif arg.startswith('start_y:='):
-        #     args.start_y = float(arg.split(':=')[1])
+
         if arg.startswith('benchmark:='):
             args.benchmark = str(arg.split(':=')[1])
-        elif arg.startswith('ros2_distro:='):
-            args.ros2_distro = str(arg.split(':=')[1])
-        # elif arg.startswith('RPM1:='):
-        #     args.RPM1 = float(arg.split(':=')[1])
-        # elif arg.startswith('RPM2:='):
-        #     args.RPM2 = float(arg.split(':=')[1])
-        # elif arg.startswith('clearance:='):
-        #     args.clearance = float(arg.split(':=')[1])
+        elif arg.startswith('scenario:='):
+            args.scenario = str(arg.split(':=')[2])
+        elif arg.startswith('algorithm:='):
+            args.algorithm = str(arg.split(':=')[3])
+
+
+
+    start_goal_poses ,number_of_robots = start_goal_parser(args.scenario)
+    start_poses = []
+    for start,goal in start_goal_poses:
+        start_poses.append(start)
 
     launch_file_dir = os.path.join(
         get_package_share_directory('turtlebot3_gazebo'), 'launch')
@@ -182,111 +153,20 @@ def generate_launch_description():
 
 
 
-
-    # robot_state_publisher_cmd = Node(
-    #             package="robot_state_publisher",
-    #             namespace="robot1",
-    #             name="robot1_burger",
-    #             executable="robot_state_publisher",
-    #             output="screen",
-    #             parameters=[{"use_sim_time": True,
-    #                          "publish_frequency": 50.0,
-    #                          'robot_description': robot_desc}],
-    #             remappings=remappings,
-    #         )
-    # spawn_turtlebot_cmd = Node(
-    #             package="gazebo_ros",
-    #             executable="spawn_entity.py",
-    #             arguments=[
-    #                 "-file",
-    #                 sdf_path,
-    #                 "-entity",
-    #                 "robot1_burger",
-    #                 "-robot_namespace",
-    #                 "robot1",
-    #                 "-x",
-    #                 x_pose,
-    #                 "-y",
-    #                 y_pose,
-    #                 "-z",
-    #                 "0.01"
-    #             ],
-    #             output="screen",
-    #         )
-    
-
-
-
-
-    # robot_state_publisher_cmd2 = Node(
-    #             package="robot_state_publisher",
-    #             namespace="robot2",
-    #             name="robot2_burger",
-    #             executable="robot_state_publisher",
-    #             output="screen",
-    #             parameters=[{"use_sim_time": True,
-    #                          "publish_frequency": 50.0,
-    #                          'robot_description': robot_desc}],
-    #             remappings=remappings,
-    #         )
-    
-
-    # spawn_turtlebot_cmd2 = Node(
-    #             package="gazebo_ros",
-    #             executable="spawn_entity.py",
-    #             arguments=[
-    #                 "-file",
-    #                 sdf_path,
-    #                 "-entity",
-    #                 "robot2_burger",
-    #                 "-robot_namespace",
-    #                 "robot2",
-    #                 "-x",
-    #                 "4.0",
-    #                 "-y",
-    #                 "1.7",
-    #                 "-z",
-    #                 "0.01"
-    #             ],
-    #             output="screen",
-    #         )
-    
-
     robot_controller = Node(
                 package="turtle_demo_controller",
                 executable="turt_controller",
                 output="screen",
+                parameters=[{'number_of_robots': number_of_robots}]
             )
 
-    # for arg in unknown:
-    #     if arg.startswith('goal_x:='):
-    #         args.goal_x = float(arg.split(':=')[1])
-    #     elif arg.startswith('goal_y:='):
-    #         args.goal_y = float(arg.split(':=')[1])
-    #     elif arg.startswith('start_x:='):
-    #         args.start_x = float(arg.split(':=')[1])
-    #     elif arg.startswith('start_y:='):
-    #         args.start_y = float(arg.split(':=')[1])
-    #     elif arg.startswith('benchmark:='):
-    #         args.benchmark = str(arg.split(':=')[1])
-    #     # elif arg.startswith('RPM1:='):
-    #     #     args.RPM1 = float(arg.split(':=')[1])
-    #     # elif arg.startswith('RPM2:='):
-    #     #     args.RPM2 = float(arg.split(':=')[1])
-    #     # elif arg.startswith('clearance:='):
-    #     #     args.clearance = float(arg.split(':=')[1])
-    
+
     print('args', args)
-    
-    # declared_goalx = DeclareLaunchArgument('--goal_x', default_value=str(args.goal_x))
-    # declared_goaly = DeclareLaunchArgument('--goal_y', default_value=str(args.goal_y))
-    # declared_startx = DeclareLaunchArgument('--start_x', default_value=str(args.start_x))
-    # declared_starty = DeclareLaunchArgument('--start_y', default_value=str(args.start_y))
+
     declared_benchmark = DeclareLaunchArgument('--benchmark', default_value=str(args.benchmark))
-    declared_ros2_distro = DeclareLaunchArgument('--ros2_distro', default_value=str(args.ros2_distro))
-    # declared_RPM1 = DeclareLaunchArgument('--RPM1', default_value=str(args.RPM1))
-    # declared_RPM2 = DeclareLaunchArgument('--RPM2', default_value=str(args.RPM2))
-    # declared_clearance = DeclareLaunchArgument('--clearance', default_value=str(args.clearance))
+    declared_scenario = DeclareLaunchArgument('--scenario', default_value=str(args.scenario))
+    declared_algorithm = DeclareLaunchArgument('--algorithm', default_value=str(args.algorithm))
+
 
 
     my_node = TimerAction(
@@ -297,49 +177,34 @@ def generate_launch_description():
         executable='a_star_tb3_script.py',
         output='screen',
         emulate_tty=True,
-        # arguments = [LaunchConfiguration('--goal_x'), LaunchConfiguration('--goal_y'), LaunchConfiguration('--start_x'), LaunchConfiguration('--start_y'),
-        #             LaunchConfiguration('--RPM1'), LaunchConfiguration('--RPM2'), LaunchConfiguration('--clearance')  ],
-        arguments = [LaunchConfiguration('--benchmark'),LaunchConfiguration('--ros2_distro')],
+        arguments = [LaunchConfiguration('--benchmark'), LaunchConfiguration('--scenario'), LaunchConfiguration('--algorithm')],
     ), ])
 
    
 
-    # ld = LaunchDescription()
-
     # Add the commands to the launch description
-    # ld.add_action(declared_startx)
-    # ld.add_action(declared_starty)
     ld.add_action(declared_benchmark)
-    ld.add_action(declared_ros2_distro)
-    # ld.add_action(declared_RPM1)
-    # ld.add_action(declared_RPM2)
-    # ld.add_action(declared_clearance)
+    ld.add_action(declared_scenario)
+    ld.add_action(declared_algorithm)
     ld.add_action(gzserver_cmd)
     ld.add_action(gzclient_cmd)
 
 
-    # ld.add_action(robot_state_publisher_cmd)
-    # ld.add_action(spawn_turtlebot_cmd)
-    # ld.add_action(robot_state_publisher_cmd2)
-    # ld.add_action(spawn_turtlebot_cmd2)
-    
     #Added =========================
     ld.add_action(robot_controller)
     #Added =========================
 
-    # ld.add_action(declared_goalx)
-    # ld.add_action(declared_goaly)
     ld.add_action(my_node)
 
     return ld
 
-def get_benchmark_path(benchmark_file_name):
+def get_scenario_path(scenario_file_name):
     MAPF_ros2_ws=os.getcwd()
-    benchmark_path=MAPF_ros2_ws+'/src/Implementation-of-A-star-algorithm-for-path-planning-of-Turtlebot-in-an-obstacle-environment/a_star_tb3/benchmarks/'+benchmark_file_name
-    return benchmark_path
+    scenario_path=MAPF_ros2_ws+'/src/Implementation-of-A-star-algorithm-for-path-planning-of-Turtlebot-in-an-obstacle-environment/a_star_tb3/scenarios/'+scenario_file_name
+    return scenario_path
     
 def start_goal_parser(scenarion_file_name=None):
-    file_path = get_benchmark_path("test.txt")
+    file_path = get_scenario_path(scenarion_file_name)
     star_goal_pairs = []
     with open(file_path, 'r') as file:
         try:
@@ -357,69 +222,12 @@ def start_goal_parser(scenarion_file_name=None):
             raise Exception("invaled start_end points format")
     number_of_robots = len(star_goal_pairs)
     return star_goal_pairs, number_of_robots
-    # start_end_points = []
-    # with open(file_path, "r") as file:
-    #     try:
-    #         for line in file:
-    #             parts = line.strip().split()
-    #             if len(parts) >= 9:
-    #                 # startx = float(parts[4])
-    #                 # starty = float(parts[5])
-    #                 # endx = float(parts[6])
-    #                 # endy = float(parts[7])
-    #                 start=tuple(map(float, parts[4:6]))
-    #                 goal=tuple(map(float, parts[6:8]))
-    #                 # Add the pair to the list
-    #                 start_end_points.append([start, goal])
-    #     except:
-    #         sys.stderr.write("invaled start_end points format\n")
-    #         raise Exception("invaled start_end points format")
-    # number_of_robots = len(start_end_points)
-    # print(start_end_points)
-    # return start_end_points, number_of_robots
+   
 
 
-# def get_convert_map_to_world(benchmark_path,world_path):
-#     benchmark_to_world_file_dir = os.path.join(get_package_share_directory('a_star_tb3'))
-#     sys.path.append(benchmark_to_world_file_dir)
-#     from benchmark_to_world import convert_map_to_world
-#     convert_map_to_world(benchmark_path,world_path)
 
 import xml.etree.ElementTree as ET
 
-# <gui>
-#             <camera name="top_down_camera">
-#                 <!-- Position the camera above the map -->
-#                 <pose>7 -20 20 0 0.6435 1.56</pose>
-#                 <!-- Set the view angle -->
-#                 <view_controller>ortho</view_controller>
-#             </camera>
-#         </gui>
-
-# def convert_map_to_world(map_file, world_file, cell_size=0.1):
-#     with open(map_file, 'r') as f:
-#         lines = f.readlines()
-
-#     height = int([line.split()[1] for line in lines if line.startswith("height")][0])
-#     width = int([line.split()[1] for line in lines if line.startswith("width")][0])
-#     grid_lines = [line.strip() for line in lines if not line.startswith("type") and not line.startswith("height") and not line.startswith("width") and not line.startswith("map")]
-#     grid = [line.ljust(width, '.') for line in grid_lines]
-#     # Start creating the .world file
-#     sdf = ET.Element('sdf', version="1.7")
-#     world = ET.SubElement(sdf, 'world', name="default")
-
-#     # gui
-#     gui=ET.SubElement(world,'gui')
-#     camera=ET.SubElement(gui,'camera',name='top_down_camera')
-#     ET.SubElement(camera,'pose').text='7 -20 20 0 0.6435 1.56'
-#     ET.SubElement(camera,'view_controller').text='ortho'
-
-#     # Insert light
-#     light = ET.SubElement(world, 'light', name="sun", type="directional")
-
-#     # Add child elements to the light element
-#     cast_shadows = ET.SubElement(light, 'cast_shadows')
-#     cast_shadows.text = '1'
 
 class Map_Parser:
     def convert_map_to_world(self,map_file, world_file, cell_size=0.1):
