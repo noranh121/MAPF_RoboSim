@@ -28,23 +28,6 @@ def generate_launch_description():
     start_poses = []
     for start,goal in start_goal_poses:
         start_poses.append(start)
-    # start_poses =[
-    #     (0.5,0.5),
-    #     (4.0,1.7),
-    #     (2.0,9.5),
-    #     (7.0,0.5),
-    #     (10.0,9.5),
-    #     (6.0,8.0)
-    # ]
-    # number_of_robots = 1
-    # start_poses =[
-    #     (0.5,0.5),
-    #     (4.0,1.7),
-    #     (2.0,9.5),
-    #     (7.0,0.5),
-    #     (10.0,9.5),
-    #     (6.0,8.0)
-    # ]
 
 
 
@@ -255,6 +238,7 @@ def generate_launch_description():
                 package="turtle_demo_controller",
                 executable="turt_controller",
                 output="screen",
+                parameters=[{'number_of_robots': number_of_robots}]
             )
 
     # for arg in unknown:
