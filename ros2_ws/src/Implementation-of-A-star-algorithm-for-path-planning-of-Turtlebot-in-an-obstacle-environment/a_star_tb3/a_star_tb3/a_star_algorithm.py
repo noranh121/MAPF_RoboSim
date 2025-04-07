@@ -23,6 +23,7 @@ from std_msgs.msg import Float64MultiArray
 import itertools
 from tf_transformations import euler_from_quaternion
 import os
+import json
 
 start_time = time.time()
 
@@ -340,9 +341,28 @@ class A_star:
             result.append(self.a_star(goalx, goaly, startx, starty, benchmark_file_name))
         return result
 
-def main():
-    script_benchmark=sys.argv[0]
-    script_scenario=sys.argv[1]
-    astar=A_star()
-    result=astar.algorithm(script_scenario, script_benchmark)
-    return result
+# def main():
+#     try:
+#         script_benchmark=sys.argv[1]
+#         script_scenario=sys.argv[2]
+#         astar=A_star()
+#         result=astar.algorithm(script_scenario, script_benchmark)
+#         # print("the length of the result : ",len(result))
+#         # return result
+#         print(json.dumps(str(result)))
+#     except Exception as e:
+#         print(f"Error: {e}")
+
+def main(script_benchmark,script_scenario):
+    try:
+        astar=A_star()
+        result=astar.algorithm(script_scenario, script_benchmark)
+        # print("the length of the result : ",len(result))
+        return result
+        # print(json.dumps(str(result)))
+    except Exception as e:
+        print(f"Error: {e}")
+
+
+# if __name__ == "__main__":
+#     main()
