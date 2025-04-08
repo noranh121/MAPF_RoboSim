@@ -25,6 +25,9 @@ from std_msgs.msg import Float64MultiArray
 import itertools
 from tf_transformations import euler_from_quaternion
 import os
+import sys
+import importlib.util
+from pathlib import Path
 # os.environ["SDL_AUDIODRIVER"] = "dummy"
 
 
@@ -383,6 +386,40 @@ class ROS_move(Node):
         msg.theta = theta
         self.pose_publisher.publish(msg)
 
+def load_module_from_path(path: Path, name: str = None):
+    """
+    Load a .py file as a module.
+    Returns the module object.
+    """
+    name = name or path.stem
+    spec = importlib.util.spec_from_file_location(name, str(path))
+    module = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(module)
+    return module
+
+def get_arg_path(fileName: str, dir: str):
+    MAPF_ros2_ws=os.getcwd()
+    path = MAPF_ros2_ws + f'/src/Implementation-of-A-star-algorithm-for-path-planning-of-Turtlebot-in-an-obstacle-environment/a_star_tb3/{dir}/'
+    return path + fileName
+
+def fetch_content(file_path: str):
+    with open(file_path, 'r', encoding='utf-8') as f:
+        return f.read()
+
+
+
+
+
+def load_module_from_path(path: Path, name: str = None):
+    """
+    Load a .py file as a module.
+    Returns the module object.
+    """
+    name = name or path.stem
+    spec = importlib.util.spec_from_file_location(name, str(path))
+    module = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(module)
+    return module
 
 from a_star_algorithm import A_star,Parser_Engine
 def main():
@@ -399,6 +436,19 @@ def main():
     scenario_file_name_ = args.scenario
     args.algorithm = str(unknown[2])
     algorithm_file_name_ = args.algorithm
+    
+    benchmark_file_path = get_arg_path(benchmark_file_name_, "benchmarks")
+    scenario_file_path = get_arg_path(scenario_file_name_, "scenarios") 
+    algorithm_file_path = get_arg_path(algorithm_file_name_, "algorithms")
+
+    benchmark_content = fetch_content(benchmark_file_path)
+    scenario_content = fetch_content(scenario_file_path)
+
+    mod = load_module_from_path(algorithm_file_path)
+
+    robots_way_points = mod.algo(benchmark_content, scenario_content)
+
+
 
 
 
@@ -408,81 +458,83 @@ def main():
     results = {}
     results_lock = threading.Lock()
 
-    inputs = []
-    for i in range(number_of_robots):
-        robot_name = f"robot{i+1}"
-        start = coordinates[i][0]
-        goal = coordinates[i][1]
-        curr_tuple = (start,goal,A_star(),robot_name)
-        inputs.append(curr_tuple)
+    # inputs = []
+    # for i in range(number_of_robots):
+    #     robot_name = f"robot{i+1}"
+    #     start = coordinates[i][0]
+    #     goal = coordinates[i][1]
+    #     curr_tuple = (start,goal,A_star(),robot_name)
+    #     inputs.append(curr_tuple)
+
+    results = {f"robot{i+1}": robot_way_points for i, robot_way_points in enumerate(robots_way_points)}
 
     
-    def thread_target(init_pose, goal_pose,astar:A_star,name):
-        goalx , goaly = goal_pose
-        startx, starty = init_pose
-        result = astar.a_star(goalx, goaly, startx, starty,args.benchmark)
-        print(f"calculating path for {name}, start_point: {startx, starty} done.")
-        return name, result
+    # def thread_target(init_pose, goal_pose,astar:A_star,name):
+    #     goalx , goaly = goal_pose
+    #     startx, starty = init_pose
+    #     result = astar.a_star(goalx, goaly, startx, starty,args.benchmark)
+    #     print(f"calculating path for {name}, start_point: {startx, starty} done.")
+    #     return name, result
     
-    with ThreadPoolExecutor() as executor:
-    # Submit tasks to the thread pool
-        futures = {executor.submit(thread_target, *inp): inp[3] for inp in inputs}
+    # with ThreadPoolExecutor() as executor:
+    # # Submit tasks to the thread pool
+    #     futures = {executor.submit(thread_target, *inp): inp[3] for inp in inputs}
 
-    # Collect results as they complete
-    for future in as_completed(futures):
-        name = futures[future]
-        try:
-            name, result = future.result()
-            results[name] = result
-        except Exception as e:
-            print(f"Error with {name}: {e}")
-
-
+    # # Collect results as they complete
+    # for future in as_completed(futures):
+    #     name = futures[future]
+    #     try:
+    #         name, result = future.result()
+    #         results[name] = result
+    #     except Exception as e:
+    #         print(f"Error with {name}: {e}")
 
 
-    result_str = ""
-    for robot_name in results:
-        return_back_track, path_dict, initial_state,goal_state, path_time, goal_reached = results[robot_name]
-        start_x,start_y,start_z = initial_state
-        goal_x,goal_y,goal_z = goal_state
-        result_str += f"{robot_name}:\n"
-        result_str += f"\t<start_point>: ({start_x}, {start_y})\n"  # Replace with actual start point later
-        result_str += f"\t<goal_point>: ({goal_x}, {goal_y})\n"    # Replace with actual goal point later
-        result_str += f"\t<goal_reached>: {goal_reached}\n"
-        result_str += f"\t<time_to_calculate_path>: {path_time}\n"
-        result_str += f"\t<path_taken>: {return_back_track}\n\n"
+
+
+    # result_str = ""
+    # for robot_name in results:
+    #     return_back_track, path_dict, initial_state,goal_state, path_time, goal_reached = results[robot_name]
+    #     start_x,start_y,start_z = initial_state
+    #     goal_x,goal_y,goal_z = goal_state
+    #     result_str += f"{robot_name}:\n"
+    #     result_str += f"\t<start_point>: ({start_x}, {start_y})\n"  # Replace with actual start point later
+    #     result_str += f"\t<goal_point>: ({goal_x}, {goal_y})\n"    # Replace with actual goal point later
+    #     result_str += f"\t<goal_reached>: {goal_reached}\n"
+    #     result_str += f"\t<time_to_calculate_path>: {path_time}\n"
+    #     result_str += f"\t<path_taken>: {return_back_track}\n\n"
     
 
 
 
-    Mapf_ros2_ws = os.getcwd()
-    export_path = Mapf_ros2_ws + '/src/Implementation-of-A-star-algorithm-for-path-planning-of-Turtlebot-in-an-obstacle-environment/a_star_tb3/benchmarks/stats.txt'
-    try:
-        with open(export_path, 'w', encoding='utf-8') as file:
-            file.write(result_str)
-        print(f"Content successfully written to {export_path}")
-    except Exception as e:
-        #Update to add to sys stderr
-        print(f"An error occurred while writing to the file: {e}")
+    # Mapf_ros2_ws = os.getcwd()
+    # export_path = Mapf_ros2_ws + '/src/Implementation-of-A-star-algorithm-for-path-planning-of-Turtlebot-in-an-obstacle-environment/a_star_tb3/benchmarks/stats.txt'
+    # try:
+    #     with open(export_path, 'w', encoding='utf-8') as file:
+    #         file.write(result_str)
+    #     print(f"Content successfully written to {export_path}")
+    # except Exception as e:
+    #     #Update to add to sys stderr
+    #     print(f"An error occurred while writing to the file: {e}")
 
 
     rclpy.init()
     executor = MultiThreadedExecutor()
 
     # Draw:
-    args = []
-    for res in results:
-        args.append(results[res])
-    time.sleep(2)
-    global obstacle_space
-    obstacle_space = Backend_Engine().convert_map_to_obstacles(benchmark_file_name_)
-    Parser_Engine().create_map(0.2,width*0.1,height*0.1,obstacle_space,args)
+    # args = []
+    # for res in results:
+    #     args.append(results[res])
+    # time.sleep(2)
+    # global obstacle_space
+    # obstacle_space = Backend_Engine().convert_map_to_obstacles(benchmark_file_name_)
+    # Parser_Engine().create_map(0.2,width*0.1,height*0.1,obstacle_space,args)
 
     robots = []
-    size = len(inputs)  # Assuming `inputs` is defined
+    size = len(results)  # Assuming `inputs` is defined
     for i in range(1, size + 1):
         robot_name = f"robot{i}"
-        way_points = results[robot_name][0]  # Assuming `results` is a dictionary with waypoints for each robot
+        way_points = results[robot_name]  # Assuming `results` is a dictionary with waypoints for each robot
         robot_node = ROS_move(robot_name, way_points)
         robots.append(robot_node)
         executor.add_node(robot_node)
