@@ -407,21 +407,6 @@ def fetch_content(file_path: str):
         return f.read()
 
 
-
-
-
-def load_module_from_path(path: Path, name: str = None):
-    """
-    Load a .py file as a module.
-    Returns the module object.
-    """
-    name = name or path.stem
-    spec = importlib.util.spec_from_file_location(name, str(path))
-    module = importlib.util.module_from_spec(spec)
-    spec.loader.exec_module(module)
-    return module
-
-from a_star_algorithm import A_star,Parser_Engine
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument('--benchmark', type=str)
