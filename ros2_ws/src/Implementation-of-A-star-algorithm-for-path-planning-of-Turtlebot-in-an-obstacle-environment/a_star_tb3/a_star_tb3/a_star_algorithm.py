@@ -47,42 +47,26 @@ class Parser_Engine:
             return True
         return False
     
-    def get_benchmark_path(self,benchmark_file_name):
-        MAPF_ros2_ws=os.getcwd()
-        benchmark_path=MAPF_ros2_ws+'/src/Implementation-of-A-star-algorithm-for-path-planning-of-Turtlebot-in-an-obstacle-environment/a_star_tb3/benchmarks/'+benchmark_file_name
-        return benchmark_path
-    
-    def start_goal_parser(self,start_goal):
-        file_path = self.get_benchmark_path(start_goal)
+    def start_goal_parser(self,script_scenario):
+        lines=script_scenario.splitlines()
         star_goal_pairs = []
-        with open(file_path, 'r') as file:
-            try:
-                for line in file:
-                    line = line.strip()  # Remove leading/trailing whitespace
-                    if line and not line.startswith("version"):  # Ignore first line
-                        parts = line.split()  # Split the line into start and goal parts
-
-                        # Parse the start and goal coordinates from the line
-                        start = tuple(map(float, parts[4:6]))
-                        goal = tuple(map(float, parts[6:8]))
-
-                        # Add the pair to the list
-                        star_goal_pairs.append([start, goal])
-            except:
-                sys.stderr.write("invaled start_end points format\n")
-                raise Exception("invaled start_end points format")
+        for line in lines:
+            line = line.strip()  # Remove leading/trailing whitespace
+            if line and not line.startswith("version"):  # Ignore first line
+                parts = line.split()  # Split the line into start and goal part
+                # Parse the start and goal coordinates from the line
+                start = tuple(map(float, parts[4:6]))
+                goal = tuple(map(float, parts[6:8]))
+                # Add the pair to the list
+                star_goal_pairs.append([start, goal])
 
         number_of_robots = len(star_goal_pairs)
 
         return star_goal_pairs, number_of_robots
 
     
-    def convert_map_to_obstacles(self,benchmark_file_name, cell_size=0.1):
-
-        map_file=self.get_benchmark_path(benchmark_file_name)
-        with open(map_file, 'r') as f:
-            lines = f.readlines()
-
+    def convert_map_to_obstacles(self,script_benchmark, cell_size=0.1):
+        lines = script_benchmark.splitlines()
         global height,width
         height = int([line.split()[1] for line in lines if line.startswith("height")][0])
         width = int([line.split()[1] for line in lines if line.startswith("width")][0])
@@ -284,7 +268,7 @@ class A_star:
         #     print(i)
         return best_path, path_vel
 
-    def a_star(self, goalx, goaly, startx, starty,benchmark_file_name, rpm1=40.0, rpm2=20.0):
+    def a_star(self, goalx, goaly, startx, starty,script_benchmark, rpm1=40.0, rpm2=20.0):
         RPM1 = (rpm1*2*math.pi)/60
         RPM2 = (rpm2*2*math.pi)/60
         global obstacle_space
@@ -293,7 +277,7 @@ class A_star:
         r = 0.105
         R = 0.033
         L = 0.16
-        obstacle_space = Parser_Engine().convert_map_to_obstacles(benchmark_file_name)
+        obstacle_space = Parser_Engine().convert_map_to_obstacles(script_benchmark)
         initial_state = (startx, starty, 0)
         node_state_g = (goalx, goaly, 0)
 
@@ -330,39 +314,21 @@ class A_star:
         return [],[],initial_state,node_state_g,0.0,False
         exit()
 
-    def algorithm(self, scenario_file_name, benchmark_file_name):
-        start_goal_pairs, number_of_robots = Parser_Engine().start_goal_parser(scenario_file_name)
+    def algorithm(self, script_scenario, script_benchmark):
+        start_goal_pairs, number_of_robots = Parser_Engine().start_goal_parser(script_scenario)
         result = []
         for i in range(number_of_robots):
             startx = start_goal_pairs[i][0][0]
             starty = start_goal_pairs[i][0][1]
             goalx = start_goal_pairs[i][1][0]
             goaly = start_goal_pairs[i][1][1]
-            result.append(self.a_star(goalx, goaly, startx, starty, benchmark_file_name))
+            result.append(self.a_star(goalx, goaly, startx, starty, script_benchmark))
         return result
 
-# def main():
-#     try:
-#         script_benchmark=sys.argv[1]
-#         script_scenario=sys.argv[2]
-#         astar=A_star()
-#         result=astar.algorithm(script_scenario, script_benchmark)
-#         # print("the length of the result : ",len(result))
-#         # return result
-#         print(json.dumps(str(result)))
-#     except Exception as e:
-#         print(f"Error: {e}")
-
-def main(script_benchmark,script_scenario):
+def algo(benchmark: str, scenario: str) -> list[list[tuple]]:
     try:
         astar=A_star()
-        result=astar.algorithm(script_scenario, script_benchmark)
-        # print("the length of the result : ",len(result))
+        result=astar.algorithm(script_benchmark=benchmark, script_scenario=scenario)
         return result
-        # print(json.dumps(str(result)))
     except Exception as e:
         print(f"Error: {e}")
-
-
-# if __name__ == "__main__":
-#     main()

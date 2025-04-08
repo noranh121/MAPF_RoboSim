@@ -31,8 +31,8 @@ def about():
     return render_template('about.html')
 
 
-@app.route('/upload', methods=['POST'])
-def upload():
+@app.route('/upload-algorithm', methods=['POST'])
+def upload_algorithm():
     if 'file' not in request.files:
         flash('No file part')
         return redirect(url_for('dashboard'))
@@ -43,18 +43,24 @@ def upload():
         return redirect(url_for('dashboard'))
 
     if file:
-        filepath = os.path.join(app.config['UPLOAD_FOLDER'], file.filename)
-        file.save(filepath)
+        try:
+            MAPF_ros2_ws=os.getcwd()
+            path = MAPF_ros2_ws + '/src/Implementation-of-A-star-algorithm-for-path-planning-of-Turtlebot-in-an-obstacle-environment/a_star_tb3/a_star_tb3/'
 
-        if file.filename not in uploaded_algorithms:
-            uploaded_algorithms.append(file.filename)
+            filepath = os.path.join(path, file.filename)
+            file.save(filepath)
 
-        flash(f'Algorithm "{file.filename}" uploaded successfully!')
-        return redirect(url_for('dashboard'))
+            if file.filename not in uploaded_algorithms:
+                uploaded_algorithms.append(file.filename)
+
+            flash(f'Algorithm "{file.filename}" uploaded successfully!')
+            return redirect(url_for('dashboard'))
+        except Exception as e:
+            flash(f"An error occurred: {e}")
 
 
-@app.route('/upload-map', methods=['POST'])
-def upload_map():
+@app.route('/upload-benchmark', methods=['POST'])
+def upload_benchmark():
     try:
         if 'file' not in request.files:
             flash('No file part')
@@ -64,10 +70,13 @@ def upload_map():
         if file.filename == '':
             flash('No file selected')
             return redirect(url_for('dashboard'))
+        
+        if not file.filename.endswith('.txt'):
+            flash('Only .txt files are allowed')
+            return redirect(url_for('dashboard'))
 
         if file:
             MAPF_ros2_ws=os.getcwd()
-            #parent_directory = os.path.dirname(MAPF_ros2_ws)
             path = MAPF_ros2_ws + '/src/Implementation-of-A-star-algorithm-for-path-planning-of-Turtlebot-in-an-obstacle-environment/a_star_tb3/benchmarks/'
 
             filepath = os.path.join(path, file.filename)
@@ -76,14 +85,14 @@ def upload_map():
             if file.filename not in uploaded_maps:
                 uploaded_maps.append(file.filename)
 
-            flash(f'Map "{file.filename}" uploaded successfully!')
+            flash(f'Benchamrk "{file.filename}" uploaded successfully!')
             return redirect(url_for('dashboard'))
     except Exception as e:
         flash(f"An error occurred: {e}")
     
 
-@app.route('/upload-points', methods=['POST'])
-def upload_points():
+@app.route('/upload-scenario', methods=['POST'])
+def upload_scenario():
     if 'file' not in request.files:
         flash('No file part')
         return redirect(url_for('dashboard'))
@@ -101,7 +110,7 @@ def upload_points():
         file_content = file.read().decode('utf-8')  # Decode if it's a text file
 
         MAPF_ros2_ws=os.getcwd()
-        path = MAPF_ros2_ws + '/src/Implementation-of-A-star-algorithm-for-path-planning-of-Turtlebot-in-an-obstacle-environment/a_star_tb3/benchmarks/'
+        path = MAPF_ros2_ws + '/src/Implementation-of-A-star-algorithm-for-path-planning-of-Turtlebot-in-an-obstacle-environment/a_star_tb3/scenarios/'
 
         goalpath = os.path.join(path, "test.txt")
 

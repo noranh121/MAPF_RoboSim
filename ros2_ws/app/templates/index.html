@@ -79,7 +79,7 @@
               <h4>Upload Algorithm</h4>
               <form
                 method="post"
-                action="/upload"
+                action="/upload-algorithm"
                 enctype="multipart/form-data"
               >
                 <div class="mb-3">
@@ -103,7 +103,7 @@
                   {% endfor %}
                 </select>
                 <!-- number of agents-->
-                <div class="mb-3 row">
+                <!-- <div class="mb-3 row">
                   <label for="agents" class="col-sm-2 col-form-label"
                     >Number Of Agents</label
                   >
@@ -116,7 +116,7 @@
                       name="agents"
                     />
                   </div>
-                </div>
+                </div> -->
 
                 <!-- start points -->
                 <!-- <div class="mb-3 row">
@@ -148,13 +148,13 @@
               }
             </script>
           </div>
-          <br />
+          <!-- <br /> -->
           <div class="row align-items-end mb-3">
             <div class="col-md-6">
               <h4>Upload Map</h4>
               <form
                 method="post"
-                action="/upload-map"
+                action="/upload-benchmark"
                 enctype="multipart/form-data"
               >
                 <div class="mb-3">
@@ -165,14 +165,17 @@
             </div>
             <div class="col-md-6"></div>
           </div>
-
+          <br />
+          <br />
+          <br />
+          <br />
           <div class="row align-items-end">
             <div class="col-md-6">
-              <h4>Upload Start And End Points</h4>
+              <h4>Upload Scenario</h4>
             <div class="col-md-6">    
               <form
                 method="post"
-                action="/upload-points"
+                action="/upload-scenario"
                 enctype="multipart/form-data"
               >
                 <div class="mb-3">
