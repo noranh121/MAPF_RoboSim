@@ -93,33 +93,30 @@ def upload_benchmark():
 @app.route('/upload-scenario', methods=['POST'])
 def upload_scenario():
     global scenario
-    if 'file' not in request.files:
-        flash('No file part')
-        return redirect(url_for('dashboard'))
-
-    file = request.files['file']
-    if file.filename == '':
-        flash('No file selected')
-        return redirect(url_for('dashboard'))
-
-    if not file.filename.endswith('.txt'):
-        flash('Only .txt files are allowed')
-        return redirect(url_for('dashboard'))
-
     try:
-        file_content = file.read().decode('utf-8')  # Decode if it's a text file
+        if 'file' not in request.files:
+            flash('No file part')
+            return redirect(url_for('dashboard'))
 
-        MAPF_ros2_ws=os.getcwd()
-        path = MAPF_ros2_ws + '/src/Implementation-of-A-star-algorithm-for-path-planning-of-Turtlebot-in-an-obstacle-environment/a_star_tb3/scenarios/'
+        file = request.files['file']
+        if file.filename == '':
+            flash('No file selected')
+            return redirect(url_for('dashboard'))
 
-        goalpath = os.path.join(path, file.filename)
-        file.save(goalpath)
-        scenario=request.form.get('scenario')
+        if not file.filename.endswith('.txt'):
+            flash('Only .txt files are allowed')
+            return redirect(url_for('dashboard'))
 
-        # Write the content to the target file
-        with open(goalpath, 'w', encoding='utf-8') as target_file:
-            target_file.write(file_content)
-        flash('File uploaded and copied successfully')
+        if file:
+
+            MAPF_ros2_ws=os.getcwd()
+            path = MAPF_ros2_ws + '/src/Implementation-of-A-star-algorithm-for-path-planning-of-Turtlebot-in-an-obstacle-environment/a_star_tb3/scenarios/'
+
+            filepath = os.path.join(path, file.filename)
+            file.save(filepath)
+            scenario=request.form.get('scenario')
+
+            flash('File uploadedsuccessfully')
 
     except Exception as e:
         flash(f"An error occurred: {str(e)}")
@@ -131,12 +128,6 @@ def upload_scenario():
 def simulate():
     selected_algo = request.form.get('algorithm', 'None')
     selected_map = request.form.get('map', 'None')
-    number = request.form.get('agents' ,'None')
-    start_points = request.form.get('start' ,'None')
-    end_points = request.form.get('end' ,'None')
-
-    # flash(f'Simulation started for "{selected_algo}" on map: "{selected_map}" number of agents "{number}" start points "{start_points}" end points "{end_points}" ')
-
 
     try:
         upfront_command = "wmctrl -a 'Gazebo'"
@@ -155,35 +146,27 @@ def simulate():
 
         full_command = " && ".join(commands)
 
-        #result = subprocess.run(full_command, shell=True, executable="/bin/bash", text=True, capture_output=True)
         result = subprocess.Popen(full_command, shell=True, executable="/bin/bash", text=True,stderr=subprocess.PIPE)
 
         time.sleep(5)
 
         process_upfront = subprocess.Popen(upfront_command, shell=True, executable="/bin/bash", text=True,stderr=subprocess.PIPE)
 
-        # result.wait()
-
-        # process_upfront.wait()
         stdout, stderr = result.communicate()
         process_upfront.communicate()
         if result.returncode == 0:
             flash(f'success output:{stdout}')
             time.sleep(5)
-            # return jsonify({"status": "success", "output": result.stdout})
             return redirect(url_for('dashboard'))
         else:
             print(stdout)
             flash(f"Error occurred: {stderr}",'error')
             time.sleep(5)
             return redirect(url_for('dashboard'))
-            # return jsonify({"status": "error", "error": result.stderr}), 500
     except Exception as e:
         flash(f"An error occurred: {e}")
         time.sleep(5)
         return redirect(url_for('dashboard'))
-        # return jsonify({"status": "error", "error": str(e)}), 500
-    # return redirect(url_for('dashboard'))
 
 
 

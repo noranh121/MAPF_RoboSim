@@ -17,7 +17,7 @@ setup(
     zip_safe=True,
     maintainer='sandeep',
     maintainer_email='ssandy086@gmail.com',
-    scripts=['a_star_tb3/a_star_tb3_script.py','a_star_tb3/a_star_algorithm.py'],
+    scripts=['a_star_tb3/a_star_tb3_script.py','algorithms/a_star_algorithm.py'],
     description='TODO: Package description',
     license='TODO: License declaration',
     tests_require=['pytest'],
