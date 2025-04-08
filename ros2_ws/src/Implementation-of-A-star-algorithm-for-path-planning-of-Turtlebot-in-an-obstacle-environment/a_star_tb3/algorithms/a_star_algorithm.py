@@ -322,7 +322,8 @@ class A_star:
             starty = start_goal_pairs[i][0][1]
             goalx = start_goal_pairs[i][1][0]
             goaly = start_goal_pairs[i][1][1]
-            result.append(self.a_star(goalx, goaly, startx, starty, script_benchmark))
+            back_track, path_dict, initial_state,node_state_g,path_time,boole = self.a_star(goalx, goaly, startx, starty, script_benchmark)
+            result.append(back_track)
         return result
 
 def algo(benchmark: str, scenario: str) -> list[list[tuple]]:

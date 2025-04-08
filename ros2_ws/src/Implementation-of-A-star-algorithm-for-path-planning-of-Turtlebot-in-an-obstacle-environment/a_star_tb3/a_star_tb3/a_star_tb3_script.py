@@ -444,7 +444,7 @@ def main():
     benchmark_content = fetch_content(benchmark_file_path)
     scenario_content = fetch_content(scenario_file_path)
 
-    mod = load_module_from_path(algorithm_file_path)
+    mod = load_module_from_path(Path(algorithm_file_path))
 
     robots_way_points = mod.algo(benchmark_content, scenario_content)
 
@@ -452,45 +452,9 @@ def main():
 
 
 
-    drawer = A_star()
-    coordinates , number_of_robots = Parser_Engine().start_goal_parser('test.txt')
-    print(coordinates)
-    results = {}
-    results_lock = threading.Lock()
-
-    # inputs = []
-    # for i in range(number_of_robots):
-    #     robot_name = f"robot{i+1}"
-    #     start = coordinates[i][0]
-    #     goal = coordinates[i][1]
-    #     curr_tuple = (start,goal,A_star(),robot_name)
-    #     inputs.append(curr_tuple)
 
     results = {f"robot{i+1}": robot_way_points for i, robot_way_points in enumerate(robots_way_points)}
-
     
-    # def thread_target(init_pose, goal_pose,astar:A_star,name):
-    #     goalx , goaly = goal_pose
-    #     startx, starty = init_pose
-    #     result = astar.a_star(goalx, goaly, startx, starty,args.benchmark)
-    #     print(f"calculating path for {name}, start_point: {startx, starty} done.")
-    #     return name, result
-    
-    # with ThreadPoolExecutor() as executor:
-    # # Submit tasks to the thread pool
-    #     futures = {executor.submit(thread_target, *inp): inp[3] for inp in inputs}
-
-    # # Collect results as they complete
-    # for future in as_completed(futures):
-    #     name = futures[future]
-    #     try:
-    #         name, result = future.result()
-    #         results[name] = result
-    #     except Exception as e:
-    #         print(f"Error with {name}: {e}")
-
-
-
 
     # result_str = ""
     # for robot_name in results:
@@ -504,8 +468,6 @@ def main():
     #     result_str += f"\t<time_to_calculate_path>: {path_time}\n"
     #     result_str += f"\t<path_taken>: {return_back_track}\n\n"
     
-
-
 
     # Mapf_ros2_ws = os.getcwd()
     # export_path = Mapf_ros2_ws + '/src/Implementation-of-A-star-algorithm-for-path-planning-of-Turtlebot-in-an-obstacle-environment/a_star_tb3/benchmarks/stats.txt'

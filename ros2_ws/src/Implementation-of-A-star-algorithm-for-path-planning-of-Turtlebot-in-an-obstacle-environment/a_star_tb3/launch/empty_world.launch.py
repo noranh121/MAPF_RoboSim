@@ -37,13 +37,12 @@ def generate_launch_description():
     args, unknown = parser.parse_known_args()
 
     for arg in unknown:
-
         if arg.startswith('benchmark:='):
             args.benchmark = str(arg.split(':=')[1])
         elif arg.startswith('scenario:='):
-            args.scenario = str(arg.split(':=')[2])
+            args.scenario = str(arg.split(':=')[1])
         elif arg.startswith('algorithm:='):
-            args.algorithm = str(arg.split(':=')[3])
+            args.algorithm = str(arg.split(':=')[1])
 
 
 
@@ -68,7 +67,7 @@ def generate_launch_description():
         'urdf',
         urdf_file_name)
     
-    sdf_path = "/opt/ros/"+args.ros2_distro+"/share/turtlebot3_gazebo/models/turtlebot3_burger/model.sdf"
+    sdf_path = "/opt/ros/humble/share/turtlebot3_gazebo/models/turtlebot3_burger/model.sdf"
 
     with open(urdf_path, 'r') as infp:
         robot_desc = infp.read()
