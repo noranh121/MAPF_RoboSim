@@ -90,9 +90,9 @@ def upload_benchmark():
     except Exception as e:
         flash(f"An error occurred: {e}")
     
-
 @app.route('/upload-scenario', methods=['POST'])
 def upload_scenario():
+    global scenario
     if 'file' not in request.files:
         flash('No file part')
         return redirect(url_for('dashboard'))
@@ -112,7 +112,9 @@ def upload_scenario():
         MAPF_ros2_ws=os.getcwd()
         path = MAPF_ros2_ws + '/src/Implementation-of-A-star-algorithm-for-path-planning-of-Turtlebot-in-an-obstacle-environment/a_star_tb3/scenarios/'
 
-        goalpath = os.path.join(path, "test.txt")
+        goalpath = os.path.join(path, file.filename)
+        file.save(goalpath)
+        scenario=request.form.get('scenario')
 
         # Write the content to the target file
         with open(goalpath, 'w', encoding='utf-8') as target_file:
@@ -139,7 +141,7 @@ def simulate():
     try:
         upfront_command = "wmctrl -a 'Gazebo'"
         
-        command = f"ros2 launch a_star_tb3 empty_world.launch.py benchmark:={selected_map} ros2_distro:=humble"
+        command = f"ros2 launch a_star_tb3 empty_world.launch.py benchmark:={selected_map} scenario:={scenario} algorithm:={selected_algo}"
         commands = [
             "cd ~/MAPF_RoboSim/ros2_ws",
             "colcon build",
