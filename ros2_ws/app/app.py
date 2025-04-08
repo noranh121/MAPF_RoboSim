@@ -45,7 +45,7 @@ def upload_algorithm():
     if file:
         try:
             MAPF_ros2_ws=os.getcwd()
-            path = MAPF_ros2_ws + '/src/Implementation-of-A-star-algorithm-for-path-planning-of-Turtlebot-in-an-obstacle-environment/a_star_tb3/a_star_tb3/'
+            path = MAPF_ros2_ws + '/src/Implementation-of-A-star-algorithm-for-path-planning-of-Turtlebot-in-an-obstacle-environment/a_star_tb3/algorithms/'
 
             filepath = os.path.join(path, file.filename)
             file.save(filepath)
