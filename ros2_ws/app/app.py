@@ -2,6 +2,7 @@ from flask import Flask, render_template, request, redirect, url_for, flash,json
 import subprocess
 import os
 import time
+import signal
 
 
 app = Flask(__name__)
@@ -89,6 +90,8 @@ def upload_benchmark():
             return redirect(url_for('dashboard'))
     except Exception as e:
         flash(f"An error occurred: {e}")
+
+    return redirect(url_for('dashboard'))
     
 @app.route('/upload-scenario', methods=['POST'])
 def upload_scenario():
@@ -121,8 +124,20 @@ def upload_scenario():
     return redirect(url_for('dashboard'))
     
 
+
+result = None
+
+def stop_simulation():
+    global result
+    if result and result.poll() is None:
+        os.killpg(os.getpgid(result.pid), signal.SIGINT)
+        result.wait()
+        result = None
+
 @app.route('/simulate', methods=['POST'])
 def simulate():
+    global result
+    stop_simulation()
     selected_algo = request.form.get('algorithm', 'None')
     selected_map = request.form.get('map', 'None')
     try:
@@ -142,7 +157,12 @@ def simulate():
 
         full_command = " && ".join(commands)
 
-        result = subprocess.Popen(full_command, shell=True, executable="/bin/bash", text=True,stderr=subprocess.PIPE)
+        result = subprocess.Popen(
+            full_command,
+            shell=True,
+            executable="/bin/bash",
+            preexec_fn=os.setsid,
+            text=True,stderr=subprocess.PIPE)
 
         time.sleep(5)
 
