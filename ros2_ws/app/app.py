@@ -138,6 +138,7 @@ def stop_simulation():
 def simulate():
     global result
     stop_simulation()
+    time.sleep(5)
     selected_algo = request.form.get('algorithm', 'None')
     selected_map = request.form.get('map', 'None')
     try:
