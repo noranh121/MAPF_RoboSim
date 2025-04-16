@@ -14,24 +14,27 @@ app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 # Predefined built-in algorithms
 builtin_algorithms = ["Algorithm A", "Algorithm B", "Algorithm C"]
 builtin_maps = ["map1"]
+builtin_scenarios = ["scen1"]
 
 # Dynamic list of uploaded algorithms
 uploaded_algorithms = []
 uploaded_maps = []
+uploaded_scenarios = []
 
 
-@app.route('/')
-def dashboard():
+@app.route('/home')
+def home():
     all_algorithms = builtin_algorithms + uploaded_algorithms
     all_maps = builtin_maps + uploaded_maps
-    return render_template('home.html', algorithms=all_algorithms, maps=all_maps)
+    all_scens = builtin_scenarios + uploaded_scenarios
+    return render_template('home.html', algorithms=all_algorithms, maps=all_maps, scenarios=all_scens)
 
 
 @app.route('/about')
 def about():
     return render_template('about.html')
 
-@app.route('/main')
+@app.route('/')
 def main():
     return render_template('main.html')
 
@@ -44,12 +47,12 @@ def info():
 def upload_algorithm():
     if 'file' not in request.files:
         flash('No file part')
-        return redirect(url_for('dashboard'))
+        return redirect(url_for('home'))
 
     file = request.files['file']
     if file.filename == '':
         flash('No file selected')
-        return redirect(url_for('dashboard'))
+        return redirect(url_for('home'))
 
     if file:
         try:
@@ -63,7 +66,7 @@ def upload_algorithm():
                 uploaded_algorithms.append(file.filename)
 
             flash(f'Algorithm "{file.filename}" uploaded successfully!')
-            return redirect(url_for('dashboard'))
+            return redirect(url_for('home'))
         except Exception as e:
             flash(f"An error occurred: {e}")
 
@@ -73,16 +76,16 @@ def upload_benchmark():
     try:
         if 'file' not in request.files:
             flash('No file part')
-            return redirect(url_for('dashboard'))
+            return redirect(url_for('home'))
 
         file = request.files['file']
         if file.filename == '':
             flash('No file selected')
-            return redirect(url_for('dashboard'))
+            return redirect(url_for('home'))
         
         if not file.filename.endswith('.txt'):
             flash('Only .txt files are allowed')
-            return redirect(url_for('dashboard'))
+            return redirect(url_for('home'))
 
         if file:
             MAPF_ros2_ws=os.getcwd()
@@ -95,31 +98,31 @@ def upload_benchmark():
                 uploaded_maps.append(file.filename)
 
             flash(f'Benchamrk "{file.filename}" uploaded successfully!')
-            return redirect(url_for('dashboard'))
+            return redirect(url_for('home'))
     except Exception as e:
         flash(f"An error occurred: {e}")
 
-    return redirect(url_for('dashboard'))
+    return redirect(url_for('home'))
     
 @app.route('/upload-scenario', methods=['POST'])
 def upload_scenario():
     try:
         if 'file' not in request.files:
             flash('No file part')
-            return redirect(url_for('dashboard'))
+            return redirect(url_for('home'))
 
         file = request.files['file']
         if file.filename == '':
             flash('No file selected')
-            return redirect(url_for('dashboard'))
+            return redirect(url_for('home'))
         
         if not file.filename.endswith('.txt'):
             flash('Only .txt files are allowed')
-            return redirect(url_for('dashboard'))
+            return redirect(url_for('home'))
 
         if not file.filename.endswith('.txt'):
             flash('Only .txt files are allowed')
-            return redirect(url_for('dashboard'))
+            return redirect(url_for('home'))
 
         if file:
             MAPF_ros2_ws=os.getcwd()
@@ -133,7 +136,7 @@ def upload_scenario():
     except Exception as e:
         flash(f"An error occurred: {str(e)}")
 
-    return redirect(url_for('dashboard'))
+    return redirect(url_for('home'))
     
 
 
@@ -189,16 +192,16 @@ def simulate():
         if result.returncode == 0:
             flash(f'success output:{stdout}')
             time.sleep(5)
-            return redirect(url_for('dashboard'))
+            return redirect(url_for('home'))
         else:
             print(stdout)
             flash(f"Error occurred: {stderr}",'error')
             time.sleep(5)
-            return redirect(url_for('dashboard'))
+            return redirect(url_for('home'))
     except Exception as e:
         flash(f"An error occurred: {e}")
         time.sleep(5)
-        return redirect(url_for('dashboard'))
+        return redirect(url_for('home'))
 
 
 
@@ -223,10 +226,10 @@ def export():
 
     except Exception as e:
         flash(f"An error occurred: {str(e)}")
-        return redirect(url_for('dashboard'))
+        return redirect(url_for('home'))
     
     flash(f"Stats Exprted Successfully")
-    return redirect(url_for('dashboard'))
+    return redirect(url_for('home'))
 
 # @app.route('/home', methods=['GET'])
 # def home():

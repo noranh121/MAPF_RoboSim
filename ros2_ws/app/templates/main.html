@@ -37,7 +37,7 @@
           When you're ready, click "Continue" to begin your simulation journey!
         </p>
         <div class="container">
-            <a href="{{url_for('dashboard')}}">
+            <a href="{{url_for('home')}}">
           <button
             class="btn btn-outline-light button-color mt-3"
           >
@@ -45,7 +45,7 @@
           </button>
           </a>
           <a href="{{url_for('info')}}" target="_blank">
-          <button class="btn btn-outline-dark mt-3">Read Info</button>
+          <button class="btn btn-outline-dark mt-3">How it Works!</button>
           </a>
         </div>
       </div>
@@ -68,11 +68,22 @@
 
         <ul class="nav">
           <li class="nav-item">
-            <a href="/templates/main.html" class="nav-link active" aria-current="page">Main</a>
+            <a
+              href="{{url_for('main')}}"
+              class="nav-link active"
+              aria-current="page"
+              >Main</a
+            >
           </li>
-          <li class="nav-item"><a href="/templates/home.html" class="nav-link">Home</a></li>
-          <li class="nav-item"><a href="/templates/info.html" class="nav-link">Instructions</a></li>
-          <li class="nav-item"><a href="/templates/about.html" class="nav-link">About</a></li>
+          <li class="nav-item">
+            <a href="{{url_for('home')}}" class="nav-link">Home</a>
+          </li>
+          <li class="nav-item">
+            <a href="{{url_for('info')}}" class="nav-link">Instructions</a>
+          </li>
+          <li class="nav-item">
+            <a href="{{url_for('about')}}" class="nav-link">About</a>
+          </li>
         </ul>
       </header>
     </div>

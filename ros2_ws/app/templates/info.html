@@ -23,52 +23,172 @@
   <body>
     <!-- header -->
     <header
-    class="d-flex flex-wrap justify-content-center py-3 mb-4 border-bottom fixed-top bg-light"
-  >
-    <a
-      href="/"
-      class="d-flex align-items-center mb-3 mb-md-0 me-md-auto link-body-emphasis text-decoration-none"
+      class="d-flex flex-wrap justify-content-center py-3 mb-4 border-bottom fixed-top bg-light"
     >
-      <img
-        src="../static/images/icons8-robot-2-30.png"
-        class="bi me-2"
-        width="40"
-        height="32"
-      />
-      <span id="headerMain" class="fs-4">RoboSim</span>
-    </a>
+      <a
+        href="/"
+        class="d-flex align-items-center mb-3 mb-md-0 me-md-auto link-body-emphasis text-decoration-none"
+      >
+        <img
+          src="../static/images/icons8-robot-2-30.png"
+          class="bi me-2"
+          width="40"
+          height="32"
+        />
+        <span id="headerMain" class="fs-4">RoboSim</span>
+      </a>
 
-    <ul class="nav">
-      <li class="nav-item">
-        <a href="{{url_for('main')}}" class="nav-link active" aria-current="page">Main</a>
-      </li>
-      <li class="nav-item"><a href="{{url_for('dashboard')}}" class="nav-link">Home</a></li>
-      <li class="nav-item"><a href="{{url_for('info')}}" class="nav-link">Instructions</a></li>
-      <li class="nav-item"><a href="{{url_for('about')}}" class="nav-link">About</a></li>
-    </ul>
-  </header>
-</br>
-</br>
-  <div class="container my-5">
-    <div class="row p-4 pb-0 pe-lg-0 pt-lg-5 align-items-center rounded-3 border shadow-lg">
-      <div class="col-lg-7 p-3 p-lg-5 pt-lg-3">
-        <h1 class="display-4 fw-bold lh-1">Border hero with cropped image and shadows</h1>
-        <p class="lead">Quickly design and customize responsive mobile-first sites with Bootstrap, the world’s most popular front-end open source toolkit, featuring Sass variables and mixins, responsive grid system, extensive prebuilt components, and powerful JavaScript plugins.</p>
-        <div class="d-grid gap-2 d-md-flex justify-content-md-start mb-4 mb-lg-3">
-          <button type="button" class="btn btn-primary btn-lg px-4 me-md-2 fw-bold" fdprocessedid="hwzege">Primary</button>
-          <button type="button" class="btn btn-outline-secondary btn-lg px-4" fdprocessedid="rp4shf">Default</button>
+      <ul class="nav">
+        <li class="nav-item">
+          <a
+            href="{{url_for('main')}}"
+            class="nav-link active"
+            aria-current="page"
+            >Main</a
+          >
+        </li>
+        <li class="nav-item">
+          <a href="{{url_for('home')}}" class="nav-link">Home</a>
+        </li>
+        <li class="nav-item">
+          <a href="{{url_for('info')}}" class="nav-link">Instructions</a>
+        </li>
+        <li class="nav-item">
+          <a href="{{url_for('about')}}" class="nav-link">About</a>
+        </li>
+      </ul>
+    </header>
+    <br />
+    <br />
+
+    <!--upload section-->
+    <div class="container my-5">
+      <div
+        class="row p-4 pb-0 pe-lg-0 pt-lg-5 align-items-center rounded-3 border shadow-lg"
+      >
+        <div class="col-lg-7 p-3 p-lg-5 pt-lg-3">
+          <h1 class="display-4 fw-bold lh-1">Upload Files</h1>
+          <p class="lead">
+            Use the first section of the page to upload the files you need. If
+            you prefer to use the default files already available in the system,
+            you can skip this section. Specific instructions for each file type
+            are provided below.
+          </p>
+          <p>
+            <b
+              >Upload each file separately to ensure it's processed correctly —
+              for each file: click "Choose File", select your file, then click
+              "Upload".</b
+            >
+          </p>
+        </div>
+        <div class="col-lg-4 offset-lg-1 p-0 overflow-hidden shadow-lg">
+          <img
+            class="rounded-lg-3"
+            src="../static/images/upload view.png"
+            alt=""
+            width="720"
+          />
         </div>
       </div>
-      <div class="col-lg-4 offset-lg-1 p-0 overflow-hidden shadow-lg">
-          <img class="rounded-lg-3" src="bootstrap-docs.png" alt="" width="720">
+    </div>
+
+    <!-- aglorithms -->
+    <div class="container my-5">
+      <div
+        class="row p-4 pb-0 pe-lg-0 pt-lg-5 align-items-center rounded-3 border shadow-lg"
+      >
+        <div class="col-lg-7 p-3 p-lg-5 pt-lg-3">
+          <h1 class="display-4 fw-bold lh-1">Algorithms File</h1>
+          <p class="lead">The algorithm file must be a Python file with a <code>.py</code> extension. The internal implementation of your algorithm is entirely up to you — as long as it adheres to the required interface, it will be executed and visualized automatically in Gazebo.
+            <br><br>
+            Your file must define a function with the following signature:
+            <code>def algo(benchmark: str, scenario: str) -> list[list[tuple]]</code>
+            <br><br>
+            - Both <code>benchmark</code> and <code>scenario</code> are string file names pointing to the uploaded map and scenario files.  
+            - The function should return a list of paths — one path per robot — where each path is a list of waypoints as <code>(x, y)</code> coordinates.
+            <br><br>
+            Each line in the scenario file corresponds to one robot, and the returned list must follow the same order.
+            <br><br>
+            <b>Example:</b> A possible return value for one robot could look like:
+            <pre><code>[
+            (0, 0),
+            (1, 0),
+            (2, 0),
+            (2, 1)
+            ]</code></pre>
+
+        </p>
+        </div>
+        <div class="col-lg-4 offset-lg-1 p-0 overflow-hidden shadow-lg">
+          <img
+            class="rounded-lg-3"
+            src="../static/images/algorithm.png"
+            alt=""
+            width="720"
+          />
+        </div>
       </div>
     </div>
-  </div>
 
+    <!-- maps -->
+    <div class="container my-5">
+      <div
+        class="row p-4 pb-0 pe-lg-0 pt-lg-5 align-items-center rounded-3 border shadow-lg"
+      >
+        <div class="col-lg-7 p-3 p-lg-5 pt-lg-3">
+          <h1 class="display-4 fw-bold lh-1">Map/Benchmark File</h1>
+          <p class="lead">
+            <a href="https://movingai.com/benchmarks/mapf/index.html"
+              >This website</a
+            >
+            provides multiple benchmarks, each containing a map. Choose your
+            desired map and upload it here. Our built-in maps are also sourced
+            from that website, such as <i>maze-128-128-10.map</i>, and others.
+            <br /><br />
+            <b>Note:</b> Make sure to rename the file extension to
+            <code>.txt</code> before uploading (e.g.,
+            <i>maze-128-128-10.map</i> → <i>maze-128-128-10.txt</i>).
+          </p>
+        </div>
+        <div class="col-lg-4 offset-lg-1 p-0 overflow-hidden shadow-lg">
+          <img
+            class="rounded-lg-3"
+            src="../static/images/map (2).png"
+            alt=""
+            width="720"
+          />
+        </div>
+      </div>
+    </div>
 
-
-
-
+    <!-- scencarios -->
+    <div class="container my-5">
+      <div
+        class="row p-4 pb-0 pe-lg-0 pt-lg-5 align-items-center rounded-3 border shadow-lg"
+      >
+        <div class="col-lg-7 p-3 p-lg-5 pt-lg-3">
+          <h1 class="display-4 fw-bold lh-1">Scenario File</h1>
+          <p class="lead">
+            <a href="https://movingai.com/benchmarks/mapf/index.html"
+              >This website</a
+            >
+            provides multiple scenarios for each map. Each scenario specifies
+            the number of robots and their start and goal locations. Choose a
+            scenario that matches the benchmark map you've selected.
+          </p>
+          <p><b>The file should be a .txt file</b></p>
+        </div>
+        <div class="col-lg-4 offset-lg-1 p-0 overflow-hidden shadow-lg">
+          <img
+            class="rounded-lg-3"
+            src="../static/images/scenario.png"
+            alt=""
+            width="720"
+          />
+        </div>
+      </div>
+    </div>
 
     <!-- icons -->
     <script src="https://unpkg.com/feather-icons"></script>
