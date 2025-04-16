@@ -36,7 +36,7 @@ def main():
     return render_template('main.html')
 
 @app.route('/info')
-def main():
+def info():
     return render_template('info.html')
 
 
