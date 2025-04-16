@@ -151,8 +151,7 @@ def simulate():
             "source /opt/ros/humble/setup.bash",
             "source install/setup.bash",
             "source install/local_setup.bash",
-            command,
-            upfront_command
+            command
         ]
         
 
@@ -167,7 +166,11 @@ def simulate():
 
         time.sleep(5)
 
-        process_upfront = subprocess.Popen(upfront_command, shell=True, executable="/bin/bash", text=True,stderr=subprocess.PIPE)
+        process_upfront = subprocess.Popen(
+            upfront_command,
+            shell=True,
+            executable="/bin/bash",
+            text=True,stderr=subprocess.PIPE)
 
         stdout, stderr = result.communicate()
         process_upfront.communicate()
