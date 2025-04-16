@@ -10,14 +10,15 @@ const unlockScroll = () => {
 };
 
 // Initial scroll lock
-lockScroll();
+unlockScroll();
 
 // Attach click event to the button
 document.getElementById('scrollButton').addEventListener('click', () => {
-    unlockScroll();
-    const mainContent = document.querySelector(".mainContent");
-    mainContent.scrollIntoView({ behavior: "smooth" });
-    document.querySelector('.hero-section').scrollIntoView({ behavior: 'smooth' }); 
+    // unlockScroll();
+    // const mainContent = document.querySelector(".mainContent");
+    // mainContent.scrollIntoView({ behavior: "smooth" });
+    // document.querySelector('.hero-section').scrollIntoView({ behavior: 'smooth' }); 
+    
 });
 
 // Function to toggle form inputs based on the selected option

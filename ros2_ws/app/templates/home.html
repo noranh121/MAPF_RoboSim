@@ -21,31 +21,6 @@
     />
   </head>
   <body>
-    <div class="container-fluid">
-      <!-- Hero Section -->
-      <div
-        class="hero-section d-flex flex-column align-items-center justify-content-center text-center"
-        style="height: 100vh; background-color: #f8f9fa; color: #343a40"
-      >
-        <h1>Welcome to MAPF RoboSim</h1>
-        <p>Welcome to the Multi-Agent Pathfinding Simulation System!</p>
-        <p>
-          Before getting started, we recommend reviewing the usage instructions
-          to ensure a smooth experience.
-        </p>
-        <p>
-          When you're ready, click "Continue" to begin your simulation journey!
-        </p>
-        <div class="container">
-          <button
-            id="scrollButton"
-            class="btn btn-outline-light button-color mt-3"
-          >
-            Continue
-          </button>
-          <button class="btn btn-outline-dark mt-3">Read Info</button>
-        </div>
-      </div>
       <!-- header -->
       <header
         class="d-flex flex-wrap justify-content-center py-3 mb-4 border-bottom fixed-top bg-light"
@@ -65,215 +40,90 @@
 
         <ul class="nav">
           <li class="nav-item">
-            <a href="/home" class="nav-link active" aria-current="page">Home</a>
+            <a href="{{url_for('main')}}" class="nav-link active" aria-current="page">Main</a>
           </li>
-          <li class="nav-item"><a href="/about" class="nav-link">About</a></li>
+          <li class="nav-item"><a href="{{url_for('dashboard')}}" class="nav-link">Home</a></li>
+          <li class="nav-item"><a href="{{url_for('info')}}" class="nav-link">Instructions</a></li>
+          <li class="nav-item"><a href="{{url_for('about')}}" class="nav-link">About</a></li>
         </ul>
       </header>
       <div class="mainContent">
-        <!-- maps -->
-        <form
-        method="post" action="/simulate"
-        >
-        <!-- upload maps-->
-        <div class="row mt-5 mb-5">
-          <h4 class="mb-4">Upload a Custom Map</h4>
-          <form
-            method="post"
-            action="/upload-map"
-            enctype="multipart/form-data"
-          >
-            <div class="mb-3">
-              <input type="file" class="form-control" name="file" />
-            </div>
-            <div class="d-grid gap-2">
-              <button
-                type="submit"
-                class="btn btn-outline-light btn-block button-color"
-              >
-                Upload
-              </button>
-            </div>
-          </form>
-        </div>
-
-        <!-- existing maps -->
-        <div class="row mb-5">
-          <div class="col">
-            <h4 class="mb-4">Select An Existing Map</h4>
-            <div class="container">
-              <div class="grid d-flex flex-wrap gap-3">
-                <div class="item">
-                  <img
-                    class="map"
-                    src="../static/images/maze-128-128-10.png"
-                    alt="Map 1"
-                  />
-                  <h6 class="map-name mt-2">Maze</h6>
-                </div> 
-                <div class="item">
-                  <img
-                    class="map"
-                    src="../static/images/room-64-64-16.png"
-                    alt="Map 2"
-                  />
-                  <h6 class="map-name mt-2">Room</h6>
-                </div>
-              </div>
-            </div>
-            <br />
-            <br />
-            <select class="form-select mb-3" name="map">
-              {% for map in maps %}
-              <option value="{{ map }}">{{ map }}</option>
-              {% endfor %}
-            </select>
-          </div>
-
-          <div class="row mt-3">
-            <button class="btn btn-outline-light button-color">
-              view selected map on Gazebo
-            </button>
-          </div>
-        </div>
-        <hr />
-
-        <!-- algorithms -->
+        <br>
+        <br>
+        <!-- Maps Section -->
         <div class="container mt-5">
           <div class="modal-content rounded-4 shadow">
             <div class="modal-header p-5 pb-4 border-bottom-0">
-              <h1 class="mb-0 fs-2">Select or Upload Algorithm</h1>
+              <h1 class="mb-0 fs-2">Select or Upload a Map</h1>
             </div>
-            <div class="modal-body p-5 pt-0">
-              <form class>
-                <!-- Radio buttons for selecting either select or upload option -->
-                <div class="mb-4">
-                  <input
-                    class="form-check-input"
-                    type="radio"
-                    id="selectAlgoOption"
-                    name="algoOption"
-                    onclick="toggleFormInputs()"
-                    checked
-                  />
-                  <label for="selectAlgoOption"
-                    >Select Existing Algorithm</label
-                  >
-                  <input
-                    class="form-check-input"
-                    type="radio"
-                    id="uploadAlgoOption"
-                    name="algoOption"
-                    onclick="toggleFormInputs()"
-                  />
-                  <label for="uploadAlgoOption">Upload Custom Algorithm</label>
-                </div>
 
-                <!-- algorithm name -->
-                <div class="mb-3 row">
-                  <label for="algoName" class="col-sm-2 col-form-label"
-                    >Algorithm Name</label
-                  >
-                  <div class="col-sm-10">
-                    <input type="text" class="form-control" id="algoName" />
-                  </div>
-                </div>
-
-                <!-- upload file -->
-                <div class="mb-3 row">
-                  <label for="formFile" class="col-sm-2 col-form-label"
-                    >Upload Your Algorithm</label
-                  >
-                  <form
-                    method="post"
-                    action="/upload"
-                    enctype="multipart/form-data"
-                  >
-                    <div class="col-sm-10">
-                      <input class="form-control" type="file" id="formFile" />
-                      <div class="d-flex justify-content-end mt-2">
-                        <button
-                          id="upload-algo-btn"
-                          type="submit"
-                          class="btn btn-outline-light button-color"
-                        >
-                          Upload
-                        </button>
-                      </div>
-                    </div>
-                  </form>
-                </div>
-
-                <!-- select -->
-                <div class="mb-3 row">
-                  <label for="selectAlgo" class="col-sm-2 col-form-label"
-                    >Select Existing</label
-                  >
-                  <div class="col-sm-10">
-                    <select class="form-select" id="selectAlgo">
-                      {% for algo in algorithms %}
-                      <option value="{{ algo }}">{{ algo }}</option>
-                      {% endfor %}
-                    </select>
-                  </div>
-                </div>
-
-                <!-- start points -->
-                <div class="mb-3 row">
-                  <label for="start" class="col-sm-2 col-form-label"
-                    >Start and End Points</label
-                  >
-                  <form
+            <!-- Upload Map Form -->
+            <div class="modal-body p-5 pt-0 row">
+              <form
                 method="post"
-                action="/upload-points"
+                action="/upload-benchmark"
                 enctype="multipart/form-data"
               >
-                  <div class="col-sm-10">
-                    <input class="form-control" type="file" id="formFile" />
-                    <div class="d-flex justify-content-end mt-3">
-                      <button
-                        id="points-btn"
-                        type="submit"
-                        class="btn btn-outline-light button-color btn-spacing"
-                      >
-                        Upload
-                      </button>
+                <label for="mapFile" class="col-sm-2 col-form-label"
+                  >Upload Your Map</label
+                >
+                <div class="col-sm-10">
+                  <input class="form-control" type="file" name="file" />
+                  <div class="d-flex justify-content-end mt-2">
+                    <button
+                      type="submit"
+                      class="btn btn-outline-light button-color"
+                    >
+                      Upload
+                    </button>
                   </div>
                 </div>
               </form>
             </div>
+
+            <!-- Existing Maps Grid -->
+            <div class="row mb-5">
+              <div class="col">
+                <div class="container">
+                  <div class="grid d-flex flex-wrap gap-3">
+                    <div class="item">
+                      <img
+                        class="map"
+                        src="../static/images/maze-128-128-10.png"
+                        alt="Map 1"
+                      />
+                      <h6 class="map-name mt-2">Maze</h6>
+                    </div>
+                    <div class="item">
+                      <img
+                        class="map"
+                        src="../static/images/room-64-64-16.png"
+                        alt="Map 2"
+                      />
+                      <h6 class="map-name mt-2">Room</h6>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Select Map -->
+                <br /><br />
+                <div class="mb-3 row">
+                  <label for="selectMap" class="col-sm-2 col-form-label"
+                    >Select Existing Map</label
+                  >
+                  <div class="col-sm-10">
+                    <select class="form-select mb-3" name="map" id="selectMap">
+                      {% for map in maps %}
+                      <option value="{{ map }}">{{ map }}</option>
+                      {% endfor %}
+                    </select>
+                  </div>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
 
-
-        <!-- Form for simulation -->
-        <div class="container mt-4 mb-5">
-          <!-- <form
-            method="post" action="/simulate"
-          > -->
-            <input type="hidden" id="selected-map" name="map" value="" />
-            <!-- Add other form fields like algorithm selection -->
-            <button
-              type="button"
-              class="btn btn-outline-light button-color"
-              onclick="submitForm()"
-            >
-              simulate
-            </button>
-            <button class="btn btn-outline-dark" disabled>
-              download results
-            </button>
-        </div>
-      </form>
-
-
-        <div class="mt-4">
-          {% with messages = get_flashed_messages() %} {% if messages %}
-          <div class="alert alert-info">{{ messages[0] }}</div>
-          {% endif %} {% endwith %}
-
-          <br />
-        </div>
         <!-- footer -->
         <footer class="bd-footer py-4 py-md-5 mt-5">
           <div
