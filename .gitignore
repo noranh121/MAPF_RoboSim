@@ -1,4 +1,11 @@
 build/
 install/
 log/
-.vscode/
+ros2_ws/.vscode/
+ros2_ws/app/.idea
+ros2_ws/app/.vscode
+ros2_ws/src/.vscode
+ros2_ws/src/Implementation-of-A-star-algorithm-for-path-planning-of-Turtlebot-in-an-obstacle-environment/.vscode
+ros2_ws/src/Implementation-of-A-star-algorithm-for-path-planning-of-Turtlebot-in-an-obstacle-environment/a_star_tb3/a_star_tb3/.vscode
+ros2_ws/src/ROS2_turtlesim_PID_demo/.vscode
+ros2_ws/src/ROS2_turtlesim_PID_demo/src/.vscode

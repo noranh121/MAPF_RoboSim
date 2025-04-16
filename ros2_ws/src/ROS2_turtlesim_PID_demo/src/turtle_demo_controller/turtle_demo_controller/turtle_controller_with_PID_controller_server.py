@@ -32,6 +32,10 @@ class Controller_Node(Node):
 
         self.filled_way_points = False
 
+
+        self.declare_parameter('number_of_robots', 0)
+        self.number_of_robots = self.get_parameter('number_of_robots').value
+
     def way_points_callback(self, msg: Float64MultiArray):
         if not self.filled_way_points:
             stack = []
@@ -163,36 +167,23 @@ class Controller_Node(Node):
         else:
             # No waypoints left to update
             return False
-        
-def get_benchmark_path(benchmark_file_name):
-    MAPF_ros2_ws=os.getcwd()
-    benchmark_path=MAPF_ros2_ws+'/src/Implementation-of-A-star-algorithm-for-path-planning-of-Turtlebot-in-an-obstacle-environment/a_star_tb3/benchmarks/'+benchmark_file_name
-    return benchmark_path
-
-def start_goal_parser():
-    file_path = get_benchmark_path("test.txt")
-    star_goal_pairs = []
-    with open(file_path, 'r') as file:
-        for line in file:
-            line = line.strip()  # Remove leading/trailing whitespace
-            if line:
-                parts = line.split()  # Split the line into start and goal parts
-                # Parse the start and goal coordinates from the line
-                start = tuple(map(float, parts[0].strip('()').split(',')))
-                goal = tuple(map(float, parts[1].strip('()').split(',')))
-                # Add the pair to the list
-                star_goal_pairs.append([start, goal])
-    number_of_robots = len(star_goal_pairs)
-    return star_goal_pairs, number_of_robots
+    def get_number_of_robots(self):
+        return self.number_of_robots
 
 def main(args=None):
     rclpy.init(args=args)
     executor = MultiThreadedExecutor()
 
     controller_nodes = []
-    ss , size = start_goal_parser()  # Number of nodes to create
 
-    for i in range(1, size + 1):
+    robot_name = f"robot{1}"
+    curr_node = Controller_Node(robot_name)
+    controller_nodes.append(curr_node)
+    executor.add_node(curr_node)
+
+    size = curr_node.get_number_of_robots()
+    
+    for i in range(2, size + 1):
         robot_name = f"robot{i}"
         curr_node = Controller_Node(robot_name)
         controller_nodes.append(curr_node)
