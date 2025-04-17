@@ -120,10 +120,6 @@ def upload_scenario():
             flash('Only .txt files are allowed')
             return redirect(url_for('home'))
 
-        if not file.filename.endswith('.txt'):
-            flash('Only .txt files are allowed')
-            return redirect(url_for('home'))
-
         if file:
             MAPF_ros2_ws=os.getcwd()
             path = MAPF_ros2_ws + '/src/Implementation-of-A-star-algorithm-for-path-planning-of-Turtlebot-in-an-obstacle-environment/a_star_tb3/scenarios/'
@@ -131,7 +127,11 @@ def upload_scenario():
             filepath = os.path.join(path, file.filename)
             file.save(filepath)
 
-            flash('File uploaded successfully')
+            if file.filename not in upload_scenario:
+                upload_scenario.append(file.filename)
+
+            flash(f'Scenario "{file.filename}" uploaded successfully')
+            return redirect(url_for('home'))
 
     except Exception as e:
         flash(f"An error occurred: {str(e)}")
@@ -156,10 +156,12 @@ def simulate():
     time.sleep(5)
     selected_algo = request.form.get('algorithm', 'None')
     selected_map = request.form.get('map', 'None')
+    selected_scen = request.form.get('scenario', 'None')
+    flash(f'Simulation started with algorithm "{selected_algo}", map "{selected_map}", and scenario "{selected_scen}"')
     try:
         upfront_command = "wmctrl -a 'Gazebo'"
         
-        command = f"ros2 launch a_star_tb3 empty_world.launch.py benchmark:={selected_map} scenario:=test.txt algorithm:={selected_algo}"
+        command = f"ros2 launch a_star_tb3 empty_world.launch.py benchmark:={selected_map} scenario:={selected_scen} algorithm:={selected_algo}"
         commands = [
             "cd ~/MAPF_RoboSim/ros2_ws",
             "colcon build",

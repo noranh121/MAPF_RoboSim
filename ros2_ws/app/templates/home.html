@@ -185,7 +185,7 @@
                   >Select Existing Map</label
                 >
                 <div class="col-sm-10">
-                  <select class="form-select mb-3" name="algorithm">
+                  <select class="form-select mb-3" name="map">
                     {% for map in maps %}
                     <option value="{{ map }}">{{ map }}</option>
                     {% endfor %}
@@ -198,7 +198,7 @@
                   >Select Existing Scenario</label
                 >
                 <div class="col-sm-10">
-                  <select class="form-select mb-3" name="algorithm">
+                  <select class="form-select mb-3" name="scenario">
                     {% for scen in scenarios %}
                     <option value="{{ scen }}">{{ scen }}</option>
                     {% endfor %}
