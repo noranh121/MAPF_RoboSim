@@ -3,6 +3,7 @@ body {
     margin: 0;
     overflow: hidden;
 }
+
 .hero-section {
     height: 100vh;
     display: flex;
@@ -13,7 +14,7 @@ body {
 }
 
 .mainContent {
-    height: 200vh;
+    height: auto;
 }
 
 
@@ -89,6 +90,10 @@ body {
 
 .btn-spacing {
     margin-right: 5px; /* Adjust the space between buttons */
+}
+
+.o-o {
+    color:#f8f9fa;
 }
 
 @media (max-width: 544px) {
