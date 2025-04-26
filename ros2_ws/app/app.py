@@ -127,8 +127,8 @@ def upload_scenario():
             filepath = os.path.join(path, file.filename)
             file.save(filepath)
 
-            if file.filename not in upload_scenario:
-                upload_scenario.append(file.filename)
+            if file.filename not in uploaded_scenarios:
+                uploaded_scenarios.append(file.filename)
 
             flash(f'Scenario "{file.filename}" uploaded successfully')
             return redirect(url_for('home'))
