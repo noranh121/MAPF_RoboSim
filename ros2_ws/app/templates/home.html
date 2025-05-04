@@ -58,7 +58,7 @@
         </li>
       </ul>
     </header>
-    <div class="mainContent" style="overflow: hidden;">
+    <div class="mainContent">
       <br />
       <br />
       <!-- Upload Section -->
@@ -165,8 +165,8 @@
           <div class="modal-header p-5 pb-4 border-bottom-0">
             <h1 class="mb-0 fs-2">Select For Simulation</h1>
           </div>
-          <div class="modal-body p-5 pt-0" >
-            <form id="as" >
+          <div class="modal-body p-5 pt-0">
+            <form id="simulationForm" method="post" action="/simulate">
               <div class="mb-3 row">
                 <label for="selectAlgo" class="col-sm-2 col-form-label"
                   >Select Existing Algorithm</label
@@ -205,21 +205,18 @@
                   </select>
                 </div>
               </div>
-            </form> 
-            <form id="simulationForm" method="post" action="/simulate" style="display: inline-block; margin-right:0px">
+
               <button
                 type="submit"
                 class="btn btn-outline-light button-color"
-                onclick="setFormAction('/simulate')" 
+                onclick="setFormAction('/simulate')"
               >
                 Simulate
               </button>
-            </form>
-            <form id="download-form" method="post" action="/export" style="display: inline-block;">
               <button
                 type="submit"
                 class="btn btn-outline-light button-color"
-                onclick="setResultsAction('/export')"
+                onclick="setFormAction('/export')"
               >
                 Download Results
               </button>
@@ -237,7 +234,7 @@
       </div>
 
       <!-- footer -->
-      <footer class="bd-footer py-4 py-md-5 mt-5" style="height:170px">
+      <footer class="bd-footer py-4 py-md-5 mt-5">
         <div
           class="d-flex flex-column flex-sm-row justify-content-between py-4 my-4 border-top"
         >

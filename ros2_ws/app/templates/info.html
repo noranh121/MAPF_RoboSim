@@ -105,19 +105,18 @@
             Your file must define a function with the following signature:
             <code>def algo(benchmark: str, scenario: str) -> list[list[tuple]]</code>
             <br><br>
-            - Both <code>benchmark</code> and <code>scenario</code> are parsed strings that correspond to the provided map and scenario files in the original format.<br/>  
+            - Both <code>benchmark</code> and <code>scenario</code> are string file names pointing to the uploaded map and scenario files.  
             - The function should return a list of paths — one path per robot — where each path is a list of waypoints as <code>(x, y)</code> coordinates.
             <br><br>
             Each line in the scenario file corresponds to one robot, and the returned list must follow the same order.
             <br><br>
-            <b>Example:</b> A possible return value for one robot could look like:<br/>
-            <pre>[
-  (0, 0),
-  (1, 0),
-  (2, 0),
-  (2, 1)
-]
-            </pre>
+            <b>Example:</b> A possible return value for one robot could look like:
+            <pre><code>[
+            (0, 0),
+            (1, 0),
+            (2, 0),
+            (2, 1)
+            ]</code></pre>
 
         </p>
         </div>
@@ -147,8 +146,8 @@
             desired map and upload it here. Our built-in maps are also sourced
             from that website, such as <i>maze-128-128-10.map</i>, and others.
             <br /><br />
-            <b>Note:</b> Make sure to that the file selected is of extension
-            <code>.txt</code>; convert before uploading (e.g.,
+            <b>Note:</b> Make sure to rename the file extension to
+            <code>.txt</code> before uploading (e.g.,
             <i>maze-128-128-10.map</i> → <i>maze-128-128-10.txt</i>).
           </p>
         </div>
@@ -178,9 +177,7 @@
             the number of robots and their start and goal locations. Choose a
             scenario that matches the benchmark map you've selected.
           </p>
-          <p><b>Note:</b> Make sure to that the file selected is of extension
-            <code>.txt</code>; convert before uploading (e.g.,
-            <i>Berlin_1_256-even.scen</i> → <i>Berlin_1_256-even.txt</i>).</p>
+          <p><b>The file should be a .txt file</b></p>
         </div>
         <div class="col-lg-4 offset-lg-1 p-0 overflow-hidden shadow-lg">
           <img
@@ -201,8 +198,7 @@
           <div class="col-lg-7 p-3 p-lg-5 pt-lg-3">
             <h1 class="display-4 fw-bold lh-1">Select Files</h1>
             <p class="lead">
-                Use this section to select the necessary files — either the ones you've uploaded or the ones already available. Once all files are selected, click 
-                <b>Simulate</b> to start the simulation in Gazebo.
+                Use this section to select the necessary files — either the ones you've uploaded or the ones already available. Once all files are selected, click <b>Simulate</b> to start the simulation in Gazebo.
                 <br><br>
                 If you can't find your file, you may have missed an error message during upload. Please go back and try uploading it again.
               </p>
