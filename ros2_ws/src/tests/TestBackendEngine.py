@@ -119,8 +119,6 @@ class TestBackendEngine(unittest.TestCase):
                 expected_path = '/home/ali/MAPF_RoboSim/ros2_ws/src/Implementation-of-A-star-algorithm-for-path-planning-of-Turtlebot-in-an-obstacle-environment/a_star_tb3/benchmarks/test.txt'
                 result = self.engine.get_benchmark_path(benchmark_file)
                 self.assertEqual(result, expected_path, "Path should match the expected format")
-                
-
                 benchmark_file = 'complex-name_123.txt'
                 expected_path = '/home/ali/MAPF_RoboSim/ros2_ws/src/Implementation-of-A-star-algorithm-for-path-planning-of-Turtlebot-in-an-obstacle-environment/a_star_tb3/benchmarks/complex-name_123.txt'
                 result = self.engine.get_benchmark_path(benchmark_file)
@@ -136,10 +134,8 @@ class TestBackendEngine(unittest.TestCase):
         obstacles = self.engine.convert_map_to_obstacles(benchmark_file_name)
         self.assertIsNotNone(obstacles, "Should return a non-None result")
         self.assertTrue(hasattr(obstacles, '__iter__'), "Should return an iterable collection")
-        
         obstacles_list = list(obstacles)
         self.assertGreater(len(obstacles_list), 0, "Should find obstacles in the benchmark file")
-        
         if len(obstacles_list) > 0:
             first_obstacle = obstacles_list[0]
             self.assertEqual(len(first_obstacle), 4, "Each obstacle should have 4 values: x, y, width, height")
