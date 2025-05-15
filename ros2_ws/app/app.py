@@ -155,10 +155,14 @@ def simulate():
     global result
     stop_simulation()
     time.sleep(5)
+
+    ros_distro = os.environ.get("ROS_DISTRO")
+
+
     selected_algo = request.form.get('algorithm', 'None')
     selected_map = request.form.get('map', 'None')
     selected_scen = request.form.get('scenario', 'None')
-    flash(f'Simulation started with algorithm "{selected_algo}", map "{selected_map}", and scenario "{selected_scen}"')
+    flash(f'Simulation started with algorithm "{selected_algo}", map "{selected_map}", scenario "{selected_scen}, and ROS_DISTRO:={ros_distro}"')
     try:
         upfront_command = "wmctrl -a 'Gazebo'"
         
@@ -166,7 +170,7 @@ def simulate():
         commands = [
             "cd ~/MAPF_RoboSim/ros2_ws",
             "colcon build",
-            "source /opt/ros/humble/setup.bash",
+            f"source /opt/ros/{ros_distro}/setup.bash",
             "source install/setup.bash",
             "source install/local_setup.bash",
             command
