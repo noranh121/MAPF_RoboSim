@@ -12,10 +12,29 @@ UPLOAD_FOLDER = 'uploads'
 os.makedirs(UPLOAD_FOLDER, exist_ok=True)
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
+# Absolute path to the algorithms folder
+MAPF_ros2_ws = os.getcwd()
+ALGO_FOLDER = os.path.join(
+    MAPF_ros2_ws,
+    'src/Implementation-of-A-star-algorithm-for-path-planning-of-Turtlebot-in-an-obstacle-environment/a_star_tb3/algorithms'
+)
+MAP_FOLDER = os.path.join(
+    MAPF_ros2_ws,
+    'src/Implementation-of-A-star-algorithm-for-path-planning-of-Turtlebot-in-an-obstacle-environment/a_star_tb3/benchmarks'
+)
+SCEN_FOLDER = os.path.join(
+    MAPF_ros2_ws,
+    'src/Implementation-of-A-star-algorithm-for-path-planning-of-Turtlebot-in-an-obstacle-environment/a_star_tb3/scenarios'
+)
+
+
 # Predefined built-in algorithms
-builtin_algorithms = ["Algorithm A", "Algorithm B", "Algorithm C"]
-builtin_maps = ["map1"]
-builtin_scenarios = ["scen1"]
+# builtin_algorithms = ["Algorithm A", "Algorithm B", "Algorithm C"]
+# builtin_maps = ["map1"]
+# builtin_scenarios = ["scen1"]
+builtin_maps = []
+builtin_scenarios = []
+builtin_algorithms = []
 
 # Dynamic list of uploaded algorithms
 uploaded_algorithms = []
@@ -23,8 +42,15 @@ uploaded_maps = []
 uploaded_scenarios = []
 
 
+def get_builtin_files(folder):
+    return [f for f in os.listdir(folder) if os.path.isfile(os.path.join(folder, f))]
+
+
 @app.route('/home')
 def home():
+    builtin_algorithms = get_builtin_files(ALGO_FOLDER)
+    builtin_maps = get_builtin_files(MAP_FOLDER)
+    builtin_scenarios = get_builtin_files(SCEN_FOLDER)
     all_algorithms = builtin_algorithms + uploaded_algorithms
     all_maps = builtin_maps + uploaded_maps
     all_scens = builtin_scenarios + uploaded_scenarios
