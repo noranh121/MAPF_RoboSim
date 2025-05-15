@@ -58,8 +58,7 @@ def upload_algorithm():
     if file:
         try:
             MAPF_ros2_ws=os.getcwd()
-            #path = MAPF_ros2_ws + '/src/Implementation-of-A-star-algorithm-for-path-planning-of-Turtlebot-in-an-obstacle-environment/a_star_tb3/algorithms/'
-            path = '//wsl.localhost/Ubuntu-22.04/home/noranh/MAPF_RoboSim/ros2_ws/src/Implementation-of-A-star-algorithm-for-path-planning-of-Turtlebot-in-an-obstacle-environment/a_star_tb3/algorithms'
+            path = MAPF_ros2_ws + '/src/Implementation-of-A-star-algorithm-for-path-planning-of-Turtlebot-in-an-obstacle-environment/a_star_tb3/algorithms/'
 
             filepath = os.path.join(path, file.filename)
             file.save(filepath)
@@ -91,8 +90,7 @@ def upload_benchmark():
 
         if file:
             MAPF_ros2_ws=os.getcwd()
-            #path = MAPF_ros2_ws + '/src/Implementation-of-A-star-algorithm-for-path-planning-of-Turtlebot-in-an-obstacle-environment/a_star_tb3/benchmarks/'
-            path = '//wsl.localhost/Ubuntu-22.04/home/noranh/MAPF_RoboSim/ros2_ws/src/Implementation-of-A-star-algorithm-for-path-planning-of-Turtlebot-in-an-obstacle-environment/a_star_tb3/benchmarks'
+            path = MAPF_ros2_ws + '/src/Implementation-of-A-star-algorithm-for-path-planning-of-Turtlebot-in-an-obstacle-environment/a_star_tb3/benchmarks/'
 
             filepath = os.path.join(path, file.filename)
             file.save(filepath)
@@ -125,8 +123,7 @@ def upload_scenario():
 
         if file:
             MAPF_ros2_ws=os.getcwd()
-            #path = MAPF_ros2_ws + '/src/Implementation-of-A-star-algorithm-for-path-planning-of-Turtlebot-in-an-obstacle-environment/a_star_tb3/scenarios/'
-            path = '//wsl.localhost/Ubuntu-22.04/home/noranh/MAPF_RoboSim/ros2_ws/src/Implementation-of-A-star-algorithm-for-path-planning-of-Turtlebot-in-an-obstacle-environment/a_star_tb3/scenarios'
+            path = MAPF_ros2_ws + '/src/Implementation-of-A-star-algorithm-for-path-planning-of-Turtlebot-in-an-obstacle-environment/a_star_tb3/scenarios/'
 
             filepath = os.path.join(path, file.filename)
             file.save(filepath)
