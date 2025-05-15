@@ -159,8 +159,8 @@
         </div>
       </div>
 
-      <!-- Select Section -->
-      <div class="container mt-5">
+       <!-- Select Section -->
+       <div class="container mt-5">
         <div class="modal-content rounded-4 shadow">
           <div class="modal-header p-5 pb-4 border-bottom-0">
             <h1 class="mb-0 fs-2">Select For Simulation</h1>
@@ -213,7 +213,10 @@
               >
                 Simulate
               </button>
-              <button
+
+            </form>
+            <form id="exportForm" method="post" action="/export">
+            <button
                 type="submit"
                 class="btn btn-outline-light button-color"
                 onclick="setFormAction('/export')"
@@ -232,6 +235,7 @@
           <br />
         </div>
       </div>
+
 
       <!-- footer -->
       <footer class="bd-footer py-4 py-md-5 mt-5">
