@@ -30,7 +30,7 @@ def algo(benchmark: str, scenario: str) -> list[list[tuple]]:
 
     result = []
 
-    for i in range(6):
+    for i in range(len(starts)):
         s,g=Config(),Config()
         s.append(starts.positions[i])
         g.append(goals.positions[i])
@@ -47,12 +47,19 @@ def algo(benchmark: str, scenario: str) -> list[list[tuple]]:
             verbose=1,
         )
         validate_mapf_solution(grid, s, g, solution)
+        print(f"solution_{i+1} done.")
         result += [convert_solution(solution)]
     return result
 
 # def fetch_content(file_path: str):
 #     with open(file_path, 'r', encoding='utf-8') as f:
 #         return f.read()
+
+
+# print(algo(
+#     fetch_content("/home/ahmadaw/MAPF_RoboSim/ros2_ws/src/Implementation-of-A-star-algorithm-for-path-planning-of-Turtlebot-in-an-obstacle-environment/a_star_tb3/benchmarks/benchmark.txt"),
+#     fetch_content("/home/ahmadaw/MAPF_RoboSim/ros2_ws/src/Implementation-of-A-star-algorithm-for-path-planning-of-Turtlebot-in-an-obstacle-environment/a_star_tb3/scenarios/tunnel.scen")
+# ))
 
 # if __name__ == "__main__":
     # print(algo(fetch_content(Path(__file__).parent.parent / "benchmarks" / "benchmark.txt"),fetch_content(Path(__file__).parent.parent / "scenarios" / "tunnel.scen")))
