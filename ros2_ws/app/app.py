@@ -11,10 +11,29 @@ UPLOAD_FOLDER = 'uploads'
 os.makedirs(UPLOAD_FOLDER, exist_ok=True)
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
+# Absolute path to the algorithms folder
+MAPF_ros2_ws = os.getcwd()
+ALGO_FOLDER = os.path.join(
+    MAPF_ros2_ws,
+    'src/Implementation-of-A-star-algorithm-for-path-planning-of-Turtlebot-in-an-obstacle-environment/a_star_tb3/algorithms'
+)
+MAP_FOLDER = os.path.join(
+    MAPF_ros2_ws,
+    'src/Implementation-of-A-star-algorithm-for-path-planning-of-Turtlebot-in-an-obstacle-environment/a_star_tb3/benchmarks'
+)
+SCEN_FOLDER = os.path.join(
+    MAPF_ros2_ws,
+    'src/Implementation-of-A-star-algorithm-for-path-planning-of-Turtlebot-in-an-obstacle-environment/a_star_tb3/scenarios'
+)
+
+
 # Predefined built-in algorithms
-builtin_algorithms = ["Algorithm A", "Algorithm B", "Algorithm C"]
-builtin_maps = ["map1"]
-builtin_scenarios = ["scen1"]
+# builtin_algorithms = ["Algorithm A", "Algorithm B", "Algorithm C"]
+# builtin_maps = ["map1"]
+# builtin_scenarios = ["scen1"]
+builtin_maps = []
+builtin_scenarios = []
+builtin_algorithms = []
 
 # Dynamic list of uploaded algorithms
 uploaded_algorithms = []
@@ -22,8 +41,15 @@ uploaded_maps = []
 uploaded_scenarios = []
 
 
+def get_builtin_files(folder):
+    return [f for f in os.listdir(folder) if os.path.isfile(os.path.join(folder, f))]
+
+
 @app.route('/home')
 def home():
+    builtin_algorithms = get_builtin_files(ALGO_FOLDER)
+    builtin_maps = get_builtin_files(MAP_FOLDER)
+    builtin_scenarios = get_builtin_files(SCEN_FOLDER)
     all_algorithms = builtin_algorithms + uploaded_algorithms
     all_maps = builtin_maps + uploaded_maps
     all_scens = builtin_scenarios + uploaded_scenarios
@@ -46,12 +72,12 @@ def info():
 @app.route('/upload-algorithm', methods=['POST'])
 def upload_algorithm():
     if 'file' not in request.files:
-        flash('No file part')
+        flash('No file part', "part1")
         return redirect(url_for('home'))
 
     file = request.files['file']
     if file.filename == '':
-        flash('No file selected')
+        flash('No file selected', "part1")
         return redirect(url_for('home'))
 
     if file:
@@ -65,26 +91,26 @@ def upload_algorithm():
             if file.filename not in uploaded_algorithms:
                 uploaded_algorithms.append(file.filename)
 
-            flash(f'Algorithm "{file.filename}" uploaded successfully!')
+            flash(f'Algorithm "{file.filename}" uploaded successfully!', "part1")
             return redirect(url_for('home'))
         except Exception as e:
-            flash(f"An error occurred: {e}")
+            flash(f"An error occurred: {e}", "part1")
 
 
 @app.route('/upload-benchmark', methods=['POST'])
 def upload_benchmark():
     try:
         if 'file' not in request.files:
-            flash('No file part')
+            flash('No file part', "part1")
             return redirect(url_for('home'))
 
         file = request.files['file']
         if file.filename == '':
-            flash('No file selected')
+            flash('No file selected', "part1")
             return redirect(url_for('home'))
         
         if not file.filename.endswith('.txt'):
-            flash('Only .txt files are allowed')
+            flash('Only .txt files are allowed', "part1")
             return redirect(url_for('home'))
 
         if file:
@@ -97,10 +123,10 @@ def upload_benchmark():
             if file.filename not in uploaded_maps:
                 uploaded_maps.append(file.filename)
 
-            flash(f'Benchamrk "{file.filename}" uploaded successfully!')
+            flash(f'Benchamrk "{file.filename}" uploaded successfully!', "part1")
             return redirect(url_for('home'))
     except Exception as e:
-        flash(f"An error occurred: {e}")
+        flash(f"An error occurred: {e}", "part1")
 
     return redirect(url_for('home'))
     
@@ -108,16 +134,16 @@ def upload_benchmark():
 def upload_scenario():
     try:
         if 'file' not in request.files:
-            flash('No file part')
+            flash('No file part', "part1")
             return redirect(url_for('home'))
 
         file = request.files['file']
         if file.filename == '':
-            flash('No file selected')
+            flash('No file selected', "part1")
             return redirect(url_for('home'))
         
         if not file.filename.endswith('.txt'):
-            flash('Only .txt files are allowed')
+            flash('Only .txt files are allowed', "part1")
             return redirect(url_for('home'))
 
         if file:
@@ -130,11 +156,11 @@ def upload_scenario():
             if file.filename not in uploaded_scenarios:
                 uploaded_scenarios.append(file.filename)
 
-            flash(f'Scenario "{file.filename}" uploaded successfully')
+            flash(f'Scenario "{file.filename}" uploaded successfully', "part1")
             return redirect(url_for('home'))
 
     except Exception as e:
-        flash(f"An error occurred: {str(e)}")
+        flash(f"An error occurred: {str(e)}", "part1")
 
     return redirect(url_for('home'))
     
@@ -161,7 +187,8 @@ def simulate():
     selected_algo = request.form.get('algorithm', 'None')
     selected_map = request.form.get('map', 'None')
     selected_scen = request.form.get('scenario', 'None')
-    flash(f'Simulation started with algorithm "{selected_algo}", map "{selected_map}", scenario "{selected_scen}, and ROS_DISTRO:={ros_distro}"')
+
+    flash(f'Simulation started with algorithm "{selected_algo}", map "{selected_map}", scenario "{selected_scen}, and ROS_DISTRO:={ros_distro}"', 'part2')
     try:
         upfront_command = "wmctrl -a 'Gazebo'"
         
@@ -196,16 +223,16 @@ def simulate():
         stdout, stderr = result.communicate()
         process_upfront.communicate()
         if result.returncode == 0:
-            flash(f'success output:{stdout}')
+            flash(f'success output:{stdout}', "part2")
             time.sleep(5)
             return redirect(url_for('home'))
         else:
             print(stdout)
-            flash(f"Error occurred: {stderr}",'error')
+            flash(f"Error occurred: {stderr}","part1")
             time.sleep(5)
             return redirect(url_for('home'))
     except Exception as e:
-        flash(f"An error occurred: {e}")
+        flash(f"An error occurred: {e}", "part1")
         time.sleep(5)
         return redirect(url_for('home'))
 
@@ -230,16 +257,23 @@ def export():
         with open(export_file_path, 'w', encoding='utf-8') as file:
             file.write(data_to_export)
 
-    except Exception as e:
-        flash(f"An error occurred: {str(e)}")
-        return redirect(url_for('home'))
+    # except Exception as e:
+    #     flash(f"An error occurred: {str(e)}")
+    #     return redirect(url_for('home'))
     
-    flash(f"Stats Exprted Successfully")
-    return redirect(url_for('home'))
+    buffer = io.BytesIO()
+    buffer.write(content.encode())
+    buffer.seek(0)
 
-# @app.route('/home', methods=['GET'])
-# def home():
-#     return render_template('home.html')
+    #flash(f"Stats Exprted Successfully", "part2")
+
+    return send_file(
+        buffer,
+        as_attachment=True,
+        download_name=filename,
+        mimetype='text/plain'
+    )
+ 
 
 if __name__ == '__main__':
     app.run(debug=True)
