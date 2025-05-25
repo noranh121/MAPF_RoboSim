@@ -239,40 +239,40 @@ def simulate():
 
 
 
-@app.route('/export', methods=['POST'])
-def export():
-    try:
+# @app.route('/export', methods=['POST'])
+# def export():
+#     try:
 
-        MAPF_ros2_ws=os.getcwd()
-        path = MAPF_ros2_ws + '/src/Implementation-of-A-star-algorithm-for-path-planning-of-Turtlebot-in-an-obstacle-environment/a_star_tb3/benchmarks/'
+#         MAPF_ros2_ws=os.getcwd()
+#         path = MAPF_ros2_ws + '/src/Implementation-of-A-star-algorithm-for-path-planning-of-Turtlebot-in-an-obstacle-environment/a_star_tb3/benchmarks/'
 
-        path = os.path.join(path, "stats.txt")
-        with open(path, 'r', encoding='utf-8') as f:
-            data_to_export = f.read()
+#         path = os.path.join(path, "stats.txt")
+#         with open(path, 'r', encoding='utf-8') as f:
+#             data_to_export = f.read()
 
-        # Path to the temporary file to store data
-        export_file_path = os.path.join(app.config['UPLOAD_FOLDER'], "exported_data.txt")
+#         # Path to the temporary file to store data
+#         export_file_path = os.path.join(app.config['UPLOAD_FOLDER'], "exported_data.txt")
 
-        # Write data to the file
-        with open(export_file_path, 'w', encoding='utf-8') as file:
-            file.write(data_to_export)
+#         # Write data to the file
+#         with open(export_file_path, 'w', encoding='utf-8') as file:
+#             file.write(data_to_export)
 
-    # except Exception as e:
-    #     flash(f"An error occurred: {str(e)}")
-    #     return redirect(url_for('home'))
+#     # except Exception as e:
+#     #     flash(f"An error occurred: {str(e)}")
+#     #     return redirect(url_for('home'))
     
-    buffer = io.BytesIO()
-    buffer.write(content.encode())
-    buffer.seek(0)
+#     buffer = io.BytesIO()
+#     buffer.write(content.encode())
+#     buffer.seek(0)
 
-    #flash(f"Stats Exprted Successfully", "part2")
+#     #flash(f"Stats Exprted Successfully", "part2")
 
-    return send_file(
-        buffer,
-        as_attachment=True,
-        download_name=filename,
-        mimetype='text/plain'
-    )
+#     return send_file(
+#         buffer,
+#         as_attachment=True,
+#         download_name=filename,
+#         mimetype='text/plain'
+#     )
  
 
 if __name__ == '__main__':

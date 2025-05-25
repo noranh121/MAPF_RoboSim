@@ -215,7 +215,8 @@ def start_goal_parser(scenarion_file_name=None):
                     start = tuple(map(float, parts[4:6]))
                     goal = tuple(map(float, parts[6:8]))
                     # Add the pair to the list
-                    star_goal_pairs.append([start, goal])
+                    # star_goal_pairs.append([start, goal])
+                    star_goal_pairs.append([start*0.1, goal*0.1])
         except:
             sys.stderr.write("invaled start_end points format\n")
             raise Exception("invaled start_end points format")
