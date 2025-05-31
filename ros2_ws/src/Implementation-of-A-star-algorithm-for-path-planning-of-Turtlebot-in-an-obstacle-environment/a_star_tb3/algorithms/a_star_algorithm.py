@@ -55,8 +55,8 @@ class Parser_Engine:
             if line and not line.startswith("version"):  # Ignore first line
                 parts = line.split()  # Split the line into start and goal part
                 # Parse the start and goal coordinates from the line
-                start = tuple(map(float, parts[4:6]))
-                goal = tuple(map(float, parts[6:8]))
+                start = tuple(float(x) * 0.1 for x in parts[4:6])
+                goal = tuple(float(x) * 0.1 for x in parts[6:8])
                 # Add the pair to the list
                 star_goal_pairs.append([start, goal])
 

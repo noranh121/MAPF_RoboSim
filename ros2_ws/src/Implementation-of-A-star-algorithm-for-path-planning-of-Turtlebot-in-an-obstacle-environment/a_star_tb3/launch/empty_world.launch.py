@@ -212,11 +212,12 @@ def start_goal_parser(scenarion_file_name=None):
                 if line and not line.startswith("version"):  # Ignore first line
                     parts = line.split()  # Split the line into start and goal parts
                     # Parse the start and goal coordinates from the line
-                    start = tuple(map(float, parts[4:6]))
-                    goal = tuple(map(float, parts[6:8]))
+                    start = tuple(float(x) * 0.1 for x in parts[4:6])
+                    goal = tuple(float(x) * 0.1 for x in parts[6:8])
+                    print('start:', start, 'goal:', goal)
                     # Add the pair to the list
                     # star_goal_pairs.append([start, goal])
-                    star_goal_pairs.append([start*0.1, goal*0.1])
+                    star_goal_pairs.append([start, goal])
         except:
             sys.stderr.write("invaled start_end points format\n")
             raise Exception("invaled start_end points format")
