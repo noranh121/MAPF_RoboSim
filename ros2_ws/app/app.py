@@ -241,7 +241,9 @@ def simulate():
 
 @app.route('/export', methods=['POST'])
 def export():
-    content = "RESULTS!!!"
+    with open("uploads/results.txt", 'r', encoding='utf-8') as f:
+        content= f.read()
+    # content = "RESULTS!!!"
     filename = "simulation_stats.txt"
     
     buffer = io.BytesIO()

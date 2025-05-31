@@ -460,6 +460,33 @@ def fetch_content(file_path: str):
     with open(file_path, 'r', encoding='utf-8') as f:
         return f.read()
 
+def save_results(filename, goal_reached, elapsed_time, robot_paths):
+    """
+    Save results to a text file.
+
+    :param filename: Output filename
+    :param goal_reached: True/False
+    :param elapsed_time: Time in seconds (float)
+    :param robot_paths: List of dicts like:
+        [
+            {
+                "robot": "robot1",
+                "start_point": (x1, y1),
+                "end_point": (x2, y2),
+                "path": [(x1, y1), (x1.5, y1.5), ..., (x2, y2)]
+            },
+            ...
+        ]
+    """
+    with open(filename, 'w') as f:
+        f.write(f"<goal_reached>={goal_reached}\n")
+        f.write(f"<time>={elapsed_time:.2f}\n\n")
+        
+        for robot in robot_paths:
+            f.write(f"{robot['robot']}:\n")
+            f.write(f"<start_point>={robot['start_point']}\n")
+            f.write(f"<end_point>={robot['end_point']}\n")
+            f.write(f"<path>={robot['path']}\n\n")
 
 def main():
     parser = argparse.ArgumentParser()
@@ -485,7 +512,30 @@ def main():
 
     mod = load_module_from_path(Path(algorithm_file_path))
 
+    start_time = time.time()
     paths = mod.algo(benchmark_content, scenario_content)
+    end_time = time.time()
+    elapsed_time = end_time - start_time
+    if not paths:   
+        print("No paths found. Exiting.")
+        save_results("uploads/results.txt", goal_reached=False, elapsed_time=elapsed_time, robot_paths=[])
+        return
+    
+    
+    robot_paths = []
+    for i in range(len(paths)):
+        robot_name = f"robot{i+1}"
+        start_point = (paths[i][0][0], paths[i][0][1])
+        end_point = (paths[i][-1][0], paths[i][-1][1])
+        robot_paths.append({
+            "robot": robot_name,
+            "start_point": start_point,
+            "end_point": end_point,
+            "path": paths[i]
+        })
+    
+    save_results("uploads/results.txt", goal_reached=True, elapsed_time=elapsed_time, robot_paths=robot_paths)
+    
     robots_way_points = [
         [(float(x) * 0.1, float(y) * 0.1) for (x, y) in path]
         for path in paths
@@ -493,8 +543,6 @@ def main():
     backend_engine= Backend_Engine()
     obstacle_space = backend_engine.convert_map_to_obstacles(benchmark_file_name_)
     backend_engine.create_map(d=0, map_width=width*0.1, map_height=height*0.1,obstacles=obstacle_space, paths=robots_way_points)
-
-
 
 
 
