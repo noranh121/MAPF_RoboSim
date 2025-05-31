@@ -9,7 +9,7 @@ from threading import Thread
 import time
 import math
 import pygame
-import vidmaker
+#import vidmaker
 from sortedcollections import OrderedSet
 import heapdict
 import rclpy
@@ -153,7 +153,7 @@ class Backend_Engine:
     def create_map(self, d, map_width, map_height, obstacles, paths):
         import pygame
         import itertools
-        import vidmaker
+        #import vidmaker
 
         colors = ["red", "green", "blue", "yellow", "purple", "cyan", "orange"]
         color_cycle = itertools.cycle(colors)
@@ -409,6 +409,7 @@ class ROS_move(Node):
         msg = Float64MultiArray()
         flattened_points = [float(coordinate) for pair in self.way_points for coordinate in pair]
         msg.data = flattened_points
+        print(f"msg =================> !@#!@#: {msg}")
         self.way_points_publisher.publish(msg)
 
     def cmd_vel_callback(self, msg):
@@ -518,7 +519,7 @@ def main():
         save_results("uploads/results.txt", goal_reached=False, elapsed_time=elapsed_time, robot_paths=[])
         return
     
-    
+    print(paths)
     robot_paths = []
     for i in range(len(paths)):
         robot_name = f"robot{i+1}"
@@ -587,7 +588,8 @@ def main():
     size = len(results)  # Assuming `inputs` is defined
     for i in range(1, size + 1):
         robot_name = f"robot{i}"
-        way_points = results[robot_name]  # Assuming `results` is a dictionary with waypoints for each robot
+        way_points = results[robot_name]
+        print(way_points)  # Assuming `results` is a dictionary with waypoints for each robot
         robot_node = ROS_move(robot_name, way_points)
         robots.append(robot_node)
         executor.add_node(robot_node)

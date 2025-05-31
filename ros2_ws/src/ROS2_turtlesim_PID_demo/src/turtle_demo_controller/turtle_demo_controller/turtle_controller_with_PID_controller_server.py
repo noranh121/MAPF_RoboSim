@@ -36,15 +36,36 @@ class Controller_Node(Node):
         self.declare_parameter('number_of_robots', 0)
         self.number_of_robots = self.get_parameter('number_of_robots').value
 
+    # def way_points_callback(self, msg: Float64MultiArray):
+    #     if not self.filled_way_points:
+    #         stack = []
+    #         if len(msg.data) % 3 != 0:
+    #             self.get_logger().error('Invalid data length in message.')
+    #             return
+
+    #         # Process the data to extract (x, y) pairs
+    #         for i in range(0, len(msg.data), 3):
+    #             x = msg.data[i]
+    #             y = msg.data[i + 1]
+    #             stack.append((x, y))  # Add (x, y) to the stack
+    #         self.way_points = stack
+    #         init_point = self.way_points.pop(0)
+    #         desired_point = self.way_points.pop(0)
+
+    #         self.current_x,self.current_y = init_point
+    #         self.desired_x,self.desired_y = desired_point
+
+    #         self.filled_way_points = True
+
     def way_points_callback(self, msg: Float64MultiArray):
         if not self.filled_way_points:
             stack = []
-            if len(msg.data) % 3 != 0:
-                self.get_logger().error('Invalid data length in message.')
-                return
+            # if len(msg.data) % 3 != 0:
+            #     self.get_logger().error('Invalid data length in message.')
+            #     return
 
             # Process the data to extract (x, y) pairs
-            for i in range(0, len(msg.data), 3):
+            for i in range(0, len(msg.data), 2):
                 x = msg.data[i]
                 y = msg.data[i + 1]
                 stack.append((x, y))  # Add (x, y) to the stack
@@ -55,7 +76,7 @@ class Controller_Node(Node):
             self.current_x,self.current_y = init_point
             self.desired_x,self.desired_y = desired_point
 
-            self.filled_way_points = True      
+            self.filled_way_points = True          
 
 
     def path_calculator(self):
