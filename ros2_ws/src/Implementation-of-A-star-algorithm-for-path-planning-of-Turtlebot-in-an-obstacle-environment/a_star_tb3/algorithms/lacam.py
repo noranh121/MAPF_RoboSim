@@ -50,7 +50,7 @@ def algo(benchmark: str, scenario: str) -> list[list[tuple]]:
         print(f"solution_{i+1} done.")
         result += [convert_solution(solution)]
     paths_scaled = [
-        [(x * 0.1, y * 0.1) for (x, y) in path]
+        [(float(x) * 0.1, float(y) * 0.1) for (x, y) in path]
         for path in result
     ]
     return paths_scaled
@@ -65,10 +65,7 @@ def algo(benchmark: str, scenario: str) -> list[list[tuple]]:
 #     fetch_content("/home/ahmadaw/MAPF_RoboSim/ros2_ws/src/Implementation-of-A-star-algorithm-for-path-planning-of-Turtlebot-in-an-obstacle-environment/a_star_tb3/scenarios/tunnel.scen")
 # )
 
-# paths_scaled = [
-#     [(x * 0.1, y * 0.1) for (x, y) in path]
-#     for path in paths
-# ]
+# print(paths)
 
 
 
