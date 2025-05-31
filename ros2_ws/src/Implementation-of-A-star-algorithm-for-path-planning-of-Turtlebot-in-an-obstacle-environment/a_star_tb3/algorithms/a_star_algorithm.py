@@ -7,7 +7,7 @@ from threading import Thread
 import time
 import math
 import pygame
-import vidmaker
+#import vidmaker
 from sortedcollections import OrderedSet
 import heapdict
 import rclpy
@@ -139,7 +139,7 @@ class Parser_Engine:
         size = [map_width_mod, map_height_mod]
         screen = pygame.display.set_mode(size)
         pygame.display.set_caption("Weighted A-star")
-        video = vidmaker.Video("path.mp4", late_export=True)
+        #video = vidmaker.Video("path.mp4", late_export=True)
         clock = pygame.time.Clock()
         running = True
         while running:

@@ -3,7 +3,6 @@ import os
 import pathlib
 import sys
 
-import pygame
 from ament_index_python.packages import get_package_share_directory
 from launch import LaunchDescription
 from launch.actions import IncludeLaunchDescription, RegisterEventHandler
@@ -13,7 +12,7 @@ from launch.substitutions import LaunchConfiguration
 from launch_ros.actions import Node
 from launch.actions import ExecuteProcess
 from launch.substitutions import Command
-from launch.actions import IncludeLaunchDescription, TimerAction, DeclareLaunchArgument
+from launch.actions import IncludeLaunchDescription, TimerAction, DeclareLaunchArgument, AppendEnvironmentVariable
 import argparse
 from pathlib import Path
 
@@ -53,7 +52,9 @@ def generate_launch_description():
 
     launch_file_dir = os.path.join(
         get_package_share_directory('turtlebot3_gazebo'), 'launch')
-    pkg_gazebo_ros = get_package_share_directory('gazebo_ros')
+    
+    #pkg_gazebo_ros = get_package_share_directory('ros_gz_sim')
+    ros_gz_sim = get_package_share_directory('ros_gz_sim')
 
     remappings = [("/tf", "tf"), ("/tf_static", "tf_static")]
 
@@ -67,7 +68,7 @@ def generate_launch_description():
         'urdf',
         urdf_file_name)
     
-    sdf_path = "/opt/ros/humble/share/turtlebot3_gazebo/models/turtlebot3_burger/model.sdf"
+    sdf_path = "/opt/ros/jazzy/share/turtlebot3_gazebo/models/turtlebot3_burger/model.sdf"
 
     with open(urdf_path, 'r') as infp:
         robot_desc = infp.read()
@@ -90,18 +91,33 @@ def generate_launch_description():
         world_file_name
     )
 
+    # gzserver_cmd = IncludeLaunchDescription(
+    #     PythonLaunchDescriptionSource(
+    #         os.path.join(ros_gz_sim, 'launch', 'gzserver.launch.py')
+    #     ),
+    #     launch_arguments={'world': world}.items(),
+    # )
+
     gzserver_cmd = IncludeLaunchDescription(
         PythonLaunchDescriptionSource(
-            os.path.join(pkg_gazebo_ros, 'launch', 'gzserver.launch.py')
+            os.path.join(ros_gz_sim, 'launch', 'gz_sim.launch.py')
         ),
-        launch_arguments={'world': world}.items(),
+    launch_arguments={'gz_args': ['-r -s -v4 ', world], 'on_exit_shutdown': 'true'}.items()
     )
+
+    # gzclient_cmd = IncludeLaunchDescription(
+    #     PythonLaunchDescriptionSource(
+    #         os.path.join(ros_gz_sim, 'launch', 'gzclient.launch.py')
+    #     )
+    # )
 
     gzclient_cmd = IncludeLaunchDescription(
         PythonLaunchDescriptionSource(
-            os.path.join(pkg_gazebo_ros, 'launch', 'gzclient.launch.py')
-        )
+            os.path.join(ros_gz_sim, 'launch', 'gz_sim.launch.py')
+        ),
+    launch_arguments={'gz_args': '-g -v4 '}.items()
     )
+
 
 
 
@@ -128,12 +144,12 @@ def generate_launch_description():
                 remappings=remappings,
             )
         spawn_turtlebot_cmd = Node(
-                package="gazebo_ros",
-                executable="spawn_entity.py",
+                package="ros_gz_sim",
+                executable="create",
                 arguments=[
                     "-file",
                     sdf_path,
-                    "-entity",
+                    "-name",
                     robot_name_entity,
                     "-robot_namespace",
                     robot_namespace,
@@ -179,6 +195,13 @@ def generate_launch_description():
         arguments = [LaunchConfiguration('--benchmark'), LaunchConfiguration('--scenario'), LaunchConfiguration('--algorithm')],
     ), ])
 
+    
+    set_env_vars_resources = AppendEnvironmentVariable(
+        'GZ_SIM_RESOURCE_PATH',
+        os.path.join(get_package_share_directory('turtlebot3_gazebo'),
+                     'models'))
+
+
    
 
     # Add the commands to the launch description
@@ -187,6 +210,7 @@ def generate_launch_description():
     ld.add_action(declared_algorithm)
     ld.add_action(gzserver_cmd)
     ld.add_action(gzclient_cmd)
+    ld.add_action(set_env_vars_resources)
 
 
     #Added =========================
