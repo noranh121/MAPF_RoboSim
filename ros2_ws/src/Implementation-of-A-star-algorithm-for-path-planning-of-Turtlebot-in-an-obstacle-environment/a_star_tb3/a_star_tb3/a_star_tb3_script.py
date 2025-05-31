@@ -402,6 +402,11 @@ def get_arg_path(fileName: str, dir: str):
     path = MAPF_ros2_ws + f'/src/Implementation-of-A-star-algorithm-for-path-planning-of-Turtlebot-in-an-obstacle-environment/a_star_tb3/{dir}/'
     return path + fileName
 
+def get_algo_path(fileName: str, dir: str):
+    MAPF_ros2_ws=os.getcwd()
+    path = MAPF_ros2_ws + f'/install/a_star_tb3/share/a_star_tb3/{dir}/'
+    return path + fileName
+
 def fetch_content(file_path: str):
     with open(file_path, 'r', encoding='utf-8') as f:
         return f.read()
@@ -424,7 +429,7 @@ def main():
     
     benchmark_file_path = get_arg_path(benchmark_file_name_, "benchmarks")
     scenario_file_path = get_arg_path(scenario_file_name_, "scenarios") 
-    algorithm_file_path = get_arg_path(algorithm_file_name_, "algorithms")
+    algorithm_file_path = get_algo_path(algorithm_file_name_, "algorithms")
 
     benchmark_content = fetch_content(benchmark_file_path)
     scenario_content = fetch_content(scenario_file_path)

@@ -1,14 +1,14 @@
 import argparse
 from pathlib import Path
 
-from pycam import (
+from algorithms.pycam import (
     LaCAM,
     get_grid,
     get_scenario,
     save_configs_for_visualizer,
     validate_mapf_solution,
 )
-from pycam.mapf_utils import Config
+from algorithms.pycam.mapf_utils import Config
 
 def convert_solution(solution):
     result = []
