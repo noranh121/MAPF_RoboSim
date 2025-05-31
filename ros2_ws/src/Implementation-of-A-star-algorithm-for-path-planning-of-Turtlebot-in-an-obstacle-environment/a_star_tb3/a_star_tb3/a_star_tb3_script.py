@@ -431,7 +431,11 @@ def main():
 
     mod = load_module_from_path(Path(algorithm_file_path))
 
-    robots_way_points = mod.algo(benchmark_content, scenario_content)
+    paths = mod.algo(benchmark_content, scenario_content)
+    robots_way_points = [
+        [(float(x) * 0.1, float(y) * 0.1) for (x, y) in path]
+        for path in paths
+    ]
 
 
 
