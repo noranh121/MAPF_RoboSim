@@ -34,7 +34,6 @@ def algo(benchmark: str, scenario: str) -> list[list[tuple]]:
         s,g=Config(),Config()
         s.append(starts.positions[i])
         g.append(goals.positions[i])
-
         # solve MAPF
         planner = LaCAM()
         solution = planner.solve(
@@ -55,17 +54,17 @@ def algo(benchmark: str, scenario: str) -> list[list[tuple]]:
     ]
     return paths_scaled
 
-# def fetch_content(file_path: str):
-#     with open(file_path, 'r', encoding='utf-8') as f:
-#         return f.read()
+def fetch_content(file_path: str):
+    with open(file_path, 'r', encoding='utf-8') as f:
+        return f.read()
 
 
-# paths=algo(
-#     fetch_content("/home/ahmadaw/MAPF_RoboSim/ros2_ws/src/Implementation-of-A-star-algorithm-for-path-planning-of-Turtlebot-in-an-obstacle-environment/a_star_tb3/benchmarks/benchmark.txt"),
-#     fetch_content("/home/ahmadaw/MAPF_RoboSim/ros2_ws/src/Implementation-of-A-star-algorithm-for-path-planning-of-Turtlebot-in-an-obstacle-environment/a_star_tb3/scenarios/tunnel.scen")
-# )
+paths=algo(
+    fetch_content("/home/ahmadaw/MAPF_RoboSim/ros2_ws/src/Implementation-of-A-star-algorithm-for-path-planning-of-Turtlebot-in-an-obstacle-environment/a_star_tb3/benchmarks/benchmark.txt"),
+    fetch_content("/home/ahmadaw/MAPF_RoboSim/ros2_ws/src/Implementation-of-A-star-algorithm-for-path-planning-of-Turtlebot-in-an-obstacle-environment/a_star_tb3/scenarios/test.txt")
+)
 
-# print(paths)
+print(paths)
 
 
 

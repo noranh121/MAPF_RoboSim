@@ -84,11 +84,12 @@ def get_scenario(scen_file: str | Path, N: int | None = None) -> tuple[Config, C
     f=scen_file.splitlines()
     starts, goals = Config(), Config()
     for row in f:
-        res = re.match(
-            r"\d+\t.+\.map\t\d+\t\d+\t(\d+)\t(\d+)\t(\d+)\t(\d+)\t.+", row
-        )
-        if res:
-            x_s, y_s, x_g, y_g = [int(res.group(k)) for k in range(1, 5)]
+        # res = re.match(
+        #     r"\d+\t.+\.map\t\d+\t\d+\t(\d+)\t(\d+)\t(\d+)\t(\d+)\t.+", row
+        # )
+        if row and not row.startswith("version"):
+            res=row.split()
+            x_s, y_s, x_g, y_g = int(res[4]), int(res[5]), int(res[6]), int(res[7])
             starts.append((y_s, x_s))  # align with grid
             goals.append((y_g, x_g))
             # check the number of agents
