@@ -14,7 +14,7 @@ def convert_solution(solution):
     result = []
     for config in solution:
         # Convert np.int64 to int for each tuple
-        cleaned_positions = [(int(x), int(y)) for (x, y) in config.positions]
+        cleaned_positions = [(int(y), int(x)) for (x, y) in config.positions]
         result.extend(cleaned_positions)
     return result
 

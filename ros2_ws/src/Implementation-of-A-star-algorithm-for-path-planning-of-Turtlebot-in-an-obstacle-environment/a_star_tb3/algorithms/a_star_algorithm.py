@@ -318,13 +318,18 @@ class A_star:
         start_goal_pairs, number_of_robots = Parser_Engine().start_goal_parser(script_scenario)
         result = []
         for i in range(number_of_robots):
-            startx = start_goal_pairs[i][0][0]
-            starty = start_goal_pairs[i][0][1]
-            goalx = start_goal_pairs[i][1][0]
-            goaly = start_goal_pairs[i][1][1]
+            startx = round(start_goal_pairs[i][0][0],2)
+            starty = round(start_goal_pairs[i][0][1],2)
+            goalx = round(start_goal_pairs[i][1][0],2)
+            goaly = round(start_goal_pairs[i][1][1],2)
             back_track, path_dict, initial_state,node_state_g,path_time,boole = self.a_star(goalx, goaly, startx, starty, script_benchmark)
             result.append(back_track)
-        return result
+            
+        robots_way_points = [
+                [(float(round(x / 0.1,2)), float(round(y / 0.1,2))) for (x, y,z) in path]
+                for path in result
+            ]
+        return robots_way_points
 
 def algo(benchmark: str, scenario: str) -> list[list[tuple]]:
     try:
@@ -333,3 +338,15 @@ def algo(benchmark: str, scenario: str) -> list[list[tuple]]:
         return result
     except Exception as e:
         print(f"Error: {e}")
+
+# def fetch_content(file_path: str):
+#     with open(file_path, 'r', encoding='utf-8') as f:
+#         return f.read()
+
+
+# paths=algo(
+#     fetch_content("/home/ahmadaw/MAPF_RoboSim/ros2_ws/src/Implementation-of-A-star-algorithm-for-path-planning-of-Turtlebot-in-an-obstacle-environment/a_star_tb3/benchmarks/benchmark.txt"),
+#     fetch_content("/home/ahmadaw/MAPF_RoboSim/ros2_ws/src/Implementation-of-A-star-algorithm-for-path-planning-of-Turtlebot-in-an-obstacle-environment/a_star_tb3/scenarios/test.txt")
+# )
+
+# print(paths)
