@@ -19,13 +19,10 @@ from pathlib import Path
 
 
 def generate_launch_description():
+
+    TURTLEBOT3_MODEL = os.getenv('TURTLEBOT3_MODEL')
+
     ld = LaunchDescription()
-
-
-
-
-
-
 
     parser = argparse.ArgumentParser()
 
@@ -49,34 +46,31 @@ def generate_launch_description():
     start_poses = []
     for start,goal in start_goal_poses:
         start_poses.append(start)
-
-    launch_file_dir = os.path.join(
-        get_package_share_directory('turtlebot3_gazebo'), 'launch')
-    
-    #pkg_gazebo_ros = get_package_share_directory('ros_gz_sim')
+ 
     ros_gz_sim = get_package_share_directory('ros_gz_sim')
 
     remappings = [("/tf", "tf"), ("/tf_static", "tf_static")]
 
 
-    urdf_file_name = 'turtlebot3_burger' + '.urdf'
-
-    print('urdf_file_name : {}'.format(urdf_file_name))
+    urdf_file_name = f'turtlebot3_{TURTLEBOT3_MODEL}' + '.urdf'
 
     urdf_path = os.path.join(
-        get_package_share_directory('turtlebot3_gazebo'),
+        get_package_share_directory('a_star_tb3'),
         'urdf',
         urdf_file_name)
     
-    sdf_path = "/opt/ros/jazzy/share/turtlebot3_gazebo/models/turtlebot3_burger/model.sdf"
+
+    sdf_path = os.path.join(
+        get_package_share_directory('a_star_tb3'),
+        'models',
+        f'turtlebot3_{TURTLEBOT3_MODEL}',
+        'model.sdf'
+    )
 
     with open(urdf_path, 'r') as infp:
         robot_desc = infp.read()
 
-    # use_sim_time = LaunchConfiguration('use_sim_time', default='true')
-    # x_pose = LaunchConfiguration('--start_x', default='0.0')
-    # y_pose = LaunchConfiguration('--start_y', default='0.0')
-    # world_file_name = args.benchmark.removesuffix('.txt')+'.world'
+
     world_file_name=str(pathlib.Path(args.benchmark).with_suffix(".world"))
     MAPF_ros2_ws=os.getcwd()
     world_file_path=MAPF_ros2_ws+'/src/Implementation-of-A-star-algorithm-for-path-planning-of-Turtlebot-in-an-obstacle-environment/a_star_tb3/worlds/'+world_file_name
@@ -128,7 +122,7 @@ def generate_launch_description():
 
     for i in range(1,number_of_robots+1):
         robot_namespace = f"robot{i}"
-        robot_name_entity = f"robot{i}_burger"
+        robot_name_entity = f"robot{i}_{TURTLEBOT3_MODEL}"
         robo_x_pose = LaunchConfiguration(f'robot{i}_start_x', default=str(start_poses[i - 1][0]))
         robo_y_pose = LaunchConfiguration(f'robot{i}_start_y', default=str(start_poses[i - 1][1]))
 
@@ -195,6 +189,22 @@ def generate_launch_description():
         arguments = [LaunchConfiguration('--benchmark'), LaunchConfiguration('--scenario'), LaunchConfiguration('--algorithm')],
     ), ])
 
+    bridge_params = os.path.join(
+        get_package_share_directory('a_star_tb3'),
+        'params',
+        'bridge.yaml'
+    )
+
+    start_gazebo_ros_bridge_cmd = Node(
+        package='ros_gz_bridge',
+        executable='parameter_bridge',
+        arguments=[
+            '--ros-args',
+            '-p',
+            f'config_file:={bridge_params}',
+        ],
+        output='screen',
+    )
     
     set_env_vars_resources = AppendEnvironmentVariable(
         'GZ_SIM_RESOURCE_PATH',
@@ -214,6 +224,7 @@ def generate_launch_description():
 
 
     #Added =========================
+    ld.add_action(start_gazebo_ros_bridge_cmd)
     ld.add_action(robot_controller)
     #Added =========================
 
