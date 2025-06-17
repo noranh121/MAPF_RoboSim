@@ -409,7 +409,6 @@ class ROS_move(Node):
         msg = Float64MultiArray()
         flattened_points = [float(coordinate) for pair in self.way_points for coordinate in pair]
         msg.data = flattened_points
-        print(f"msg =================> !@#!@#: {msg}")
         self.way_points_publisher.publish(msg)
 
     def cmd_vel_callback(self, msg):
@@ -519,7 +518,6 @@ def main():
         save_results("uploads/results.txt", goal_reached=False, elapsed_time=elapsed_time, robot_paths=[])
         return
     
-    print(paths)
     robot_paths = []
     for i in range(len(paths)):
         robot_name = f"robot{i+1}"
@@ -538,7 +536,6 @@ def main():
         [(round(float(x) * 0.1,2), round(float(y) * 0.1,2)) for (x, y) in path]
         for path in paths
     ]
-    print("Robots way points:", robots_way_points)
     backend_engine= Backend_Engine()
     obstacle_space = backend_engine.convert_map_to_obstacles(benchmark_file_name_)
     backend_engine.create_map(d=0, map_width=width*0.1, map_height=height*0.1,obstacles=obstacle_space, paths=robots_way_points)
@@ -589,7 +586,6 @@ def main():
     for i in range(1, size + 1):
         robot_name = f"robot{i}"
         way_points = results[robot_name]
-        print(way_points)  # Assuming `results` is a dictionary with waypoints for each robot
         robot_node = ROS_move(robot_name, way_points)
         robots.append(robot_node)
         executor.add_node(robot_node)
