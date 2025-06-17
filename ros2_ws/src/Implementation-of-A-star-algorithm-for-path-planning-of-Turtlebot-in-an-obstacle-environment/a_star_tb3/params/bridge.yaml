@@ -12,6 +12,12 @@
   gz_type_name: "gz.msgs.Model"
   direction: GZ_TO_ROS
 
+- ros_topic_name: "/robot2/joint_states"
+  gz_topic_name: "/robot2/joint_states"
+  ros_type_name: "sensor_msgs/msg/JointState"
+  gz_type_name: "gz.msgs.Model"
+  direction: GZ_TO_ROS
+
 # gz topic published by DiffDrive plugin
 - ros_topic_name: "/robot1/odom"
   gz_topic_name: "/robot1/odom"
@@ -19,9 +25,27 @@
   gz_type_name: "gz.msgs.Odometry"
   direction: GZ_TO_ROS
 
+# - ros_topic_name: "/robot1/pose"
+#   gz_topic_name: "/robot1/pose"
+#   ros_type_name: "turtlesim/msg/Pose"
+#   gz_type_name: "gz.msgs.Pose_V"
+#   direction: GZ_TO_ROS
+
+- ros_topic_name: "/robot2/odom"
+  gz_topic_name: "/robot2/odom"
+  ros_type_name: "nav_msgs/msg/Odometry"
+  gz_type_name: "gz.msgs.Odometry"
+  direction: GZ_TO_ROS
+
+- ros_topic_name: "/robot2/cmd_vel"
+  gz_topic_name: "/robot2/cmd_vel"
+  ros_type_name: "geometry_msgs/msg/Twist"
+  gz_type_name: "gz.msgs.Twist"
+  direction: ROS_TO_GZ
+
 # gz topic published by DiffDrive plugin
-- ros_topic_name: "tf"
-  gz_topic_name: "tf"
+- ros_topic_name: "/tf"
+  gz_topic_name: "/tf"
   ros_type_name: "tf2_msgs/msg/TFMessage"
   gz_type_name: "gz.msgs.Pose_V"
   direction: GZ_TO_ROS

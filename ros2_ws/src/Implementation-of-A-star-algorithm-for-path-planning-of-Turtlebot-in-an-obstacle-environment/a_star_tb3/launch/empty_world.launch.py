@@ -60,11 +60,18 @@ def generate_launch_description():
         urdf_file_name)
     
 
-    sdf_path = os.path.join(
+    sdf_path_1 = os.path.join(
         get_package_share_directory('a_star_tb3'),
         'models',
         f'turtlebot3_{TURTLEBOT3_MODEL}',
         'model.sdf'
+    )
+
+    sdf_path_2 = os.path.join(
+        get_package_share_directory('a_star_tb3'),
+        'models',
+        f'turtlebot3_{TURTLEBOT3_MODEL}',
+        'model_2.sdf'
     )
 
     with open(urdf_path, 'r') as infp:
@@ -121,6 +128,7 @@ def generate_launch_description():
 
 
     for i in range(1,number_of_robots+1):
+        sdf_file = sdf_path_1 if(i == 1) else sdf_path_2
         robot_namespace = f"robot{i}"
         robot_name_entity = f"robot{i}_{TURTLEBOT3_MODEL}"
         robo_x_pose = LaunchConfiguration(f'robot{i}_start_x', default=str(start_poses[i - 1][0]))
@@ -142,7 +150,7 @@ def generate_launch_description():
                 executable="create",
                 arguments=[
                     "-file",
-                    sdf_path,
+                    sdf_file,
                     "-name",
                     robot_name_entity,
                     "-robot_namespace",
