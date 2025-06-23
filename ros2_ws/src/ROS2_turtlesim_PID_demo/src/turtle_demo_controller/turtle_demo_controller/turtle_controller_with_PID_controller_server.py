@@ -24,7 +24,12 @@ class Controller_Node(Node):
 
         self.current_x = 0.5
         self.current_y = 0.5   
-        self.angle = 0   
+        self.angle = 0  
+
+        self.init_x = 0
+        self.init_y = 0
+
+        self.angle_filled = False
 
         self.my_pose_sub = self.create_subscription(Pose, f"/{namespace}/pose", self.pose_callback, 10)
         self.my_vel_command = self.create_publisher(Twist, f"/{namespace}/cmd_vel", 10)
@@ -70,8 +75,9 @@ class Controller_Node(Node):
                 y = msg.data[i + 1]
                 stack.append((x, y))  # Add (x, y) to the stack
             self.way_points = stack
-            init_point = self.way_points.pop(0)
-            desired_point = self.way_points.pop(0)
+            init_point = self.way_points.pop(0) #0.5 0.5 
+            self.init_x, self.init_y = init_point
+            desired_point = self.way_points.pop(0) #0.64, 0.5
 
             self.current_x,self.current_y = init_point
             self.desired_x,self.desired_y = desired_point
@@ -150,11 +156,13 @@ class Controller_Node(Node):
         self.my_velocity_cont(l_v*5, a_v)
 
     def pose_callback(self, msg: Pose):
+        x_tocheck = msg.x + self.init_x
+        y_tocheck = msg.y + self.init_y
         if self.filled_way_points:
-            if self.is_within_distance((msg.x,msg.y),(self.desired_x,self.desired_y)):
-                self.current_x = np.round(msg.x,self.round_by)
-                self.current_y = np.round(msg.y,self.round_by)
-                self.angle = np.round(msg.theta,self.round_by)
+            if self.is_within_distance((x_tocheck, y_tocheck), (self.desired_x, self.desired_y)):
+                self.current_x = np.round(x_tocheck, self.round_by)
+                self.current_y = np.round(y_tocheck, self.round_by)
+                self.angle = np.round(msg.theta, self.round_by)
                 if self.way_points:
                     desired_point = self.way_points.pop(0)
                     self.desired_x, self.desired_y = desired_point

@@ -1,5 +1,5 @@
 <goal_reached>=True
-<time>=0.08
+<time>=0.09
 
 robot1:
 <start_point>=(5, 5)

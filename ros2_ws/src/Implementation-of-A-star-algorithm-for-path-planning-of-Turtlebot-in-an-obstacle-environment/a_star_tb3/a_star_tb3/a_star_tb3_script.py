@@ -14,14 +14,20 @@ from sortedcollections import OrderedSet
 import heapdict
 import rclpy
 from rclpy.node import Node
+import gz.msgs10.pose_v_pb2
+import gz.transport13
+import gz.msgs10.pose_v_pb2
 from geometry_msgs.msg import Twist
+from geometry_msgs.msg import PoseArray
 from rclpy.exceptions import ROSInterruptException
 from rclpy.executors import MultiThreadedExecutor
 from nav_msgs.msg import Odometry
 import argparse
 from std_msgs.msg import Int32  # Import the message type for integer
 from turtlesim.msg import Pose
+from std_msgs.msg import String
 from std_msgs.msg import Float64MultiArray
+import gz.msgs10.pose_v_pb2 as pose_v_pb2
 import itertools
 from tf_transformations import euler_from_quaternion
 import os
@@ -390,11 +396,19 @@ class ROS_move(Node):
         self.way_points = way_points
         self.update_pose = False
 
+        self.node = gz.transport13.Node()
+        self.node.subscribe(
+            topic="/world/default/pose/info",
+            callback= self.cb_pose_v,
+            msg_type= gz.msgs10.pose_v_pb2.Pose_V
+            )
+
 
         ########## Subscriptions ##########
         self.subscription = self.create_subscription(Twist, f"{namespace}/cmd_vel", self.cmd_vel_callback, 10)
-        self.odom_sub = self.create_subscription(Odometry,  f"{namespace}/odom", self.odom_callback,10)
+        #self.odom_sub = self.create_subscription(Odometry,  f"{namespace}/odom", self.odom_callback,10)
         ########## Subscriptions ##########
+        self.a = self.create_subscription(PoseArray, "/world/default/pose/info", self.aaa, 10)
 
         ########## Publishers ##########
         self.pose_publisher = self.create_publisher(Pose,  f"{namespace}/pose", 10)
@@ -405,32 +419,70 @@ class ROS_move(Node):
     def update_pose_callback(self, msg: Int32):
         self.update_pose = True
 
+
+    def cb_pose_v(self, msg):
+        pose_v = gz.msgs10.pose_v_pb2.Pose_V()
+        for pose in msg.pose:
+            if pose.name == f"{self.namespace}_burger":
+                position = pose.position
+                orientation = pose.orientation
+                x = position.x
+                y = position.y
+                z = position.z
+                orientation_list = [orientation.x, orientation.y, orientation.z, orientation.w]
+                roll, pitch, yaw = euler_from_quaternion(orientation_list)
+                
+                msgToSend: Pose = Pose()
+                theta = yaw
+                theta = np.round(theta, 4)
+                x = np.round(x, 4)
+                y = np.round(y, 4)
+                msgToSend.x = x
+                msgToSend.y = y
+                msgToSend.theta = theta
+                self.pose_publisher.publish(msgToSend)
+
     def publish_points(self):
         msg = Float64MultiArray()
         flattened_points = [float(coordinate) for pair in self.way_points for coordinate in pair]
         msg.data = flattened_points
         self.way_points_publisher.publish(msg)
 
+
+    def aaa(self, msg):
+        return
+
     def cmd_vel_callback(self, msg):
         return
     
-    def odom_callback(self, msg: Odometry):
-        x = msg.pose.pose.position.x
-        y = msg.pose.pose.position.y
-        z = msg.pose.pose.position.z
-        # Extract and convert orientation to roll, pitch, yaw
-        orientation_q = msg.pose.pose.orientation
-        orientation_list = [orientation_q.x, orientation_q.y, orientation_q.z, orientation_q.w]
-        roll, pitch, yaw = euler_from_quaternion(orientation_list)
-        msg: Pose = Pose()
-        theta = yaw
-        theta = np.round(theta, 4)
-        x = np.round(x, 4)
-        y = np.round(y, 4)
-        msg.x = x
-        msg.y = y
-        msg.theta = theta
-        self.pose_publisher.publish(msg)
+    # def odom_callback(self, msg: Odometry):
+    #     x = msg.pose.pose.position.x
+    #     y = msg.pose.pose.position.y
+    #     z = msg.pose.pose.position.z
+    #     # Extract and convert orientation to roll, pitch, yaw
+    #     orientation_q = msg.pose.pose.orientation
+    #     orientation = {
+    #         "x": -3.3492970227904677e-09,
+    #         "y": -0.0025811753428796914,
+    #         "z": 2.0149701983232079e-08,
+    #         "w": 0.99999666876137583
+    #     }
+    #     orientation_list = [orientation_q.x, orientation_q.y, orientation_q.z, orientation_q.w]
+
+    #     #orientation_list = [orientation["x"], orientation["y"], orientation["z"],orientation["w"]]
+
+
+    #     roll, pitch, yaw = euler_from_quaternion(orientation_list)
+    #     msg: Pose = Pose()
+    #     theta = yaw
+    #     theta = np.round(theta, 4)
+    #     x = np.round(x, 4)
+    #     y = np.round(y, 4)
+    #     msg.x = x
+    #     msg.y = y
+    #     msg.theta = theta
+    #     print(f"Sent Pose message ==> {msg}")
+    #     self.pose_publisher.publish(msg)
 
 def load_module_from_path(path: Path, name: str = None):
     """

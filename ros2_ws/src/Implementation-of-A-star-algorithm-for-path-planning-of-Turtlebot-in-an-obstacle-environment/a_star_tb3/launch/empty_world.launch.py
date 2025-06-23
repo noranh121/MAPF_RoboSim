@@ -197,6 +197,7 @@ def generate_launch_description():
         arguments = [LaunchConfiguration('--benchmark'), LaunchConfiguration('--scenario'), LaunchConfiguration('--algorithm')],
     ), ])
 
+
     bridge_params = os.path.join(
         get_package_share_directory('a_star_tb3'),
         'params',
