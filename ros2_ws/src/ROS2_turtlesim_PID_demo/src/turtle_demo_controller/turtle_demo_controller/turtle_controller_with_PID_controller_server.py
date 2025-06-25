@@ -29,6 +29,8 @@ class Controller_Node(Node):
         self.init_x = 0
         self.init_y = 0
 
+
+
         self.angle_filled = False
 
         self.my_pose_sub = self.create_subscription(Pose, f"/{namespace}/pose", self.pose_callback, 10)
@@ -120,10 +122,14 @@ class Controller_Node(Node):
         Ki_dist = 0.05
         Kd_dist = 0.02
 
+        # Kp_dist = 0.25
+        # Ki_dist = 0.01
+        # Kd_dist = 0.05
+
         # PID constants for angular velocity (heading control)
-        Kp_theta = 1.5
-        Ki_theta = 0.18
-        Kd_theta = 0.1
+        Kp_theta = 1.15
+        Ki_theta = 0.05
+        Kd_theta = 0.2
         max_integral = 1.0
         
         integral_dist = max(min(integral_dist, max_integral), -max_integral)
@@ -134,12 +140,14 @@ class Controller_Node(Node):
         #integral_theta += err_theta
         derivative_theta = err_theta - previous_err_theta
         
-        if abs(err_theta) > 0.08:
+        #self.get_logger().info(f"err_theta: {err_theta} degrees")
+        if abs(err_theta) > 0.05:
             # Turn until we are close enough to the desired angle
             a_v = Kp_theta * err_theta + Ki_theta * integral_theta + Kd_theta * derivative_theta
 
         else:
             a_v = 0
+            integral_theta = 0
 
         #Original threshold = 0.05
         if err_dist>threshold or abs(err_theta)>threshold:
@@ -156,8 +164,8 @@ class Controller_Node(Node):
         self.my_velocity_cont(l_v*5, a_v)
 
     def pose_callback(self, msg: Pose):
-        x_tocheck = msg.x + self.init_x
-        y_tocheck = msg.y + self.init_y
+        x_tocheck = msg.x #+ self.init_x
+        y_tocheck = msg.y #+ self.init_y
         if self.filled_way_points:
             if self.is_within_distance((x_tocheck, y_tocheck), (self.desired_x, self.desired_y)):
                 self.current_x = np.round(x_tocheck, self.round_by)
@@ -181,10 +189,11 @@ class Controller_Node(Node):
 
 
     def is_within_distance(self, curr, desired):
-        threshold = 0.05
+        threshold = 0.15
         x1, y1 = curr
         x2, y2 = desired
         distance = math.sqrt((x2 - x1)**2 + (y2 - y1)**2)
+        self.get_logger().info(f"Distance: {distance}, Boolean: {distance < threshold}")
         return distance < threshold
     
     def update_desired_position(self):

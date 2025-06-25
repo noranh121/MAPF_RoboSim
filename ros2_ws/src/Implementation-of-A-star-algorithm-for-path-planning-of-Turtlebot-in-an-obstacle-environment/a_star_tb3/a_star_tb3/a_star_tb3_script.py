@@ -396,6 +396,20 @@ class ROS_move(Node):
         self.way_points = way_points
         self.update_pose = False
 
+
+
+        ########## Subscriptions ##########
+        self.subscription = self.create_subscription(Twist, f"{namespace}/cmd_vel", self.cmd_vel_callback, 10)
+        #self.odom_sub = self.create_subscription(Odometry,  f"{namespace}/odom", self.odom_callback,10)
+        ########## Subscriptions ##########
+        #self.a = self.create_subscription(PoseArray, "/world/default/pose/info", self.aaa, 10)
+
+        ########## Publishers ##########
+        self.pose_publisher = self.create_publisher(Pose,  f"{namespace}/pose", 10)
+        self.way_points_publisher = self.create_publisher(Float64MultiArray,  f"{namespace}/way_points",  10)
+        ########## Publishers ##########
+        self.publish_points()
+        
         self.node = gz.transport13.Node()
         self.node.subscribe(
             topic="/world/default/pose/info",
@@ -403,21 +417,8 @@ class ROS_move(Node):
             msg_type= gz.msgs10.pose_v_pb2.Pose_V
             )
 
-
-        ########## Subscriptions ##########
-        self.subscription = self.create_subscription(Twist, f"{namespace}/cmd_vel", self.cmd_vel_callback, 10)
-        #self.odom_sub = self.create_subscription(Odometry,  f"{namespace}/odom", self.odom_callback,10)
-        ########## Subscriptions ##########
-        self.a = self.create_subscription(PoseArray, "/world/default/pose/info", self.aaa, 10)
-
-        ########## Publishers ##########
-        self.pose_publisher = self.create_publisher(Pose,  f"{namespace}/pose", 10)
-        self.way_points_publisher = self.create_publisher(Float64MultiArray,  f"{namespace}/way_points",  10)
-        ########## Publishers ##########
-        self.publish_points()
-
-    def update_pose_callback(self, msg: Int32):
-        self.update_pose = True
+    # def update_pose_callback(self, msg: Int32):
+    #     self.update_pose = True
 
 
     def cb_pose_v(self, msg):
@@ -588,6 +589,8 @@ def main():
         [(round(float(x) * 0.1,2), round(float(y) * 0.1,2)) for (x, y) in path]
         for path in paths
     ]
+
+    print("waypoints ==>", robots_way_points)
     backend_engine= Backend_Engine()
     obstacle_space = backend_engine.convert_map_to_obstacles(benchmark_file_name_)
     backend_engine.create_map(d=0, map_width=width*0.1, map_height=height*0.1,obstacles=obstacle_space, paths=robots_way_points)
