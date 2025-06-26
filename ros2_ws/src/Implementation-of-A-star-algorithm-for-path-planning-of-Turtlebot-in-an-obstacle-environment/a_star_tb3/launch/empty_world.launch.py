@@ -210,7 +210,8 @@ def generate_launch_description():
         arguments = [LaunchConfiguration('--benchmark'), LaunchConfiguration('--scenario'), LaunchConfiguration('--algorithm')],
     ), ])
 
-
+    generate_bridge_file(number_of_robots)
+    
     bridge_params = os.path.join(
         get_package_share_directory('a_star_tb3'),
         'params',
@@ -254,8 +255,94 @@ def generate_launch_description():
 
     return ld
 
-from pathlib import Path
 
+def generate_bridge_file(number_of_robots):
+    bridges = [
+        {
+            "ros_topic_name": "clock",
+            "gz_topic_name": "clock",
+            "ros_type_name": "rosgraph_msgs/msg/Clock",
+            "gz_type_name": "gz.msgs.Clock",
+            "direction": "GZ_TO_ROS"
+        },
+        {
+            "ros_topic_name": "/world/default/pose/info",
+            "gz_topic_name": "/world/default/pose/info",
+            "ros_type_name": "geometry_msgs/msg/PoseArray",
+            "gz_type_name": "gz.msgs.Pose_V",
+            "direction": "GZ_TO_ROS"
+        },
+        {
+            "ros_topic_name": "/tf",
+            "gz_topic_name": "/tf",
+            "ros_type_name": "tf2_msgs/msg/TFMessage",
+            "gz_type_name": "gz.msgs.Pose_V",
+            "direction": "GZ_TO_ROS"
+        },
+        {
+            "ros_topic_name": "imu",
+            "gz_topic_name": "imu",
+            "ros_type_name": "sensor_msgs/msg/Imu",
+            "gz_type_name": "gz.msgs.IMU",
+            "direction": "GZ_TO_ROS"
+        },
+        {
+            "ros_topic_name": "scan",
+            "gz_topic_name": "scan",
+            "ros_type_name": "sensor_msgs/msg/LaserScan",
+            "gz_type_name": "gz.msgs.LaserScan",
+            "direction": "GZ_TO_ROS"
+        },
+        {
+            "ros_topic_name": "camera/camera_info",
+            "gz_topic_name": "camera/camera_info",
+            "ros_type_name": "sensor_msgs/msg/CameraInfo",
+            "gz_type_name": "gz.msgs.CameraInfo",
+            "direction": "GZ_TO_ROS"
+        }
+    ]
+
+    # Add per-robot bridges
+    for i in range(1, number_of_robots + 1):
+        robot_name = f"robot{i}"
+        bridges.extend([
+            {
+                "ros_topic_name": f"/{robot_name}/joint_states",
+                "gz_topic_name": f"/{robot_name}/joint_states",
+                "ros_type_name": "sensor_msgs/msg/JointState",
+                "gz_type_name": "gz.msgs.Model",
+                "direction": "GZ_TO_ROS"
+            },
+            {
+                "ros_topic_name": f"/{robot_name}/odom",
+                "gz_topic_name": f"/{robot_name}/odom",
+                "ros_type_name": "nav_msgs/msg/Odometry",
+                "gz_type_name": "gz.msgs.Odometry",
+                "direction": "GZ_TO_ROS"
+            },
+            {
+                "ros_topic_name": f"/{robot_name}/cmd_vel",
+                "gz_topic_name": f"/{robot_name}/cmd_vel",
+                "ros_type_name": "geometry_msgs/msg/Twist",
+                "gz_type_name": "gz.msgs.Twist",
+                "direction": "ROS_TO_GZ"
+            }
+        ])
+
+    # Convert bridges to YAML string
+    yaml_lines = []
+    for bridge in bridges:
+        yaml_lines.append(f'- ros_topic_name: "{bridge["ros_topic_name"]}"')
+        yaml_lines.append(f'  gz_topic_name: "{bridge["gz_topic_name"]}"')
+        yaml_lines.append(f'  ros_type_name: "{bridge["ros_type_name"]}"')
+        yaml_lines.append(f'  gz_type_name: "{bridge["gz_type_name"]}"')
+        yaml_lines.append(f'  direction: {bridge["direction"]}')
+        yaml_lines.append('')
+
+    # Write to file
+    output_file=Path(__file__).parent.parent / 'params' / 'bridge_test.yaml'
+    output_file.write_text("\n".join(yaml_lines), encoding='utf-8')
+    print(f"Bridge config written to {output_file.resolve()}")
 
 def generate_sdf_file(robot_name: str):
     sdf_template = """<?xml version="1.0" ?>
