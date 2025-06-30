@@ -340,7 +340,7 @@ def generate_bridge_file(number_of_robots):
         yaml_lines.append('')
 
     # Write to file
-    output_file=Path(__file__).parent.parent / 'params' / 'bridge_test.yaml'
+    output_file=Path(__file__).parent / 'params' / 'bridge.yaml'
     output_file.write_text("\n".join(yaml_lines), encoding='utf-8')
     print(f"Bridge config written to {output_file.resolve()}")
 
@@ -754,7 +754,9 @@ def generate_sdf_file(robot_name: str):
 
     sdf_content = sdf_template.replace("{robot_name}", robot_name)
     file_name=f'{robot_name}.sdf'
-    output_path=Path(__file__).parent.parent / 'models' / 'turtlebot3_burger' / file_name
+    output_path=Path(__file__).parent / 'models' / 'turtlebot3_burger' / file_name
+
+    print(f"path ======>", output_path)
     with open(output_path, "w") as f:
         f.write(sdf_content)
 
