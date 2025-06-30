@@ -59,20 +59,32 @@ def generate_launch_description():
         'urdf',
         urdf_file_name)
     
+    sdf_paths=[]
+    for i in range(1,number_of_robots+1):
+        # create sdf files for each robot
+        generate_sdf_file(f'robot{i}')
+        
+        # add the path to the sdf paths list
+        sdf_paths.append(os.path.join(
+            get_package_share_directory('a_star_tb3'),
+            'models',
+            f'turtlebot3_{TURTLEBOT3_MODEL}',
+            f'robot{i}.sdf'
+        ))
 
-    sdf_path_1 = os.path.join(
-        get_package_share_directory('a_star_tb3'),
-        'models',
-        f'turtlebot3_{TURTLEBOT3_MODEL}',
-        'model.sdf'
-    )
+    # sdf_path_1 = os.path.join(
+    #     get_package_share_directory('a_star_tb3'),
+    #     'models',
+    #     f'turtlebot3_{TURTLEBOT3_MODEL}',
+    #     'model.sdf'
+    # )
 
-    sdf_path_2 = os.path.join(
-        get_package_share_directory('a_star_tb3'),
-        'models',
-        f'turtlebot3_{TURTLEBOT3_MODEL}',
-        'model_2.sdf'
-    )
+    # sdf_path_2 = os.path.join(
+    #     get_package_share_directory('a_star_tb3'),
+    #     'models',
+    #     f'turtlebot3_{TURTLEBOT3_MODEL}',
+    #     'model_2.sdf'
+    # )
 
     with open(urdf_path, 'r') as infp:
         robot_desc = infp.read()
@@ -128,7 +140,8 @@ def generate_launch_description():
 
 
     for i in range(1,number_of_robots+1):
-        sdf_file = sdf_path_1 if(i == 1) else sdf_path_2
+        # sdf_file = sdf_path_1 if(i == 1) else sdf_path_2
+        sdf_file= sdf_paths[i - 1]
         robot_namespace = f"robot{i}"
         robot_name_entity = f"robot{i}_{TURTLEBOT3_MODEL}"
         robo_x_pose = LaunchConfiguration(f'robot{i}_start_x', default=str(start_poses[i - 1][0]))
@@ -197,7 +210,8 @@ def generate_launch_description():
         arguments = [LaunchConfiguration('--benchmark'), LaunchConfiguration('--scenario'), LaunchConfiguration('--algorithm')],
     ), ])
 
-
+    generate_bridge_file(number_of_robots)
+    
     bridge_params = os.path.join(
         get_package_share_directory('a_star_tb3'),
         'params',
@@ -240,6 +254,511 @@ def generate_launch_description():
     ld.add_action(my_node)
 
     return ld
+
+
+def generate_bridge_file(number_of_robots):
+    bridges = [
+        {
+            "ros_topic_name": "clock",
+            "gz_topic_name": "clock",
+            "ros_type_name": "rosgraph_msgs/msg/Clock",
+            "gz_type_name": "gz.msgs.Clock",
+            "direction": "GZ_TO_ROS"
+        },
+        {
+            "ros_topic_name": "/world/default/pose/info",
+            "gz_topic_name": "/world/default/pose/info",
+            "ros_type_name": "geometry_msgs/msg/PoseArray",
+            "gz_type_name": "gz.msgs.Pose_V",
+            "direction": "GZ_TO_ROS"
+        },
+        {
+            "ros_topic_name": "/tf",
+            "gz_topic_name": "/tf",
+            "ros_type_name": "tf2_msgs/msg/TFMessage",
+            "gz_type_name": "gz.msgs.Pose_V",
+            "direction": "GZ_TO_ROS"
+        },
+        {
+            "ros_topic_name": "imu",
+            "gz_topic_name": "imu",
+            "ros_type_name": "sensor_msgs/msg/Imu",
+            "gz_type_name": "gz.msgs.IMU",
+            "direction": "GZ_TO_ROS"
+        },
+        {
+            "ros_topic_name": "scan",
+            "gz_topic_name": "scan",
+            "ros_type_name": "sensor_msgs/msg/LaserScan",
+            "gz_type_name": "gz.msgs.LaserScan",
+            "direction": "GZ_TO_ROS"
+        },
+        {
+            "ros_topic_name": "camera/camera_info",
+            "gz_topic_name": "camera/camera_info",
+            "ros_type_name": "sensor_msgs/msg/CameraInfo",
+            "gz_type_name": "gz.msgs.CameraInfo",
+            "direction": "GZ_TO_ROS"
+        }
+    ]
+
+    # Add per-robot bridges
+    for i in range(1, number_of_robots + 1):
+        robot_name = f"robot{i}"
+        bridges.extend([
+            {
+                "ros_topic_name": f"/{robot_name}/joint_states",
+                "gz_topic_name": f"/{robot_name}/joint_states",
+                "ros_type_name": "sensor_msgs/msg/JointState",
+                "gz_type_name": "gz.msgs.Model",
+                "direction": "GZ_TO_ROS"
+            },
+            {
+                "ros_topic_name": f"/{robot_name}/odom",
+                "gz_topic_name": f"/{robot_name}/odom",
+                "ros_type_name": "nav_msgs/msg/Odometry",
+                "gz_type_name": "gz.msgs.Odometry",
+                "direction": "GZ_TO_ROS"
+            },
+            {
+                "ros_topic_name": f"/{robot_name}/cmd_vel",
+                "gz_topic_name": f"/{robot_name}/cmd_vel",
+                "ros_type_name": "geometry_msgs/msg/Twist",
+                "gz_type_name": "gz.msgs.Twist",
+                "direction": "ROS_TO_GZ"
+            }
+        ])
+
+    # Convert bridges to YAML string
+    yaml_lines = []
+    for bridge in bridges:
+        yaml_lines.append(f'- ros_topic_name: "{bridge["ros_topic_name"]}"')
+        yaml_lines.append(f'  gz_topic_name: "{bridge["gz_topic_name"]}"')
+        yaml_lines.append(f'  ros_type_name: "{bridge["ros_type_name"]}"')
+        yaml_lines.append(f'  gz_type_name: "{bridge["gz_type_name"]}"')
+        yaml_lines.append(f'  direction: {bridge["direction"]}')
+        yaml_lines.append('')
+
+    # Write to file
+    output_file=Path(__file__).parent.parent / 'params' / 'bridge_test.yaml'
+    output_file.write_text("\n".join(yaml_lines), encoding='utf-8')
+    print(f"Bridge config written to {output_file.resolve()}")
+
+def generate_sdf_file(robot_name: str):
+    sdf_template = """<?xml version="1.0" ?>
+<sdf version="1.8">
+  <model name="turtlebot3_burger">
+    <pose>0.0 0.0 0.0 0.0 0.0 0.0</pose>
+    <link name="base_footprint"/>
+    <link name="base_link">
+
+      <inertial>
+        <pose>-0.064 0 0.070 0 0 0</pose>
+        <inertia>
+          <ixx>1.9527e-02</ixx>
+          <ixy>0</ixy>
+          <ixz>0</ixz>
+          <iyy>1.9527e-02</iyy>
+          <iyz>0</iyz>
+          <izz>1.9527e-02</izz>
+        </inertia>
+        <mass>8.2573504e-01</mass>
+      </inertial>
+
+      <collision name="base_collision">
+        <pose>-0.032 0 0.070 0 0 0</pose>
+        <geometry>
+          <box>
+            <size>0.14 0.14 0.14</size>
+          </box>
+        </geometry>
+      </collision>
+
+      <visual name="base_visual">
+        <pose>-0.032 0 0 0 0 0</pose>
+        <geometry>
+          <mesh>
+            <uri>model://turtlebot3_common/meshes/bases/burger_base.stl</uri>
+            <scale>0.001 0.001 0.001</scale>
+          </mesh>
+        </geometry>
+        <material>
+          <ambient>0.3 0.3 0.3 1.0</ambient>
+          <diffuse>0.3 0.3 0.3 1.0</diffuse>
+        </material>
+      </visual>
+    </link>
+
+    <link name="imu_link">
+      <sensor name="tb3_imu" type="imu">
+        <always_on>true</always_on>
+        <update_rate>200</update_rate>
+        <topic>imu</topic>
+        <imu>
+          <angular_velocity>
+            <x>
+              <noise type="gaussian">
+                <mean>0.0</mean>
+                <stddev>2e-4</stddev>
+              </noise>
+            </x>
+            <y>
+              <noise type="gaussian">
+                <mean>0.0</mean>
+                <stddev>2e-4</stddev>
+              </noise>
+            </y>
+            <z>
+              <noise type="gaussian">
+                <mean>0.0</mean>
+                <stddev>2e-4</stddev>
+              </noise>
+            </z>
+          </angular_velocity>
+          <linear_acceleration>
+            <x>
+              <noise type="gaussian">
+                <mean>0.0</mean>
+                <stddev>1.7e-2</stddev>
+              </noise>
+            </x>
+            <y>
+              <noise type="gaussian">
+                <mean>0.0</mean>
+                <stddev>1.7e-2</stddev>
+              </noise>
+            </y>
+            <z>
+              <noise type="gaussian">
+                <mean>0.0</mean>
+                <stddev>1.7e-2</stddev>
+              </noise>
+            </z>
+          </linear_acceleration>
+        </imu>
+      </sensor>
+    </link>
+
+    <link name="base_scan">
+      <inertial>
+        <pose>-0.020 0 0.161 0 0 0</pose>
+        <inertia>
+          <ixx>0.0001</ixx>
+          <ixy>0.000</ixy>
+          <ixz>0.000</ixz>
+          <iyy>0.0001</iyy>
+          <iyz>0.000</iyz>
+          <izz>0.0001</izz>
+        </inertia>
+        <mass>0.114</mass>
+      </inertial>
+
+      <collision name="lidar_sensor_collision">
+        <pose>-0.020 0 0.161 0 0 0</pose>
+        <geometry>
+          <cylinder>
+            <radius>0.0508</radius>
+            <length>0.055</length>
+          </cylinder>
+        </geometry>
+      </collision>
+
+      <visual name="lidar_sensor_visual">
+        <pose>-0.032 0 0.171 0 0 0</pose>
+        <geometry>
+          <mesh>
+            <uri>model://turtlebot3_common/meshes/sensors/lds.stl</uri>
+            <scale>0.001 0.001 0.001</scale>
+          </mesh>
+        </geometry>
+        <material>
+          <ambient>0.2 0.2 0.2 1.0</ambient>
+          <diffuse>0.2 0.2 0.2 1.0</diffuse>
+        </material>
+      </visual>
+
+      <sensor name="hls_lfcd_lds" type="gpu_lidar">
+        <always_on>true</always_on>
+        <visualize>true</visualize>
+        <pose>-0.032 0 0.171 0 0 0</pose>
+        <update_rate>5</update_rate>
+        <topic>scan</topic>
+        <gz_frame_id>base_scan</gz_frame_id>
+        <lidar>
+          <scan>
+            <horizontal>
+              <samples>360</samples>
+              <resolution>1.000000</resolution>
+              <min_angle>0.000000</min_angle>
+              <max_angle>6.280000</max_angle>
+            </horizontal>
+          </scan>
+          <range>
+            <min>0.120000</min>
+            <max>3.5</max>
+            <resolution>0.015000</resolution>
+          </range>
+          <noise>
+            <type>gaussian</type>
+            <mean>0.0</mean>
+            <stddev>0.01</stddev>
+          </noise>
+        </lidar>
+      </sensor>
+    </link>
+
+    <link name="wheel_left_link">
+
+      <inertial>
+        <pose>0 0.08 0.023 -1.57 0 0</pose>
+        <inertia>
+          <ixx>5.445e-05</ixx>
+          <ixy>0</ixy>
+          <ixz>0</ixz>
+          <iyy>5.445e-05</iyy>
+          <iyz>0</iyz>
+          <izz>1.089e-04</izz>
+        </inertia>
+        <mass>0.1</mass>
+      </inertial>
+
+      <collision name="wheel_left_collision">
+        <pose>0 0.08 0.023 -1.57 0 0</pose>
+        <geometry>
+          <cylinder>
+            <radius>0.033</radius>
+            <length>0.018</length>
+          </cylinder>
+        </geometry>
+        <surface>
+          <!-- This friction pamareter don't contain reliable data!! -->
+          <friction>
+            <ode>
+              <mu>100000.0</mu>
+              <mu2>100000.0</mu2>
+              <fdir1>0 0 0</fdir1>
+              <slip1>0.0</slip1>
+              <slip2>0.0</slip2>
+            </ode>
+          </friction>
+          <contact>
+            <ode>
+              <soft_cfm>0</soft_cfm>
+              <soft_erp>0.2</soft_erp>
+              <kp>1e+5</kp>
+              <kd>1</kd>
+              <max_vel>0.01</max_vel>
+              <min_depth>0.001</min_depth>
+            </ode>
+          </contact>
+        </surface>
+      </collision>
+
+      <visual name="wheel_left_visual">
+        <pose>0 0.08 0.023 0 0 0</pose>
+        <geometry>
+          <mesh>
+            <uri>model://turtlebot3_common/meshes/wheels/left_tire.stl</uri>
+            <scale>0.001 0.001 0.001</scale>
+          </mesh>
+        </geometry>
+        <material>
+          <ambient>0.2 0.2 0.2 1.0</ambient>
+          <diffuse>0.2 0.2 0.2 1.0</diffuse>
+        </material>
+      </visual>
+    </link>
+
+    <link name="wheel_right_link">
+
+      <inertial>
+        <pose>0.0 -0.08 0.023 -1.57 0 0</pose>
+        <inertia>
+          <ixx>5.445e-05</ixx>
+          <ixy>0</ixy>
+          <ixz>0</ixz>
+          <iyy>5.445e-05</iyy>
+          <iyz>0</iyz>
+          <izz>1.089e-04</izz>
+        </inertia>
+        <mass>0.1</mass>
+      </inertial>
+      
+      <collision name="wheel_right_collision">
+        <pose>0.0 -0.08 0.023 -1.57 0 0</pose>
+        <geometry>
+          <cylinder>
+            <radius>0.033</radius>
+            <length>0.018</length>
+          </cylinder>
+        </geometry>
+        <surface>
+          <!-- This friction pamareter don't contain reliable data!! -->
+          <friction>
+            <ode>
+              <mu>100000.0</mu>
+              <mu2>100000.0</mu2>
+              <fdir1>0 0 0</fdir1>
+              <slip1>0.0</slip1>
+              <slip2>0.0</slip2>
+            </ode>
+          </friction>
+          <contact>
+            <ode>
+              <soft_cfm>0</soft_cfm>
+              <soft_erp>0.2</soft_erp>
+              <kp>1e+5</kp>
+              <kd>1</kd>
+              <max_vel>0.01</max_vel>
+              <min_depth>0.001</min_depth>
+            </ode>
+          </contact>
+        </surface>
+      </collision>
+
+      <visual name="wheel_right_visual">
+        <pose>0.0 -0.08 0.023 0 0 0</pose>
+        <geometry>
+          <mesh>
+            <uri>model://turtlebot3_common/meshes/wheels/right_tire.stl</uri>
+            <scale>0.001 0.001 0.001</scale>
+          </mesh>
+        </geometry>
+        <material>
+          <ambient>0.2 0.2 0.2 1.0</ambient>
+          <diffuse>0.2 0.2 0.2 1.0</diffuse>
+        </material>
+      </visual>
+    </link>
+
+    <link name='caster_back_link'>
+      <pose>-0.081 0 -0.004 -1.57 0 0</pose>
+      <inertial>
+        <mass>0.005</mass>
+        <inertia>
+          <ixx>0.00001</ixx>
+          <ixy>0.000</ixy>
+          <ixz>0.000</ixz>
+          <iyy>0.00001</iyy>
+          <iyz>0.000</iyz>
+          <izz>0.00001</izz>
+        </inertia>
+      </inertial>
+      <collision name='collision'>
+        <geometry>
+          <sphere>
+            <radius>0.005000</radius>
+          </sphere>
+        </geometry>
+        <surface>
+          <contact>
+            <ode>
+              <soft_cfm>0</soft_cfm>
+              <soft_erp>0.2</soft_erp>
+              <kp>1e+5</kp>
+              <kd>1</kd>
+              <max_vel>0.01</max_vel>
+              <min_depth>0.001</min_depth>
+            </ode>
+          </contact>
+        </surface>
+      </collision>
+    </link>
+
+    <joint name="base_joint" type="fixed">
+      <parent>base_footprint</parent>
+      <child>base_link</child>
+      <pose>0.0 0.0 0.010 0 0 0</pose>
+    </joint>
+
+    <joint name="wheel_left_joint" type="revolute">
+      <parent>base_link</parent>
+      <child>wheel_left_link</child>
+      <pose>0.0 0.08 0.023 -1.57 0 0</pose>
+      <axis>
+        <xyz>0 0 1</xyz>
+        <limit>
+          <effort>20</effort>
+        </limit>
+      </axis>
+    </joint>
+
+    <joint name="wheel_right_joint" type="revolute">
+      <parent>base_link</parent>
+      <child>wheel_right_link</child>
+      <pose>0.0 -0.08 0.023 -1.57 0 0</pose>
+      <axis>
+        <xyz>0 0 1</xyz>
+        <limit>
+          <effort>20</effort>
+        </limit>
+      </axis>
+    </joint>
+
+    <joint name='caster_back_joint' type='ball'>
+      <parent>base_link</parent>
+      <child>caster_back_link</child>
+    </joint>
+
+    <joint name="imu_joint" type="fixed">
+      <parent>base_link</parent>
+      <child>imu_link</child>
+      <pose>-0.032 0 0.068 0 0 0</pose>
+      <axis>
+        <xyz>0 0 1</xyz>
+      </axis>
+    </joint>
+
+    <joint name="lidar_joint" type="fixed">
+      <parent>base_link</parent>
+      <child>base_scan</child>
+      <pose>-0.032 0 0.171 0 0 0</pose>
+      <axis>
+        <xyz>0 0 1</xyz>
+      </axis>
+    </joint>
+
+    <plugin filename="gz-sim-diff-drive-system" name="gz::sim::systems::DiffDrive">
+      <!-- wheels -->
+      <left_joint>wheel_left_joint</left_joint>
+      <right_joint>wheel_right_joint</right_joint>
+
+      <!-- kinematics -->
+      <wheel_separation>0.160</wheel_separation>
+      <wheel_radius>0.033</wheel_radius>
+
+      <!-- limits -->
+      <max_linear_acceleration>1.0</max_linear_acceleration>
+
+       <topic>/{robot_name}/cmd_vel</topic>
+
+       <odom_topic>/{robot_name}/odom</odom_topic>
+       <frame_id>odom</frame_id>
+       <child_frame_id>base_footprint</child_frame_id>
+       <odom_publisher_frequency>30</odom_publisher_frequency>
+
+       <tf_topic>/tf</tf_topic>
+
+    </plugin>
+
+    <plugin filename="gz-sim-joint-state-publisher-system" name="gz::sim::systems::JointStatePublisher">
+      <topic>/{robot_name}/joint_states</topic>
+      <joint_name>wheel_left_joint</joint_name>
+      <joint_name>wheel_right_joint</joint_name>
+    </plugin>
+
+  </model>
+</sdf>
+
+        """  # (shortened for clarity)
+
+    sdf_content = sdf_template.replace("{robot_name}", robot_name)
+    file_name=f'{robot_name}.sdf'
+    output_path=Path(__file__).parent.parent / 'models' / 'turtlebot3_burger' / file_name
+    with open(output_path, "w") as f:
+        f.write(sdf_content)
+
+    print(f"SDF file written to: {output_path}")
 
 def get_scenario_path(scenario_file_name):
     MAPF_ros2_ws=os.getcwd()
