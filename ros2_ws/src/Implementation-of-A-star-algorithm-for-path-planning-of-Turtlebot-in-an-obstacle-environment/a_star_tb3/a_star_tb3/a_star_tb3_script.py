@@ -432,6 +432,7 @@ class ROS_move(Node):
                 z = position.z
                 orientation_list = [orientation.x, orientation.y, orientation.z, orientation.w]
                 roll, pitch, yaw = euler_from_quaternion(orientation_list)
+                #print(f"yaw ==> {yaw}")
                 
                 msgToSend: Pose = Pose()
                 theta = yaw
@@ -564,6 +565,7 @@ def main():
 
     start_time = time.time()
     paths = mod.algo(benchmark_content, scenario_content)
+    print(f"paths ====> {paths}")
     end_time = time.time()
     elapsed_time = end_time - start_time
     if not paths:   
@@ -585,6 +587,9 @@ def main():
     
     save_results("uploads/results.txt", goal_reached=True, elapsed_time=elapsed_time, robot_paths=robot_paths)
     
+
+
+
     robots_way_points = [
         [(round(float(x) * 0.1,2), round(float(y) * 0.1,2)) for (x, y) in path]
         for path in paths

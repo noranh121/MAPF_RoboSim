@@ -108,14 +108,18 @@ class Controller_Node(Node):
         
         # Error in heading
         err_theta = desired_theta - self.angle
+
+        #self.get_logger().info(f"Desired theta = {desired_theta} -- Error theta = {err_theta} -- Current angle = {self.angle}")
        
         # Handle wrap-around issues (e.g., if error jumps from +pi to -pi)
-        while err_theta > math.pi:
+        if err_theta > math.pi:
             err_theta -= 2.0 * math.pi
-        while err_theta < -math.pi:
+        if err_theta < -math.pi:
             err_theta += 2.0 * math.pi
+
+        self.get_logger().info(f"error theta ==> {err_theta}")
             
-        self.get_logger().debug(f"Desired Angle = {desired_theta} current angle {self.angle} Error angle {err_theta}")
+        #self.get_logger().debug(f"Desired Angle = {desired_theta} current angle {self.angle} Error angle {err_theta}")
         
         # PID constants for linear velocity (distance control)
         Kp_dist = 0.2
@@ -128,7 +132,7 @@ class Controller_Node(Node):
 
         # PID constants for angular velocity (heading control)
         Kp_theta = 1.15
-        Ki_theta = 0.05
+        Ki_theta = 0.005
         Kd_theta = 0.2
         max_integral = 1.0
         
@@ -147,7 +151,7 @@ class Controller_Node(Node):
 
         else:
             a_v = 0
-            integral_theta = 0
+            #integral_theta = 0
 
         #Original threshold = 0.05
         if err_dist>threshold or abs(err_theta)>threshold:
@@ -161,11 +165,12 @@ class Controller_Node(Node):
         previous_err_theta = err_theta
 
         #linear velocity multiplied by 5 for faster robot movement
-        self.my_velocity_cont(l_v*5, a_v)
+        self.my_velocity_cont(l_v, a_v)
 
     def pose_callback(self, msg: Pose):
         x_tocheck = msg.x #+ self.init_x
         y_tocheck = msg.y #+ self.init_y
+        self.angle = msg.theta
         if self.filled_way_points:
             if self.is_within_distance((x_tocheck, y_tocheck), (self.desired_x, self.desired_y)):
                 self.current_x = np.round(x_tocheck, self.round_by)
@@ -193,7 +198,6 @@ class Controller_Node(Node):
         x1, y1 = curr
         x2, y2 = desired
         distance = math.sqrt((x2 - x1)**2 + (y2 - y1)**2)
-        self.get_logger().info(f"Distance: {distance}, Boolean: {distance < threshold}")
         return distance < threshold
     
     def update_desired_position(self):
