@@ -173,7 +173,7 @@ def generate_launch_description():
                     "-y",
                     robo_y_pose,
                     "-z",
-                    "0.01"
+                    "0.0"
                 ],
                 output="screen",
             )
