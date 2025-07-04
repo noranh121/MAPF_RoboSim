@@ -16,6 +16,8 @@ class Controller_Node(Node):
         super().__init__(f'turt_controller_{namespace}')
         self.get_logger().info("Node Started")
 
+        self.namespace = namespace
+
         self.way_points = []
         self.round_by = 4
 
@@ -28,6 +30,10 @@ class Controller_Node(Node):
 
         self.init_x = 0
         self.init_y = 0
+
+
+
+        self.previous_time = time.time()
 
 
 
@@ -99,6 +105,11 @@ class Controller_Node(Node):
         err_x = self.desired_x - self.current_x
         err_y = self.desired_y - self.current_y
         err_dist = (err_x**2+err_y**2)**0.5
+
+
+        current_time = time.time()
+        dt = current_time - self.previous_time
+        self.previous_time = current_time
         
         # Distance error (magnitude of the error vector)
         self.get_logger().debug(f"Error in x {err_x} and error in y {err_y}")
@@ -117,7 +128,7 @@ class Controller_Node(Node):
         if err_theta < -math.pi:
             err_theta += 2.0 * math.pi
 
-        self.get_logger().info(f"error theta ==> {err_theta}")
+        #self.get_logger().info(f"error theta ==> {err_theta}")
             
         #self.get_logger().debug(f"Desired Angle = {desired_theta} current angle {self.angle} Error angle {err_theta}")
         
@@ -126,33 +137,37 @@ class Controller_Node(Node):
         Ki_dist = 0.05
         Kd_dist = 0.02
 
-        # Kp_dist = 0.25
-        # Ki_dist = 0.01
-        # Kd_dist = 0.05
-
         # PID constants for angular velocity (heading control)
-        Kp_theta = 1.15
-        Ki_theta = 0.005
-        Kd_theta = 0.2
-        max_integral = 1.0
-        
-        integral_dist = max(min(integral_dist, max_integral), -max_integral)
-        integral_theta = max(min(integral_theta, max_integral), -max_integral)
+        # Kp_theta = 1.15
+        # Ki_theta = 0.005
+        # Kd_theta = 0.35
 
+
+        Kp_theta = 1.10
+        Ki_theta = 0.005
+        Kd_theta = 0.15
+
+
+        integral_dist += err_dist*dt
+        integral_theta += err_theta*dt
+
+
+        #self.get_logger().info(f"integral_theta ==> {integral_theta}")
         #integral_dist += err_dist
         derivative_dist = err_dist - previous_err_dist
         #integral_theta += err_theta
         derivative_theta = err_theta - previous_err_theta
         
         #self.get_logger().info(f"err_theta: {err_theta} degrees")
-        if abs(err_theta) > 0.05:
+        if abs(err_theta) > 0.02:
             # Turn until we are close enough to the desired angle
             a_v = Kp_theta * err_theta + Ki_theta * integral_theta + Kd_theta * derivative_theta
+            previous_err_theta = err_theta
 
         else:
             a_v = 0
-            #integral_theta = 0
-
+            integral_theta = 0
+        self.get_logger().info(f"{self.namespace}/a_v ==> {a_v} ===> {err_theta}")
         #Original threshold = 0.05
         if err_dist>threshold or abs(err_theta)>threshold:
              l_v = Kp_dist * abs(err_dist) + Ki_dist * integral_dist + Kd_dist * derivative_dist
@@ -161,11 +176,14 @@ class Controller_Node(Node):
         else:
             self.get_logger().debug("Robot distance is within the goal tolerance")
             l_v = 0
+            
+            #integral_dist = 0
 
-        previous_err_theta = err_theta
+
 
         #linear velocity multiplied by 5 for faster robot movement
-        self.my_velocity_cont(l_v, a_v)
+        l_v_to_publish = l_v*10 if a_v == 0 else l_v
+        self.my_velocity_cont(l_v_to_publish, a_v)
 
     def pose_callback(self, msg: Pose):
         x_tocheck = msg.x #+ self.init_x
