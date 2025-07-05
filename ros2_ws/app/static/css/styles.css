@@ -82,6 +82,10 @@ body {
     background-color: #8852b5;
 }
 
+.stop-button-color {
+    background-color: #d65a67;
+}
+
 .form-check-input:checked {
     background-color: #8852b5; 
     border-color: #8852b5;
