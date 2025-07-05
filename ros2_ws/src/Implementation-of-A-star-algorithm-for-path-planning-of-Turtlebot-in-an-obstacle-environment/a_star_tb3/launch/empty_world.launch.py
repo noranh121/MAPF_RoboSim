@@ -767,7 +767,7 @@ def get_scenario_path(scenario_file_name):
     scenario_path=MAPF_ros2_ws+'/src/Implementation-of-A-star-algorithm-for-path-planning-of-Turtlebot-in-an-obstacle-environment/a_star_tb3/scenarios/'+scenario_file_name
     return scenario_path
     
-def start_goal_parser(scenarion_file_name=None):
+def start_goal_parser(scenarion_file_name=None, cell_size=0.1):
     file_path = get_scenario_path(scenarion_file_name)
     star_goal_pairs = []
     with open(file_path, 'r') as file:
@@ -777,8 +777,8 @@ def start_goal_parser(scenarion_file_name=None):
                 if line and not line.startswith("version"):  # Ignore first line
                     parts = line.split()  # Split the line into start and goal parts
                     # Parse the start and goal coordinates from the line
-                    start = tuple(float(x) * 0.1 for x in parts[4:6])
-                    goal = tuple(float(x) * 0.1 for x in parts[6:8])
+                    start = tuple(float(x) * cell_size for x in parts[4:6])
+                    goal = tuple(float(x) * cell_size for x in parts[6:8])
                     print('start:', start, 'goal:', goal)
                     # Add the pair to the list
                     # star_goal_pairs.append([start, goal])

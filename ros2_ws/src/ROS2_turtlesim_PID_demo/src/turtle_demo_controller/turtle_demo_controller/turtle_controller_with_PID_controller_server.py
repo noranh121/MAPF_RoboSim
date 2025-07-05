@@ -167,7 +167,6 @@ class Controller_Node(Node):
         else:
             a_v = 0
             integral_theta = 0
-        self.get_logger().info(f"{self.namespace}/a_v ==> {a_v} ===> {err_theta}")
         #Original threshold = 0.05
         if err_dist>threshold or abs(err_theta)>threshold:
              l_v = Kp_dist * abs(err_dist) + Ki_dist * integral_dist + Kd_dist * derivative_dist
@@ -183,11 +182,11 @@ class Controller_Node(Node):
 
         #linear velocity multiplied by 5 for faster robot movement
         l_v_to_publish = l_v*10 if a_v == 0 else l_v
-        self.my_velocity_cont(l_v_to_publish, a_v)
+        self.my_velocity_cont(l_v_to_publish, a_v*5)
 
     def pose_callback(self, msg: Pose):
-        x_tocheck = msg.x #+ self.init_x
-        y_tocheck = msg.y #+ self.init_y
+        x_tocheck = msg.x
+        y_tocheck = msg.y
         self.angle = msg.theta
         if self.filled_way_points:
             if self.is_within_distance((x_tocheck, y_tocheck), (self.desired_x, self.desired_y)):
