@@ -175,11 +175,18 @@ def stop_simulation():
         result.wait()
         result = None
 
+@app.route('/stop', methods=['POST'])
+def stop():
+    global result
+    stop_simulation
+    time.sleep(7)
+    return redirect(url_for('home'))
+
 @app.route('/simulate', methods=['POST'])
 def simulate():
     global result
     stop_simulation()
-    time.sleep(5)
+    time.sleep(7)
 
     ros_distro = os.environ.get("ROS_DISTRO")
 

@@ -72,7 +72,6 @@ def get_grid(map_file: str | Path) -> Grid:
         if len(row) == width and row != "map":
             grid[y] = [s == "." for s in row]
             y += 1
-
     # simple error check
     assert y == height, f"map format seems strange, check {map_file}"
 

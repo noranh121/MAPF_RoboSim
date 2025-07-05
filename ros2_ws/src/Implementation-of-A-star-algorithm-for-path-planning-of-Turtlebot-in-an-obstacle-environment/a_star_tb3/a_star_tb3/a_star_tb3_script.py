@@ -531,7 +531,7 @@ def save_results(filename, goal_reached, elapsed_time, robot_paths):
     """
     with open(filename, 'w') as f:
         f.write(f"<goal_reached>={goal_reached}\n")
-        f.write(f"<time>={elapsed_time:.2f}\n\n")
+        f.write(f"<time to calculate paths>={elapsed_time:.4f}s\n\n")
         
         for robot in robot_paths:
             f.write(f"{robot['robot']}:\n")
@@ -565,7 +565,6 @@ def main():
 
     start_time = time.time()
     paths = mod.algo(benchmark_content, scenario_content)
-    print(f"paths ====> {paths}")
     end_time = time.time()
     elapsed_time = end_time - start_time
     if not paths:   
@@ -595,7 +594,6 @@ def main():
         for path in paths
     ]
 
-    print("waypoints ==>", robots_way_points)
     backend_engine= Backend_Engine()
     obstacle_space = backend_engine.convert_map_to_obstacles(benchmark_file_name_)
     backend_engine.create_map(d=0, map_width=width*0.1, map_height=height*0.1,obstacles=obstacle_space, paths=robots_way_points)
