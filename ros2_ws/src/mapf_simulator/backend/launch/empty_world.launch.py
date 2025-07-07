@@ -56,7 +56,7 @@ def generate_launch_description():
     urdf_file_name = f'turtlebot3_{TURTLEBOT3_MODEL}' + '.urdf'
 
     urdf_path = os.path.join(
-        get_package_share_directory('a_star_tb3'),
+        get_package_share_directory('backend'),
         'urdf',
         urdf_file_name)
     
@@ -67,21 +67,21 @@ def generate_launch_description():
         
         # add the path to the sdf paths list
         sdf_paths.append(os.path.join(
-            get_package_share_directory('a_star_tb3'),
+            get_package_share_directory('backend'),
             'models',
             f'turtlebot3_{TURTLEBOT3_MODEL}',
             f'robot{i}.sdf'
         ))
 
     # sdf_path_1 = os.path.join(
-    #     get_package_share_directory('a_star_tb3'),
+    #     get_package_share_directory('backend'),
     #     'models',
     #     f'turtlebot3_{TURTLEBOT3_MODEL}',
     #     'model.sdf'
     # )
 
     # sdf_path_2 = os.path.join(
-    #     get_package_share_directory('a_star_tb3'),
+    #     get_package_share_directory('backend'),
     #     'models',
     #     f'turtlebot3_{TURTLEBOT3_MODEL}',
     #     'model_2.sdf'
@@ -93,14 +93,14 @@ def generate_launch_description():
 
     world_file_name=str(pathlib.Path(args.benchmark).with_suffix(".world"))
     MAPF_ros2_ws=os.getcwd()
-    world_file_path=MAPF_ros2_ws+'/src/mapf_simulator/a_star_tb3/worlds/'+world_file_name
-    benchmark_file_path=MAPF_ros2_ws+'/src/mapf_simulator/a_star_tb3/benchmarks/'+args.benchmark
+    world_file_path=MAPF_ros2_ws+'/src/mapf_simulator/backend/worlds/'+world_file_name
+    benchmark_file_path=MAPF_ros2_ws+'/src/mapf_simulator/backend/benchmarks/'+args.benchmark
     Map_Parser().convert_map_to_world(benchmark_file_path,world_file_path)
     Map_Parser().convert_map_to_world(benchmark_file_path,os.path.dirname(__file__)+'/worlds/'+world_file_name)
 
 
     world = os.path.join(
-        get_package_share_directory('a_star_tb3'),
+        get_package_share_directory('backend'),
         'worlds',
         world_file_name
     )
@@ -204,7 +204,7 @@ def generate_launch_description():
         period=5.0,
         actions=[
             Node(
-        package='a_star_tb3',
+        package='backend',
         executable='a_star_tb3_script.py',
         output='screen',
         emulate_tty=True,
@@ -214,7 +214,7 @@ def generate_launch_description():
     generate_bridge_file(number_of_robots)
     
     bridge_params = os.path.join(
-        get_package_share_directory('a_star_tb3'),
+        get_package_share_directory('backend'),
         'params',
         'bridge.yaml'
     )
@@ -765,7 +765,7 @@ def generate_sdf_file(robot_name: str):
 
 def get_scenario_path(scenario_file_name):
     MAPF_ros2_ws=os.getcwd()
-    scenario_path=MAPF_ros2_ws+'/src/mapf_simulator/a_star_tb3/scenarios/'+scenario_file_name
+    scenario_path=MAPF_ros2_ws+'/src/mapf_simulator/backend/scenarios/'+scenario_file_name
     return scenario_path
     
 def start_goal_parser(scenarion_file_name=None, cell_size=0.1):

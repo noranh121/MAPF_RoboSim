@@ -12,7 +12,7 @@ class TestMapParser(unittest.TestCase):
         ros2_ws = os.path.expanduser("~/MAPF_RoboSim/ros2_ws")
         module_path = os.path.join(
             ros2_ws, 
-            "src/mapf_simulator/a_star_tb3/launch/empty_world.launch.py"
+            "src/mapf_simulator/backend/launch/empty_world.launch.py"
         )
         
         spec = importlib.util.spec_from_file_location("empty_world.launch", module_path)

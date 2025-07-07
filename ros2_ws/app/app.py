@@ -15,15 +15,15 @@ app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 MAPF_ros2_ws = os.getcwd()
 ALGO_FOLDER = os.path.join(
     MAPF_ros2_ws,
-    'src/mapf_simulator/a_star_tb3/algorithms'
+    'src/mapf_simulator/backend/algorithms'
 )
 MAP_FOLDER = os.path.join(
     MAPF_ros2_ws,
-    'src/mapf_simulator/a_star_tb3/benchmarks'
+    'src/mapf_simulator/backend/benchmarks'
 )
 SCEN_FOLDER = os.path.join(
     MAPF_ros2_ws,
-    'src/mapf_simulator/a_star_tb3/scenarios'
+    'src/mapf_simulator/backend/scenarios'
 )
 
 
@@ -83,7 +83,7 @@ def upload_algorithm():
     if file:
         try:
             MAPF_ros2_ws=os.getcwd()
-            path = MAPF_ros2_ws + '/src/mapf_simulator/a_star_tb3/algorithms/'
+            path = MAPF_ros2_ws + '/src/mapf_simulator/backend/algorithms/'
 
             filepath = os.path.join(path, file.filename)
             file.save(filepath)
@@ -115,7 +115,7 @@ def upload_benchmark():
 
         if file:
             MAPF_ros2_ws=os.getcwd()
-            path = MAPF_ros2_ws + '/src/mapf_simulator/a_star_tb3/benchmarks/'
+            path = MAPF_ros2_ws + '/src/mapf_simulator/backend/benchmarks/'
 
             filepath = os.path.join(path, file.filename)
             file.save(filepath)
@@ -148,7 +148,7 @@ def upload_scenario():
 
         if file:
             MAPF_ros2_ws=os.getcwd()
-            path = MAPF_ros2_ws + '/src/mapf_simulator/a_star_tb3/scenarios/'
+            path = MAPF_ros2_ws + '/src/mapf_simulator/backend/scenarios/'
 
             filepath = os.path.join(path, file.filename)
             file.save(filepath)
@@ -194,7 +194,7 @@ def simulate():
     try:
         upfront_command = "wmctrl -a 'Gazebo'"
         
-        command = f"ros2 launch a_star_tb3 empty_world.launch.py benchmark:={selected_map} scenario:={selected_scen} algorithm:={selected_algo}"
+        command = f"ros2 launch backend empty_world.launch.py benchmark:={selected_map} scenario:={selected_scen} algorithm:={selected_algo}"
         commands = [
             "cd ~/MAPF_RoboSim/ros2_ws",
             "colcon build",
@@ -269,3 +269,5 @@ if __name__ == '__main__':
 
 
 #Implementation-of-A-star-algorithm-for-path-planning-of-Turtlebot-in-an-obstacle-environment => mapf_simulator
+
+#a_star_tb3 => backend

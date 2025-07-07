@@ -39,7 +39,7 @@ from pathlib import Path
 
 start_time = time.time()
 
-# map_file_path = '/home/ahmadaw/MAPF_RoboSim/ros2_ws/src/mapf_simulator/a_star_tb3/benchmarks/benchmark.txt'
+# map_file_path = '/home/ahmadaw/MAPF_RoboSim/ros2_ws/src/mapf_simulator/backend/benchmarks/benchmark.txt'
 class Backend_Engine:
     def is_point_in_any_block(self, x_tocheck, y_tocheck, obstacle_space):
         for x_center, y_center, size_x , size_y in obstacle_space:
@@ -61,7 +61,7 @@ class Backend_Engine:
     
     def get_benchmark_path(self,benchmark_file_name):
         MAPF_ros2_ws=os.getcwd()
-        benchmark_path=MAPF_ros2_ws+'/src/mapf_simulator/a_star_tb3/benchmarks/'+benchmark_file_name
+        benchmark_path=MAPF_ros2_ws+'/src/mapf_simulator/backend/benchmarks/'+benchmark_file_name
         return benchmark_path
     
     # def start_goal_parser(self,start_goal):
@@ -499,12 +499,12 @@ def load_module_from_path(path: Path, name: str = None):
 
 def get_arg_path(fileName: str, dir: str):
     MAPF_ros2_ws=os.getcwd()
-    path = MAPF_ros2_ws + f'/src/mapf_simulator/a_star_tb3/{dir}/'
+    path = MAPF_ros2_ws + f'/src/mapf_simulator/backend/{dir}/'
     return path + fileName
 
 def get_algo_path(fileName: str, dir: str):
     MAPF_ros2_ws=os.getcwd()
-    path = MAPF_ros2_ws + f'/install/a_star_tb3/share/a_star_tb3/{dir}/'
+    path = MAPF_ros2_ws + f'/install/backend/share/backend/{dir}/'
     return path + fileName
 
 def fetch_content(file_path: str):
@@ -617,7 +617,7 @@ def main():
     
 
     # Mapf_ros2_ws = os.getcwd()
-    # export_path = Mapf_ros2_ws + '/src/mapf_simulator/a_star_tb3/benchmarks/stats.txt'
+    # export_path = Mapf_ros2_ws + '/src/mapf_simulator/backend/benchmarks/stats.txt'
     # try:
     #     with open(export_path, 'w', encoding='utf-8') as file:
     #         file.write(result_str)

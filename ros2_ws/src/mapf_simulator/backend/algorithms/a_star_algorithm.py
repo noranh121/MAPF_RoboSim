@@ -27,7 +27,7 @@ import json
 
 start_time = time.time()
 
-# map_file_path = '/home/ahmadaw/MAPF_RoboSim/ros2_ws/src/mapf_simulator/a_star_tb3/benchmarks/benchmark.txt'
+# map_file_path = '/home/ahmadaw/MAPF_RoboSim/ros2_ws/src/mapf_simulator/backend/benchmarks/benchmark.txt'
 class Parser_Engine:
     def is_point_in_any_block(self, x_tocheck, y_tocheck, obstacle_space):
         for x_center, y_center, size_x , size_y in obstacle_space:
@@ -345,8 +345,8 @@ def algo(benchmark: str, scenario: str) -> list[list[tuple]]:
 
 
 # paths=algo(
-#     fetch_content("/home/ahmadaw/MAPF_RoboSim/ros2_ws/src/mapf_simulator/a_star_tb3/benchmarks/benchmark.txt"),
-#     fetch_content("/home/ahmadaw/MAPF_RoboSim/ros2_ws/src/mapf_simulator/a_star_tb3/scenarios/test.txt")
+#     fetch_content("/home/ahmadaw/MAPF_RoboSim/ros2_ws/src/mapf_simulator/backend/benchmarks/benchmark.txt"),
+#     fetch_content("/home/ahmadaw/MAPF_RoboSim/ros2_ws/src/mapf_simulator/backend/scenarios/test.txt")
 # )
 
 # print(paths)

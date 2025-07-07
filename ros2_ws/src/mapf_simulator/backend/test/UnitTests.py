@@ -7,7 +7,7 @@ def setup_A_star():
     Returns:
         A_star: instance of the algorithm
     """
-    from a_star_tb3.a_star_tb3_script import A_star,Backend_Engine
+    from backend.backend_script import A_star,Backend_Engine
     return A_star(),Backend_Engine()
 
 def test_a_star_success(setup_A_star):
@@ -119,7 +119,7 @@ def test_start_goal_parser_failure(setup_A_star):
     """
     Test parsing the map.txt file
     """
-    from a_star_tb3.launch.benchmark_to_world import convert_map_to_world
+    from backend.launch.benchmark_to_world import convert_map_to_world
     with pytest.raises(Exception, match="invaled map format"):
         convert_map_to_world('a.txt','a.txt')
     

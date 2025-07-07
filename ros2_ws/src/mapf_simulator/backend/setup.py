@@ -4,7 +4,7 @@ import os
 from setuptools import find_packages
 from glob import glob
 
-package_name = 'a_star_tb3'
+package_name = 'backend'
 
 setup(
     name=package_name,
@@ -19,13 +19,8 @@ setup(
     ],
     install_requires=['setuptools'],
     zip_safe=True,
-    maintainer='sandeep',
-    maintainer_email='ssandy086@gmail.com',
-    # scripts=['a_star_tb3/a_star_tb3_script.py'],
-    description='TODO: Package description',
-    license='TODO: License declaration',
     tests_require=['pytest'],
     entry_points={
-        'console_scripts': ['a_star_tb3_script.py = a_star_tb3.a_star_tb3_script:main'],
+        'console_scripts': ['a_star_tb3_script.py = backend.a_star_tb3_script:main'],
     },
 )

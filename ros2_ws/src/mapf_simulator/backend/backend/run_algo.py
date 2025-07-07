@@ -2,7 +2,7 @@ import subprocess
 import json
 import a_star_algorithm
 # result = subprocess.run(
-#     ["python3", "src/mapf_simulator/a_star_tb3/a_star_tb3/a_star_algorithm.py","benchmark.txt","test.txt"],
+#     ["python3", "src/mapf_simulator/backend/backend/a_star_algorithm.py","benchmark.txt","test.txt"],
 #     capture_output=True,
 #     text=True
 # )
