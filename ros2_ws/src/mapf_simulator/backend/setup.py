@@ -21,6 +21,6 @@ setup(
     zip_safe=True,
     tests_require=['pytest'],
     entry_points={
-        'console_scripts': ['a_star_tb3_script.py = backend.a_star_tb3_script:main'],
+        'console_scripts': ['backend_engine.py = backend.backend_engine:main'],
     },
 )

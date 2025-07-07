@@ -205,7 +205,7 @@ def generate_launch_description():
         actions=[
             Node(
         package='backend',
-        executable='a_star_tb3_script.py',
+        executable='backend_engine.py',
         output='screen',
         emulate_tty=True,
         arguments = [LaunchConfiguration('--benchmark'), LaunchConfiguration('--scenario'), LaunchConfiguration('--algorithm')],

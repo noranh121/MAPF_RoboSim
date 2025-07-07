@@ -10,10 +10,10 @@ class TestBackendEngine(unittest.TestCase):
         ros2_ws = os.path.expanduser("~/MAPF_RoboSim/ros2_ws")
         module_path = os.path.join(
             ros2_ws, 
-            "src/mapf_simulator/backend/backend/a_star_tb3_script.py"
+            "src/mapf_simulator/backend/backend/backend_engine.py"
         )
         
-        spec = importlib.util.spec_from_file_location("a_star_tb3_script", module_path)
+        spec = importlib.util.spec_from_file_location("backend_engine", module_path)
         module = importlib.util.module_from_spec(spec)
         
         try:

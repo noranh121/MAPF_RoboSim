@@ -1,5 +1,5 @@
 <goal_reached>=True
-<time to calculate paths>=0.0897s
+<time to calculate paths>=0.0927s
 
 robot1:
 <start_point>=(40, 17)
