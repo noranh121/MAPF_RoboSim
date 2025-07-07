@@ -56,8 +56,8 @@ def algo(benchmark: str, scenario: str) -> list[list[tuple]]:
 
 
 # paths=algo(
-#     fetch_content("/home/ahmadaw/MAPF_RoboSim/ros2_ws/src/Implementation-of-A-star-algorithm-for-path-planning-of-Turtlebot-in-an-obstacle-environment/a_star_tb3/benchmarks/benchmark.txt"),
-#     fetch_content("/home/ahmadaw/MAPF_RoboSim/ros2_ws/src/Implementation-of-A-star-algorithm-for-path-planning-of-Turtlebot-in-an-obstacle-environment/a_star_tb3/scenarios/test.txt")
+#     fetch_content("/home/ahmadaw/MAPF_RoboSim/ros2_ws/src/mapf_simulator/a_star_tb3/benchmarks/benchmark.txt"),
+#     fetch_content("/home/ahmadaw/MAPF_RoboSim/ros2_ws/src/mapf_simulator/a_star_tb3/scenarios/test.txt")
 # )
 
 # print(paths)

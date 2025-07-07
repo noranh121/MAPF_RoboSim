@@ -15,15 +15,15 @@ app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 MAPF_ros2_ws = os.getcwd()
 ALGO_FOLDER = os.path.join(
     MAPF_ros2_ws,
-    'src/Implementation-of-A-star-algorithm-for-path-planning-of-Turtlebot-in-an-obstacle-environment/a_star_tb3/algorithms'
+    'src/mapf_simulator/a_star_tb3/algorithms'
 )
 MAP_FOLDER = os.path.join(
     MAPF_ros2_ws,
-    'src/Implementation-of-A-star-algorithm-for-path-planning-of-Turtlebot-in-an-obstacle-environment/a_star_tb3/benchmarks'
+    'src/mapf_simulator/a_star_tb3/benchmarks'
 )
 SCEN_FOLDER = os.path.join(
     MAPF_ros2_ws,
-    'src/Implementation-of-A-star-algorithm-for-path-planning-of-Turtlebot-in-an-obstacle-environment/a_star_tb3/scenarios'
+    'src/mapf_simulator/a_star_tb3/scenarios'
 )
 
 
@@ -83,7 +83,7 @@ def upload_algorithm():
     if file:
         try:
             MAPF_ros2_ws=os.getcwd()
-            path = MAPF_ros2_ws + '/src/Implementation-of-A-star-algorithm-for-path-planning-of-Turtlebot-in-an-obstacle-environment/a_star_tb3/algorithms/'
+            path = MAPF_ros2_ws + '/src/mapf_simulator/a_star_tb3/algorithms/'
 
             filepath = os.path.join(path, file.filename)
             file.save(filepath)
@@ -115,7 +115,7 @@ def upload_benchmark():
 
         if file:
             MAPF_ros2_ws=os.getcwd()
-            path = MAPF_ros2_ws + '/src/Implementation-of-A-star-algorithm-for-path-planning-of-Turtlebot-in-an-obstacle-environment/a_star_tb3/benchmarks/'
+            path = MAPF_ros2_ws + '/src/mapf_simulator/a_star_tb3/benchmarks/'
 
             filepath = os.path.join(path, file.filename)
             file.save(filepath)
@@ -148,7 +148,7 @@ def upload_scenario():
 
         if file:
             MAPF_ros2_ws=os.getcwd()
-            path = MAPF_ros2_ws + '/src/Implementation-of-A-star-algorithm-for-path-planning-of-Turtlebot-in-an-obstacle-environment/a_star_tb3/scenarios/'
+            path = MAPF_ros2_ws + '/src/mapf_simulator/a_star_tb3/scenarios/'
 
             filepath = os.path.join(path, file.filename)
             file.save(filepath)
@@ -266,3 +266,6 @@ def export():
 
 if __name__ == '__main__':
     app.run(debug=True)
+
+
+#Implementation-of-A-star-algorithm-for-path-planning-of-Turtlebot-in-an-obstacle-environment => mapf_simulator

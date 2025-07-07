@@ -10,7 +10,7 @@ class TestBackendEngine(unittest.TestCase):
         ros2_ws = os.path.expanduser("~/MAPF_RoboSim/ros2_ws")
         module_path = os.path.join(
             ros2_ws, 
-            "src/Implementation-of-A-star-algorithm-for-path-planning-of-Turtlebot-in-an-obstacle-environment/a_star_tb3/a_star_tb3/a_star_tb3_script.py"
+            "src/mapf_simulator/a_star_tb3/a_star_tb3/a_star_tb3_script.py"
         )
         
         spec = importlib.util.spec_from_file_location("a_star_tb3_script", module_path)
@@ -116,11 +116,11 @@ class TestBackendEngine(unittest.TestCase):
             with unittest.mock.patch('os.getcwd') as mock_getcwd:
                 mock_getcwd.return_value = '/home/ali/MAPF_RoboSim/ros2_ws'
                 benchmark_file = 'test.txt'
-                expected_path = '/home/ali/MAPF_RoboSim/ros2_ws/src/Implementation-of-A-star-algorithm-for-path-planning-of-Turtlebot-in-an-obstacle-environment/a_star_tb3/benchmarks/test.txt'
+                expected_path = '/home/ali/MAPF_RoboSim/ros2_ws/src/mapf_simulator/a_star_tb3/benchmarks/test.txt'
                 result = self.engine.get_benchmark_path(benchmark_file)
                 self.assertEqual(result, expected_path, "Path should match the expected format")
                 benchmark_file = 'complex-name_123.txt'
-                expected_path = '/home/ali/MAPF_RoboSim/ros2_ws/src/Implementation-of-A-star-algorithm-for-path-planning-of-Turtlebot-in-an-obstacle-environment/a_star_tb3/benchmarks/complex-name_123.txt'
+                expected_path = '/home/ali/MAPF_RoboSim/ros2_ws/src/mapf_simulator/a_star_tb3/benchmarks/complex-name_123.txt'
                 result = self.engine.get_benchmark_path(benchmark_file)
                 self.assertEqual(result, expected_path, "Path should match the expected format for complex filenames")
         

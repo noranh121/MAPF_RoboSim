@@ -93,8 +93,8 @@ def generate_launch_description():
 
     world_file_name=str(pathlib.Path(args.benchmark).with_suffix(".world"))
     MAPF_ros2_ws=os.getcwd()
-    world_file_path=MAPF_ros2_ws+'/src/Implementation-of-A-star-algorithm-for-path-planning-of-Turtlebot-in-an-obstacle-environment/a_star_tb3/worlds/'+world_file_name
-    benchmark_file_path=MAPF_ros2_ws+'/src/Implementation-of-A-star-algorithm-for-path-planning-of-Turtlebot-in-an-obstacle-environment/a_star_tb3/benchmarks/'+args.benchmark
+    world_file_path=MAPF_ros2_ws+'/src/mapf_simulator/a_star_tb3/worlds/'+world_file_name
+    benchmark_file_path=MAPF_ros2_ws+'/src/mapf_simulator/a_star_tb3/benchmarks/'+args.benchmark
     Map_Parser().convert_map_to_world(benchmark_file_path,world_file_path)
     Map_Parser().convert_map_to_world(benchmark_file_path,os.path.dirname(__file__)+'/worlds/'+world_file_name)
 
@@ -765,7 +765,7 @@ def generate_sdf_file(robot_name: str):
 
 def get_scenario_path(scenario_file_name):
     MAPF_ros2_ws=os.getcwd()
-    scenario_path=MAPF_ros2_ws+'/src/Implementation-of-A-star-algorithm-for-path-planning-of-Turtlebot-in-an-obstacle-environment/a_star_tb3/scenarios/'+scenario_file_name
+    scenario_path=MAPF_ros2_ws+'/src/mapf_simulator/a_star_tb3/scenarios/'+scenario_file_name
     return scenario_path
     
 def start_goal_parser(scenarion_file_name=None, cell_size=0.1):
