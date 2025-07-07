@@ -20,7 +20,8 @@ from pathlib import Path
 
 def generate_launch_description():
 
-    TURTLEBOT3_MODEL = os.getenv('TURTLEBOT3_MODEL')
+    #TURTLEBOT3_MODEL = os.getenv('TURTLEBOT3_MODEL')
+    TURTLEBOT3_MODEL = "burger"
 
     ld = LaunchDescription()
 
