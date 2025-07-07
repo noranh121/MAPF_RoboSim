@@ -1,6 +1,6 @@
 from setuptools import find_packages, setup
 
-package_name = 'turtle_demo_controller'
+package_name = 'pid_controller'
 
 setup(
     name=package_name,
@@ -13,14 +13,12 @@ setup(
     ],
     install_requires=['setuptools'],
     zip_safe=True,
-    maintainer='vedantknaik',
-    maintainer_email='vnaik79014@gmail.com',
     description='TODO: Package description',
     license='TODO: License declaration',
     tests_require=['pytest'],
     entry_points={
         'console_scripts': [
-            'turt_controller = turtle_demo_controller.turtle_controller_with_PID_controller_server:main'
+            'robot_controller = pid_controller.pid_controller_server:main'
         ],
     },
 )

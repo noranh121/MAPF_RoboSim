@@ -29,7 +29,7 @@ class TestControllerNode(unittest.TestCase):
         ros2_ws = os.path.expanduser("~/MAPF_RoboSim/ros2_ws")
         module_path = os.path.join(
             ros2_ws, 
-            "src/ROS2_turtlesim_PID_demo/src/turtle_demo_controller/turtle_demo_controller/turtle_controller_with_PID_controller_server.py"
+            "src/controller/src/controller/pid_controller/pid_controller_server.py"
         )
         
         spec = importlib.util.spec_from_file_location("Controller_Node", module_path)

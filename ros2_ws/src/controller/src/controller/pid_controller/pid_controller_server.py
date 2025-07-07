@@ -1,19 +1,16 @@
-#!/usr/bin/env python3
 import rclpy
 import math
 from rclpy.node import Node
 from geometry_msgs.msg import Twist
-from std_msgs.msg import Int32 
 from std_msgs.msg import Float64MultiArray
 from turtlesim.msg import Pose
 from rclpy.executors import MultiThreadedExecutor
 import numpy as np
 import time
-import os
 
 class Controller_Node(Node):
     def __init__(self,namespace):
-        super().__init__(f'turt_controller_{namespace}')
+        super().__init__(f'robot_controller_{namespace}')
         self.get_logger().info("Node Started")
 
         self.namespace = namespace
@@ -49,43 +46,18 @@ class Controller_Node(Node):
         self.declare_parameter('number_of_robots', 0)
         self.number_of_robots = self.get_parameter('number_of_robots').value
 
-    # def way_points_callback(self, msg: Float64MultiArray):
-    #     if not self.filled_way_points:
-    #         stack = []
-    #         if len(msg.data) % 3 != 0:
-    #             self.get_logger().error('Invalid data length in message.')
-    #             return
-
-    #         # Process the data to extract (x, y) pairs
-    #         for i in range(0, len(msg.data), 3):
-    #             x = msg.data[i]
-    #             y = msg.data[i + 1]
-    #             stack.append((x, y))  # Add (x, y) to the stack
-    #         self.way_points = stack
-    #         init_point = self.way_points.pop(0)
-    #         desired_point = self.way_points.pop(0)
-
-    #         self.current_x,self.current_y = init_point
-    #         self.desired_x,self.desired_y = desired_point
-
-    #         self.filled_way_points = True
-
     def way_points_callback(self, msg: Float64MultiArray):
         if not self.filled_way_points:
             stack = []
-            # if len(msg.data) % 3 != 0:
-            #     self.get_logger().error('Invalid data length in message.')
-            #     return
-
             # Process the data to extract (x, y) pairs
             for i in range(0, len(msg.data), 2):
                 x = msg.data[i]
                 y = msg.data[i + 1]
                 stack.append((x, y))  # Add (x, y) to the stack
             self.way_points = stack
-            init_point = self.way_points.pop(0) #0.5 0.5 
+            init_point = self.way_points.pop(0)
             self.init_x, self.init_y = init_point
-            desired_point = self.way_points.pop(0) #0.64, 0.5
+            desired_point = self.way_points.pop(0)
 
             self.current_x,self.current_y = init_point
             self.desired_x,self.desired_y = desired_point
@@ -111,8 +83,6 @@ class Controller_Node(Node):
         dt = current_time - self.previous_time
         self.previous_time = current_time
         
-        # Distance error (magnitude of the error vector)
-        self.get_logger().debug(f"Error in x {err_x} and error in y {err_y}")
 
         # Desired heading based on the position error
         desired_theta = math.atan2(err_y, err_x)
@@ -120,29 +90,19 @@ class Controller_Node(Node):
         # Error in heading
         err_theta = desired_theta - self.angle
 
-        #self.get_logger().info(f"Desired theta = {desired_theta} -- Error theta = {err_theta} -- Current angle = {self.angle}")
        
         # Handle wrap-around issues (e.g., if error jumps from +pi to -pi)
         if err_theta > math.pi:
             err_theta -= 2.0 * math.pi
         if err_theta < -math.pi:
             err_theta += 2.0 * math.pi
-
-        #self.get_logger().info(f"error theta ==> {err_theta}")
-            
-        #self.get_logger().debug(f"Desired Angle = {desired_theta} current angle {self.angle} Error angle {err_theta}")
         
-        # PID constants for linear velocity (distance control)
+        # PID constants for linear velocity
         Kp_dist = 0.2
         Ki_dist = 0.05
         Kd_dist = 0.02
 
-        # PID constants for angular velocity (heading control)
-        # Kp_theta = 1.15
-        # Ki_theta = 0.005
-        # Kd_theta = 0.35
-
-
+        # PID constants for angular velocity
         Kp_theta = 1.10
         Ki_theta = 0.005
         Kd_theta = 0.15
@@ -152,13 +112,9 @@ class Controller_Node(Node):
         integral_theta += err_theta*dt
 
 
-        #self.get_logger().info(f"integral_theta ==> {integral_theta}")
-        #integral_dist += err_dist
         derivative_dist = err_dist - previous_err_dist
-        #integral_theta += err_theta
         derivative_theta = err_theta - previous_err_theta
         
-        #self.get_logger().info(f"err_theta: {err_theta} degrees")
         if abs(err_theta) > 0.02:
             # Turn until we are close enough to the desired angle
             a_v = Kp_theta * err_theta + Ki_theta * integral_theta + Kd_theta * derivative_theta
@@ -167,7 +123,7 @@ class Controller_Node(Node):
         else:
             a_v = 0
             integral_theta = 0
-        #Original threshold = 0.05
+
         if err_dist>threshold or abs(err_theta)>threshold:
              l_v = Kp_dist * abs(err_dist) + Ki_dist * integral_dist + Kd_dist * derivative_dist
              previous_err_dist = err_dist
@@ -176,8 +132,6 @@ class Controller_Node(Node):
             self.get_logger().debug("Robot distance is within the goal tolerance")
             l_v = 0
             
-            #integral_dist = 0
-
 
 
         #linear velocity multiplied by 5 for faster robot movement

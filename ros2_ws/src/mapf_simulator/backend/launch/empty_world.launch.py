@@ -146,14 +146,12 @@ def generate_launch_description():
 
 
     robot_controller = Node(
-                package="turtle_demo_controller",
-                executable="turt_controller",
+                package="pid_controller",
+                executable="robot_controller",
                 output="screen",
                 parameters=[{'number_of_robots': number_of_robots}]
             )
 
-
-    print('args', args)
 
     declared_benchmark = DeclareLaunchArgument('--benchmark', default_value=str(args.benchmark))
     declared_scenario = DeclareLaunchArgument('--scenario', default_value=str(args.scenario))

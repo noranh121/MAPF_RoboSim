@@ -4,7 +4,7 @@
   <name>backend</name>
   <version>0.0.0</version>
   <description>TODO: Package description</description>
-  <maintainer email="ssandy086@gmail.com">sandeep</maintainer>
+  <maintainer email="magednatour@gmail.com">sandeep</maintainer>
   <license>TODO: License declaration</license>
   <buildtool_depend>ament_python</buildtool_depend>
   <exec_depend>rclpy</exec_depend>

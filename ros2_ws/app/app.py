@@ -27,10 +27,6 @@ SCEN_FOLDER = os.path.join(
 )
 
 
-# Predefined built-in algorithms
-# builtin_algorithms = ["Algorithm A", "Algorithm B", "Algorithm C"]
-# builtin_maps = ["map1"]
-# builtin_scenarios = ["scen1"]
 builtin_maps = []
 builtin_scenarios = []
 builtin_algorithms = []
@@ -42,7 +38,8 @@ uploaded_scenarios = []
 
 
 def get_builtin_files(folder):
-    return [f for f in os.listdir(folder) if os.path.isfile(os.path.join(folder, f))]
+    files =  [f for f in os.listdir(folder) if os.path.isfile(os.path.join(folder, f))]
+    return list(set(files))
 
 
 @app.route('/home')
@@ -53,7 +50,7 @@ def home():
     all_algorithms = builtin_algorithms + uploaded_algorithms
     all_maps = builtin_maps + uploaded_maps
     all_scens = builtin_scenarios + uploaded_scenarios
-    return render_template('home.html', algorithms=all_algorithms, maps=all_maps, scenarios=all_scens)
+    return render_template('home.html', algorithms=list(set(all_algorithms)), maps=list(set(all_maps)), scenarios=list(set(all_scens)))
 
 
 @app.route('/about')
@@ -244,14 +241,13 @@ def simulate():
 def export():
     with open("uploads/results.txt", 'r', encoding='utf-8') as f:
         content= f.read()
-    # content = "RESULTS!!!"
     filename = "simulation_stats.txt"
     
     buffer = io.BytesIO()
     buffer.write(content.encode())
     buffer.seek(0)
 
-    return send_file(
+    send_file(
         buffer,
         as_attachment=True,
         download_name=filename,
@@ -261,14 +257,9 @@ def export():
     flash(f"Stats Exprted Successfully")
     return redirect(url_for('home'))
 
+
+
  
 
 if __name__ == '__main__':
     app.run(debug=True)
-
-
-#Implementation-of-A-star-algorithm-for-path-planning-of-Turtlebot-in-an-obstacle-environment => mapf_simulator
-
-#a_star_tb3 => backend
-
-#a_star_tb3_script => backend_engine
