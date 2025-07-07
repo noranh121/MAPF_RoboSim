@@ -168,18 +168,13 @@ def upload_scenario():
 
 result = None
 
+@app.route('/stop', methods=['POST'])
 def stop_simulation():
     global result
     if result and result.poll() is None:
         os.killpg(os.getpgid(result.pid), signal.SIGINT)
         result.wait()
         result = None
-
-@app.route('/stop', methods=['POST'])
-def stop():
-    global result
-    stop_simulation
-    time.sleep(7)
     return redirect(url_for('home'))
 
 @app.route('/simulate', methods=['POST'])
@@ -267,9 +262,6 @@ def export():
     flash(f"Stats Exprted Successfully")
     return redirect(url_for('home'))
 
-# @app.route('/home', methods=['GET'])
-# def home():
-#     return render_template('home.html')
  
 
 if __name__ == '__main__':
