@@ -229,7 +229,6 @@ def simulate():
             time.sleep(5)
             return redirect(url_for('home'))
         else:
-            print(stdout)
             flash(f"Error occurred: {stderr}","part1")
             time.sleep(5)
             return redirect(url_for('home'))

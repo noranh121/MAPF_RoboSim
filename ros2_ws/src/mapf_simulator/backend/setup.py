@@ -9,7 +9,6 @@ package_name = 'backend'
 setup(
     name=package_name,
     version='0.0.0',
-    # packages=[package_name],
     packages=find_packages(include=[package_name, 'algorithms', 'algorithms.*']),
 
     data_files=[

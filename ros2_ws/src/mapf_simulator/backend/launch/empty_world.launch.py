@@ -5,13 +5,9 @@ import sys
 
 from ament_index_python.packages import get_package_share_directory
 from launch import LaunchDescription
-from launch.actions import IncludeLaunchDescription, RegisterEventHandler
 from launch.launch_description_sources import PythonLaunchDescriptionSource
-from launch.substitutions import Command, PathJoinSubstitution
 from launch.substitutions import LaunchConfiguration
 from launch_ros.actions import Node
-from launch.actions import ExecuteProcess
-from launch.substitutions import Command
 from launch.actions import IncludeLaunchDescription, TimerAction, DeclareLaunchArgument, AppendEnvironmentVariable
 import argparse
 from pathlib import Path
@@ -73,20 +69,6 @@ def generate_launch_description():
             f'robot{i}.sdf'
         ))
 
-    # sdf_path_1 = os.path.join(
-    #     get_package_share_directory('backend'),
-    #     'models',
-    #     f'turtlebot3_{TURTLEBOT3_MODEL}',
-    #     'model.sdf'
-    # )
-
-    # sdf_path_2 = os.path.join(
-    #     get_package_share_directory('backend'),
-    #     'models',
-    #     f'turtlebot3_{TURTLEBOT3_MODEL}',
-    #     'model_2.sdf'
-    # )
-
     with open(urdf_path, 'r') as infp:
         robot_desc = infp.read()
 
@@ -105,13 +87,6 @@ def generate_launch_description():
         world_file_name
     )
 
-    # gzserver_cmd = IncludeLaunchDescription(
-    #     PythonLaunchDescriptionSource(
-    #         os.path.join(ros_gz_sim, 'launch', 'gzserver.launch.py')
-    #     ),
-    #     launch_arguments={'world': world}.items(),
-    # )
-
     gzserver_cmd = IncludeLaunchDescription(
         PythonLaunchDescriptionSource(
             os.path.join(ros_gz_sim, 'launch', 'gz_sim.launch.py')
@@ -119,11 +94,6 @@ def generate_launch_description():
     launch_arguments={'gz_args': ['-r -s -v4 ', world], 'on_exit_shutdown': 'true'}.items()
     )
 
-    # gzclient_cmd = IncludeLaunchDescription(
-    #     PythonLaunchDescriptionSource(
-    #         os.path.join(ros_gz_sim, 'launch', 'gzclient.launch.py')
-    #     )
-    # )
 
     gzclient_cmd = IncludeLaunchDescription(
         PythonLaunchDescriptionSource(
@@ -132,16 +102,7 @@ def generate_launch_description():
     launch_arguments={'gz_args': '-g -v4 '}.items()
     )
 
-
-
-
-
-
-
-
-
     for i in range(1,number_of_robots+1):
-        # sdf_file = sdf_path_1 if(i == 1) else sdf_path_2
         sdf_file= sdf_paths[i - 1]
         robot_namespace = f"robot{i}"
         robot_name_entity = f"robot{i}_{TURTLEBOT3_MODEL}"
@@ -245,13 +206,8 @@ def generate_launch_description():
     ld.add_action(gzserver_cmd)
     ld.add_action(gzclient_cmd)
     ld.add_action(set_env_vars_resources)
-
-
-    #Added =========================
     ld.add_action(start_gazebo_ros_bridge_cmd)
     ld.add_action(robot_controller)
-    #Added =========================
-
     ld.add_action(my_node)
 
     return ld
@@ -782,7 +738,6 @@ def start_goal_parser(scenarion_file_name=None, cell_size=0.1):
                     goal = tuple(float(x) * cell_size for x in parts[6:8])
                     print('start:', start, 'goal:', goal)
                     # Add the pair to the list
-                    # star_goal_pairs.append([start, goal])
                     star_goal_pairs.append([start, goal])
         except:
             sys.stderr.write("invaled start_end points format\n")
@@ -963,5 +918,3 @@ class Map_Parser:
         tree = ET.ElementTree(sdf)
         with open(world_file, 'wb') as f:
             tree.write(f)
-        
-        print('new world is ready!!!!')

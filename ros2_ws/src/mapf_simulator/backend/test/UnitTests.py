@@ -7,7 +7,7 @@ def setup_A_star():
     Returns:
         A_star: instance of the algorithm
     """
-    from backend.backend_script import A_star,Backend_Engine
+    from backend.backend_engine import A_star,Backend_Engine
     return A_star(),Backend_Engine()
 
 def test_a_star_success(setup_A_star):

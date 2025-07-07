@@ -1,41 +1,20 @@
-import sys
-from flask import flash
 import numpy as np
-from concurrent.futures import ThreadPoolExecutor, as_completed
-import threading
-from threading import Thread
 import time
 import math
 import pygame
-#import vidmaker
 from sortedcollections import OrderedSet
 import heapdict
-import rclpy
-from rclpy.node import Node
-from geometry_msgs.msg import Twist
-from rclpy.exceptions import ROSInterruptException
-from rclpy.executors import MultiThreadedExecutor
-from nav_msgs.msg import Odometry
-import argparse
-from std_msgs.msg import Int32  # Import the message type for integer
-from turtlesim.msg import Pose
-from std_msgs.msg import Float64MultiArray
 import itertools
-from tf_transformations import euler_from_quaternion
-import os
-import json
 
 start_time = time.time()
 
-# map_file_path = '/home/ahmadaw/MAPF_RoboSim/ros2_ws/src/mapf_simulator/backend/benchmarks/benchmark.txt'
 class Parser_Engine:
     def is_point_in_any_block(self, x_tocheck, y_tocheck, obstacle_space):
         for x_center, y_center, size_x , size_y in obstacle_space:
             if self.is_point_within_block(x_center, y_center, x_tocheck, y_tocheck, size_x/2, size_y/2):
                 return True
         return False
-
-    # def is_point_within_block(self,x_center, y_center, x_tocheck, y_tocheck, half_length_x, half_length_y , threshold_x = 0.2 , threshold_y = 0.2):
+    
     def is_point_within_block(self,x_center, y_center, x_tocheck, y_tocheck, half_length_x, half_length_y , threshold=0.2):
 
         x_min = x_center - (half_length_x + threshold)
@@ -115,9 +94,6 @@ class Parser_Engine:
                         obstacles.add((np.round(center_x, 2), np.round(center_y, 2),np.round(size_x, 2),np.round(size_y, 2)))
         return obstacles
     
-    # Function to flip the co-ordinate points
-    # def coords_pygame(self, coords, height):
-    #     return (coords[0], height - coords[1])
 
     # Function to flip the co-ordinate points and covert them into cm
     def coords_cm_pygame(self, coords, height):
@@ -127,8 +103,6 @@ class Parser_Engine:
     def rect_pygame(self, coords, height, obj_height):
         return (coords[0], height - coords[1] - obj_height)
     
-    ########################ADDED_NEW_CREATE_MAP######################################################
-    #with new maps ==> ls.add in Actions needs to be changed to fit the new map boundries
     def create_map(self,d,map_width, map_height, obstacles, args):
         colors = ["red", "green", "blue", "yellow", "purple", "cyan", "orange"]
         color_cycle = itertools.cycle(colors)
@@ -139,7 +113,6 @@ class Parser_Engine:
         size = [map_width_mod, map_height_mod]
         screen = pygame.display.set_mode(size)
         pygame.display.set_caption("Weighted A-star")
-        #video = vidmaker.Video("path.mp4", late_export=True)
         clock = pygame.time.Clock()
         running = True
         while running:
@@ -183,8 +156,6 @@ class Parser_Engine:
         pygame.display.flip()
         pygame.time.wait(5000)
         pygame.quit()
-    #   Line to save video:
-    #   video.export(verbose=True)
 
 class A_star:
 
@@ -217,7 +188,6 @@ class A_star:
         return
 
     def Actions(self, ul, ur, pos, c2c,node_state_g,queue_nodes,visited_nodes,path_dict,obstacle_space,R,L):
-    #   Multiplier originally 0.5
         multiplier = 0.5
         t = 0
         dt = 0.2
@@ -263,9 +233,6 @@ class A_star:
             best_path.append(parent_node)
         best_path.reverse()
         path_vel.reverse()
-        # print("Path Taken: ")
-        # for i in best_path:
-        #     print(i)
         return best_path, path_vel
 
     def a_star(self, goalx, goaly, startx, starty,script_benchmark, rpm1=40.0, rpm2=20.0):
@@ -301,16 +268,11 @@ class A_star:
                     for i in action_set:
                         self.Actions(i[0], i[1], position, cc,node_state_g,queue_nodes,visited_nodes,path_dict,obstacle_space,R,L)
                 else:
-                    #print("Goal reached")
                     back_track, velocity_path = self.back_tracking(
                         path_dict, queue_pop,initial_state)
                     end_time = time.time()
                     path_time = end_time - start_time
-                    #print('Time to calculate path:', path_time, 'seconds')
-                    #To be change to dynamically recieve clearance and map boundries
-                    #self.create_map(0.2,12.8,12.8, obstacle_space,visited_nodes, back_track, path_dict,initial_state)
                     return back_track, path_dict, initial_state,node_state_g,path_time,True
-        #print("Path cannot be acheived")
         return [],[],initial_state,node_state_g,0.0,False
         exit()
 
@@ -338,15 +300,3 @@ def algo(benchmark: str, scenario: str) -> list[list[tuple]]:
         return result
     except Exception as e:
         print(f"Error: {e}")
-
-# def fetch_content(file_path: str):
-#     with open(file_path, 'r', encoding='utf-8') as f:
-#         return f.read()
-
-
-# paths=algo(
-#     fetch_content("/home/ahmadaw/MAPF_RoboSim/ros2_ws/src/mapf_simulator/backend/benchmarks/benchmark.txt"),
-#     fetch_content("/home/ahmadaw/MAPF_RoboSim/ros2_ws/src/mapf_simulator/backend/scenarios/test.txt")
-# )
-
-# print(paths)
