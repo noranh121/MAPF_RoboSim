@@ -1,87 +1,134 @@
-# MAPF_RoboSim
+# MAPF RoboSim – Setup and Run Guide
 
-## installations necessary 
+This guide will walk you through setting up and running the MAPF Robot Simulator — a multi-agent pathfinding simulator built with Gazebo, ROS 2, and a Flask-based web interface.
 
-1 first install wsl 
+---
 
-settings -> windows features -> make sure these are checked
-v  virtual machine platform
-				v hypervisor platform
-				v windows subsystem for linux
-microsoft store: ubuntu 22.04 wsl
+## 🛠️ Prerequisites
 
-2 install ros 2
+- **Operating System**: Ubuntu 24.04 (native or via WSL2)
+- **Repository Location**: Clone the repository into your home directory:
 
-install
-````
-https://docs.ros.org/en/humble/Installation/Ubuntu-Install-Debs.html 
-````
-workspace
-````
-https://docs.ros.org/en/humble/Tutorials/Beginner-Client-Libraries/Creating-A-Workspace/Creating-A-Workspace.html
-````
+  ```bash
+  git clone https://github.com/noranh121/MAPF_RoboSim.git ~/MAPF_RoboSim
+  ```
 
-this might help:
-````
-https://medium.com/@nilutpolkashyap/setting-up-turtlebot3-simulation-in-ros-2-humble-hawksbill-70a6fcdaf5de 
-````
+---
 
-3 install gazebo
+## 📦 Installation Steps
 
-https://stackoverflow.com/questions/67302265/gazebo-11-does-not-run 
+### 1. Install Gazebo Harmonic
 
-4 install these
+Gazebo Harmonic is the latest Gazebo simulation distribution.  
+👉 [Official Installation Guide](https://gazebosim.org/docs/harmonic/install_ubuntu/)
 
-### `Pygame`
+---
 
-To install pygame, type the following command in the terminal
+### 2. Install ROS 2 Jazzy (Recommended)
 
-```
-pip install pygame
-```
+ROS 2 Jazzy is recommended for compatibility with Gazebo Harmonic.  
+👉 [Install ROS 2 Jazzy](https://docs.ros.org/en/jazzy/Installation/Ubuntu-Install-Debs.html)
 
-### `OrderedSet`
+> **Note**: If you use a different ROS 2 distribution, replace `jazzy` in all terminal commands accordingly.
 
-To install ordered set, type the following command in the terminal
+---
 
-```
-pip install orderedset
+### 3. Install TurtleBot3
+
+Install via Debian packages:
+
+```bash
+sudo apt install ros-jazzy-turtlebot3*
 ```
 
-### `Heapdict`
+👉 [TurtleBot3 ROS 2 Guide](https://ros2-industrial-workshop.readthedocs.io/en/latest/_source/navigation/ROS2-Turtlebot.html)
 
-To install heapdict, type the following command in the terminal
+---
 
+### 4. Install ROS 2 & Python Dependencies
+
+#### ROS 2 Tools:
+
+```bash
+sudo apt install python3-colcon-common-extensions
+sudo apt install ros-jazzy-ros-gz-sim
+sudo apt install ros-jazzy-tf-transformations
 ```
+
+#### Python and Pip:
+
+```bash
+sudo apt install python3-pip
+```
+
+> If you encounter issues installing with `pip`, try using a virtual environment (Recommended), or add the `--break-system-packages` flag (Use this flag with care):
+>
+> ```bash
+> pip install <package> --break-system-packages
+> ```
+
+#### Required Python Packages:
+
+```bash
+pip install flask
+pip install sortedcollections
 pip install heapdict
+pip install pygame
+pip install loguru
 ```
 
-### `Argparse`
+---
 
-To install argparse, type the following command in the terminal
+## 🚀 Running the Simulator
 
-```
-pip install argparse
-```
+1. Open a new terminal (Ubuntu 24.04 or WSL).
+2. Navigate to the ROS 2 workspace:
 
-### `Turtlebot3` 
-````
-https://ros2-industrial-workshop.readthedocs.io/en/latest/_source/navigation/ROS2-Turtlebot.html
-````
+    ```bash
+    cd ~/MAPF_RoboSim/ros2_ws
+    ```
 
+3. Launch the Flask web app:
 
-## run project (for now)
-* cloning the project
-```
-git clone https://github.com/noranh121/MAPF_RoboSim.git
-cd MAPF_RoboSim/ros2_ws
- ```
-* run the server
-```
-python3 app/app.py
-```
-* upload benchmark (example: MAPF_RoboSim/ros2_ws/src/Implementation-of-A-star-algorithm-for-path-planning-of-Turtlebot-in-an-obstacle-environment/a_star_tb3/benchmarks/benchmark.txt)
-* upload start_end points (example: MAPF_RoboSim/ros2_ws/src/Implementation-of-A-star-algorithm-for-path-planning-of-Turtlebot-in-an-obstacle-environment/a_star_tb3/benchmarks/test.txt)
-* to upload stats click the button "upload stats" and you can find the stats in this path MAPF_RoboSim/ros2_ws/uploads/exported_data.txt (it will change so the user can choose the location to download stats)
+    ```bash
+    python3 app/app.py
+    ```
 
-NOTE: The start_end format will change, but this is the current format that the system accepts for now.
+4. Open your browser and navigate to the address shown in the terminal (usually `http://127.0.0.1:5000`).
+
+---
+
+## 🧪 Quick Test
+
+The simulator comes with default files ready to run:
+
+- **Algorithm**: `lacam.py`
+- **Map**: `benchmark.txt`
+- **Scenario**: `scenario_test.txt`
+
+To test:
+
+1. Select the files in the web UI.
+2. Click **Simulate**.
+3. Gazebo should launch and run the simulation.
+
+---
+
+## ⚠️ Important Notes
+
+- To **stop the simulation**, **use the "Stop Simulation" button** in the web UI.
+  - ❌ Do **not** close the Gazebo window manually — it may leave processes running or crash the app.
+- If commands fail, ensure your ROS environment is sourced:
+
+    ```bash
+    source /opt/ros/jazzy/setup.bash
+    ```
+
+    > Replace `setup.bash` with `setup.sh` or `setup.zsh` if using other shells.
+
+---
+
+## ✅ Compatibility Notes
+
+The simulator is flexible and may work with different combinations of Ubuntu, Gazebo, and ROS 2 — as long as they are compatible.  
+👉 [Gazebo Compatibility Chart](https://gazebosim.org/docs/latest/getstarted/)
