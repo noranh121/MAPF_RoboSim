@@ -135,7 +135,7 @@ class Controller_Node(Node):
 
 
         #linear velocity multiplied by 5 for faster robot movement
-        l_v_to_publish = l_v*10 if a_v == 0 else l_v
+        l_v_to_publish = l_v*10 if a_v == 0 else l_v*5
         self.my_velocity_cont(l_v_to_publish, a_v*5)
 
     def pose_callback(self, msg: Pose):

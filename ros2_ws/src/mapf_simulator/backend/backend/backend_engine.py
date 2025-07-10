@@ -120,7 +120,7 @@ class Backend_Engine:
         size = [map_width_mod, map_height_mod]
 
         screen = pygame.display.set_mode(size)
-        pygame.display.set_caption("Weighted A-star")
+        pygame.display.set_caption("Robots Paths")
 
         clock = pygame.time.Clock()
 

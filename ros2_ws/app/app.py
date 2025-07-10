@@ -180,7 +180,7 @@ def simulate():
     stop_simulation()
     time.sleep(7)
 
-    ros_distro = os.environ.get("ROS_DISTRO")
+    ros_distro = os.environ.get("ROS_DISTRO", "jazzy")
 
 
     selected_algo = request.form.get('algorithm', 'None')
@@ -247,15 +247,12 @@ def export():
     buffer.write(content.encode())
     buffer.seek(0)
 
-    send_file(
+    return send_file(
         buffer,
         as_attachment=True,
         download_name=filename,
         mimetype='text/plain'
     )
-
-    flash(f"Stats Exprted Successfully")
-    return redirect(url_for('home'))
 
 
 
