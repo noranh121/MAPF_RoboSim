@@ -114,6 +114,14 @@ To test:
 
 ---
 
+## 💾 Exporting Simulation Results
+
+After the algorithm compeletion and the robots' paths are visualized via the Pygame window, you can download the results directly from the web interface.
+
+Click the **"Download Results"** button in the UI to export data related to the current simulation. This may include metrics such as agent paths, execution time, and algorithm-specific statistics.
+
+---
+
 ## ⚠️ Important Notes
 
 - To **stop the simulation**, **use the "Stop Simulation" button** in the web UI.
